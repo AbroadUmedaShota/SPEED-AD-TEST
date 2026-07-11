@@ -23,6 +23,21 @@ var DEFAULT_MAX_ATTACHMENT_MB = 10;
 var DEFAULT_SPREADSHEET_TITLE = 'SPEED AD サポートお問い合わせ';
 var DEFAULT_ATTACHMENT_FOLDER_NAME = 'SPEED AD サポートお問い合わせ添付';
 var TEST_NOTIFY_EMAIL = 's-umeda@abroad-o.com';
+var CONTACT_ALLOWED_SOURCE_URL_PREFIXES = [
+  'https://support.speed-ad.com/contact/',
+  'https://support.speed-ad.com/bug-report/',
+  'http://localhost:8000/05_support/contact/',
+  'http://localhost:8000/05_support/bug-report/',
+  'http://127.0.0.1:8000/05_support/contact/',
+  'http://127.0.0.1:8000/05_support/bug-report/'
+];
+var CONTACT_MIN_FORM_AGE_MS = 2500;
+var CONTACT_MAX_FORM_AGE_MS = 24 * 60 * 60 * 1000;
+var CONTACT_MIN_INTERACTION_COUNT = 1;
+var CONTACT_BOT_REJECTION_MESSAGE = '送信できませんでした。入力内容をご確認のうえ、数秒おいてから再度お試しください。';
+var CONTACT_TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+var CONTACT_TURNSTILE_ACTION = 'contact_submit';
+var CONTACT_TURNSTILE_HOSTNAME = 'support.speed-ad.com';
 var CONTACT_TYPES = ['general', 'bug', 'billing', 'plan', 'feature', 'other'];
 var CONTACT_HEADERS = [
   'submission_id',
@@ -96,12 +111,14 @@ function checkContactConfiguration() {
     maxAttachmentMb: getMaxAttachmentMb_(),
     viewerBaseUrl: checkOptionalProperty_('CONTACT_VIEWER_BASE_URL'),
     viewerAccessToken: checkOptionalProperty_('CONTACT_VIEWER_ACCESS_TOKEN'),
-    testModeToken: checkOptionalProperty_('CONTACT_TEST_MODE_TOKEN')
+    testModeToken: checkOptionalProperty_('CONTACT_TEST_MODE_TOKEN'),
+    turnstileSecret: checkOptionalProperty_('CONTACT_TURNSTILE_SECRET')
   };
 
   result.ok = result.spreadsheet.ok &&
     result.driveFolder.ok &&
-    result.notifyEmail.ok;
+    result.notifyEmail.ok &&
+    result.turnstileSecret.ok;
 
   return logAndReturn_(result);
 }
@@ -123,6 +140,28 @@ function doPost(e) {
 function submitContact_(payload) {
   var receivedAt = new Date().toISOString();
   var normalized = normalizePayload_(payload);
+  var antiBotSignals = buildAntiBotSignals_(normalized, receivedAt);
+  var antiBotDecision = evaluateAntiBotSignals_(antiBotSignals);
+  if (antiBotDecision.blocked) {
+    logContactSecurityEvent_('reject', normalized, antiBotSignals, antiBotDecision);
+    return jsonOut_({
+      ok: false,
+      code: 'bot_rejected',
+      error: CONTACT_BOT_REJECTION_MESSAGE
+    });
+  }
+
+  var turnstileResult = verifyTurnstile_(normalized);
+  if (!turnstileResult.ok) {
+    logContactSecurityEvent_('reject', normalized, antiBotSignals, turnstileResult);
+    return jsonOut_({
+      ok: false,
+      code: 'turnstile_rejected',
+      error: CONTACT_BOT_REJECTION_MESSAGE
+    });
+  }
+
+  validateAttachments_(normalized.attachments);
   var attachmentRefs = saveAttachments_(normalized.submissionId, normalized.attachments);
   var row = buildRow_(normalized, receivedAt, attachmentRefs, 'stored', 'pending');
   var sheetLink = appendRow_(row);
@@ -178,7 +217,6 @@ function normalizePayload_(payload) {
 
   var attachments = payload.attachments || [];
   if (!Array.isArray(attachments)) attachments = [];
-  validateAttachments_(attachments);
 
   return {
     submissionId: Utilities.getUuid(),
@@ -191,7 +229,15 @@ function normalizePayload_(payload) {
     attachments: attachments,
     sourceUrl: sanitizeSourceUrl_(payload.sourceUrl),
     userAgent: String(payload.userAgent || '').trim(),
-    testMode: testMode.enabled
+    testMode: testMode.enabled,
+    honeypot: String(payload.honeypot || payload.website || '').trim(),
+    formLoadedAt: normalizePositiveInteger_(payload.formLoadedAt, 0),
+    formSubmittedAt: normalizePositiveInteger_(payload.formSubmittedAt, 0),
+    formElapsedMs: normalizePositiveInteger_(payload.formElapsedMs, 0),
+    formInteractionCount: normalizePositiveInteger_(payload.formInteractionCount, 0),
+    turnstileToken: String(payload.turnstileToken || '').trim(),
+    turnstileAction: String(payload.turnstileAction || '').trim(),
+    turnstileHostname: String(payload.turnstileHostname || '').trim()
   };
 }
 
@@ -226,6 +272,200 @@ function sanitizeSourceUrl_(value) {
   return base +
     (sanitizedQuery ? '?' + sanitizedQuery : '') +
     (sanitizedHash ? '#' + sanitizedHash : '');
+}
+
+function buildAntiBotSignals_(normalized, receivedAt) {
+  var formLoadedAt = normalized.formLoadedAt;
+  var formSubmittedAt = normalized.formSubmittedAt;
+  var elapsedMs = normalized.formElapsedMs;
+  if (!elapsedMs && formLoadedAt && formSubmittedAt) {
+    elapsedMs = Math.max(0, formSubmittedAt - formLoadedAt);
+  }
+
+  return {
+    honeypot: normalized.honeypot,
+    sourceUrl: normalized.sourceUrl,
+    userAgent: normalized.userAgent,
+    elapsedMs: elapsedMs,
+    formLoadedAt: formLoadedAt,
+    formSubmittedAt: formSubmittedAt,
+    interactionCount: normalized.formInteractionCount,
+    receivedAt: receivedAt
+  };
+}
+
+function evaluateAntiBotSignals_(signals) {
+  if (signals.honeypot) {
+    return {
+      blocked: true,
+      reasonCode: 'honeypot_filled'
+    };
+  }
+  if (!isAllowedSourceUrl_(signals.sourceUrl)) {
+    return {
+      blocked: true,
+      reasonCode: 'invalid_source_url'
+    };
+  }
+  if (!signals.userAgent) {
+    return {
+      blocked: true,
+      reasonCode: 'missing_user_agent'
+    };
+  }
+  if (!signals.elapsedMs || signals.elapsedMs < CONTACT_MIN_FORM_AGE_MS) {
+    return {
+      blocked: true,
+      reasonCode: 'submitted_too_fast'
+    };
+  }
+  if (signals.elapsedMs > CONTACT_MAX_FORM_AGE_MS) {
+    return {
+      blocked: true,
+      reasonCode: 'submission_too_old'
+    };
+  }
+  if (signals.interactionCount < CONTACT_MIN_INTERACTION_COUNT) {
+    return {
+      blocked: true,
+      reasonCode: 'no_interaction'
+    };
+  }
+  return {
+    blocked: false,
+    reasonCode: ''
+  };
+}
+
+function verifyTurnstile_(normalized) {
+  var secret = String(getProperty_('CONTACT_TURNSTILE_SECRET', '') || '').trim();
+  if (!secret) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_secret_missing'
+    };
+  }
+  var token = String(normalized.turnstileToken || '').trim();
+  if (!token) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_token_missing'
+    };
+  }
+  if (String(normalized.turnstileAction || '').trim() !== CONTACT_TURNSTILE_ACTION) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_action_invalid'
+    };
+  }
+
+  var payload = {
+    secret: secret,
+    response: token
+  };
+  var response;
+  try {
+    response = UrlFetchApp.fetch(CONTACT_TURNSTILE_VERIFY_URL, {
+      method: 'post',
+      payload: payload,
+      muteHttpExceptions: true,
+      followRedirects: true
+    });
+  } catch (_err) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_verify_fetch_failed'
+    };
+  }
+
+  var parsed = null;
+  try {
+    parsed = JSON.parse(response.getContentText() || '{}');
+  } catch (_parseErr) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_verify_parse_failed'
+    };
+  }
+
+  if (!parsed || parsed.success !== true) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_verify_failed',
+      errorCodes: parsed && parsed['error-codes'] ? parsed['error-codes'] : []
+    };
+  }
+  if (String(parsed.action || '').trim() !== CONTACT_TURNSTILE_ACTION) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_action_mismatch'
+    };
+  }
+  if (String(parsed.hostname || '').trim() !== CONTACT_TURNSTILE_HOSTNAME) {
+    return {
+      ok: false,
+      reasonCode: 'turnstile_hostname_mismatch'
+    };
+  }
+
+  return {
+    ok: true,
+    reasonCode: ''
+  };
+}
+
+function isAllowedSourceUrl_(sourceUrl) {
+  return CONTACT_ALLOWED_SOURCE_URL_PREFIXES.some(function (prefix) {
+    return String(sourceUrl || '').indexOf(prefix) === 0;
+  });
+}
+
+function normalizePositiveInteger_(value, fallback) {
+  var parsed = Number(value);
+  if (Number.isFinite(parsed) && parsed >= 0) {
+    return Math.floor(parsed);
+  }
+  var fallbackParsed = Number(fallback || 0);
+  return Number.isFinite(fallbackParsed) && fallbackParsed >= 0 ? Math.floor(fallbackParsed) : 0;
+}
+
+function logContactSecurityEvent_(action, normalized, signals, decision) {
+  Logger.log(JSON.stringify({
+    event: 'contact_security',
+    action: action,
+    submissionId: normalized.submissionId || '',
+    contactType: normalized.contactType || '',
+    reasonCode: decision && decision.reasonCode ? decision.reasonCode : '',
+    elapsedMs: signals && typeof signals.elapsedMs === 'number' ? signals.elapsedMs : 0,
+    interactionCount: signals && typeof signals.interactionCount === 'number' ? signals.interactionCount : 0,
+    sourceHost: getUrlHost_(signals && signals.sourceUrl ? signals.sourceUrl : ''),
+    sourcePath: getUrlPath_(signals && signals.sourceUrl ? signals.sourceUrl : ''),
+    turnstileAction: normalized.turnstileAction || '',
+    turnstileHostname: normalized.turnstileHostname || '',
+    attachmentCount: normalized.attachments ? normalized.attachments.length : 0,
+    testMode: !!normalized.testMode
+  }));
+}
+
+function getUrlHost_(value) {
+  try {
+    var raw = String(value || '');
+    var match = raw.match(/^[a-z]+:\/\/([^\/?#]+)/i);
+    return match ? match[1] : '';
+  } catch (_err) {
+    return '';
+  }
+}
+
+function getUrlPath_(value) {
+  try {
+    var raw = String(value || '');
+    var withoutScheme = raw.replace(/^[a-z]+:\/\/[^\/?#]+/i, '');
+    var path = withoutScheme.split(/[?#]/)[0];
+    return path || '';
+  } catch (_err) {
+    return '';
+  }
 }
 
 function stripContactTestParams_(value) {

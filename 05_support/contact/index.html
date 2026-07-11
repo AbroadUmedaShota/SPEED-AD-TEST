@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self' https://script.google.com; connect-src 'self' https://script.google.com https://script.googleapis.com https://script.googleusercontent.com https://challenges.cloudflare.com; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com;">
   <title>SPEED AD - お問い合わせ</title>
   <link rel="icon" href="../assets/img/brand/speed-ad-favicon.svg" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -11,7 +12,7 @@
   <link rel="stylesheet" href="../assets/css/help-center.css?v=20260519-hero-label">
   <link rel="stylesheet" href="../assets/css/support-shell.css?v=20260521-main-domain-link">
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-  <link as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Inter%3Awght%40400%3B500%3B700%3B900&family=Noto+Sans+JP%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?display=swap&family=Inter%3Awght%40400%3B500%3B700%3B900&family=Noto+Sans+JP%3Awght%40400%3B500%3B700%3B900" rel="stylesheet">
   <style>
     /* お問い合わせ（案07: ミニマル・中央寄せ） */
     .contact {
@@ -44,6 +45,15 @@
     .contact-form { display: flex; flex-direction: column; gap: 18px; }
     .contact-form[hidden] { display: none; }
     .contact-field { display: flex; flex-direction: column; }
+    .contact-honeypot {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
     .contact-field__label {
       font-size: 12.5px; font-weight: 700; color: var(--c-label); margin-bottom: 7px;
     }
@@ -91,6 +101,32 @@
       line-height: 1.7;
     }
     .contact-test-mode[hidden] { display: none; }
+    .contact-turnstile {
+      margin: -2px 0 18px;
+      border-radius: 9px;
+      padding: 10px 12px;
+      background: #eef6ff;
+      color: #29486c;
+      border: 1px solid #cfe0f3;
+      font-size: 12.5px;
+      line-height: 1.7;
+    }
+    .contact-turnstile[hidden] { display: none; }
+    .contact-turnstile__widget {
+      min-height: 65px;
+      margin-top: 10px;
+    }
+    .contact-turnstile__fallback {
+      margin-top: 10px;
+      color: #7a4b00;
+      font-size: 12px;
+    }
+    .contact-turnstile__fallback[hidden] { display: none; }
+    .contact-turnstile__fallback a {
+      color: inherit;
+      text-decoration: underline;
+      font-weight: 700;
+    }
 
     .contact-submit {
       margin-top: 6px; width: 100%; background: var(--c-navy); color: #fff;
@@ -174,8 +210,18 @@
         <h1 class="contact__title" id="contact-title">お問い合わせ</h1>
         <p class="contact__lead">お問い合わせ内容を確認のうえ、2〜3営業日以内に担当者よりご返信いたします。</p>
         <p class="contact-test-mode" id="contactTestModeNotice" hidden tabindex="-1">テストモードで送信します。メール通知はすべて梅田さんのみに送信されます。</p>
+        <p class="contact-turnstile" id="contactTurnstileNotice" hidden tabindex="-1">Cloudflare Turnstile を読み込んでいます。読み込めない場合はフォーム送信を停止します。</p>
 
-        <form class="contact-form" id="contactForm" data-endpoint="https://script.google.com/macros/s/AKfycbw6xaQvmfspOOxXEs4DMqfLxQ3Aev6Qi8RcfiFu7iFwOHos48eAPvmmjxSnteN1Lj0D/exec" data-max-attachment-mb="10" data-webp-quality="0.82" novalidate>
+        <form class="contact-form" id="contactForm" data-endpoint="https://script.google.com/macros/s/AKfycbw6xaQvmfspOOxXEs4DMqfLxQ3Aev6Qi8RcfiFu7iFwOHos48eAPvmmjxSnteN1Lj0D/exec" data-max-attachment-mb="10" data-webp-quality="0.82" data-turnstile-sitekey="0x4AAAAAAD0AU2j-7iGHHZjU" novalidate>
+          <div class="contact-honeypot" aria-hidden="true">
+            <label class="contact-field__label" for="f-website">ウェブサイト</label>
+            <input class="contact-control" id="f-website" name="website" type="text" autocomplete="off" tabindex="-1" aria-hidden="true">
+            <input id="f-form-loaded-at" name="formLoadedAt" type="hidden" value="">
+            <input id="f-form-interaction-count" name="formInteractionCount" type="hidden" value="0">
+            <input id="f-turnstile-token" name="turnstileToken" type="hidden" value="">
+            <input id="f-turnstile-action" name="turnstileAction" type="hidden" value="">
+            <input id="f-turnstile-sitekey" name="turnstileSitekey" type="hidden" value="">
+          </div>
           <div class="contact-field">
             <label class="contact-field__label" for="f-contact-type">問い合わせ種別<span class="req" aria-hidden="true">*</span></label>
             <select class="contact-control contact-select" id="f-contact-type" name="contactType" aria-describedby="f-contact-type-error" required>
@@ -228,6 +274,14 @@
           </div>
 
           <div class="contact-field">
+            <div id="contactTurnstileWidget" class="contact-turnstile__widget" aria-label="Cloudflare Turnstile"></div>
+            <p class="contact-turnstile__fallback" id="contactTurnstileFallback" hidden>
+              フォームから送信できない場合は <a href="mailto:customer@speed-ad.com">customer@speed-ad.com</a> へご連絡ください。
+            </p>
+            <p class="contact-field__error" id="contactTurnstileError" hidden></p>
+          </div>
+
+          <div class="contact-field">
             <label class="contact-check" for="f-privacy">
               <input id="f-privacy" name="privacyConsent" type="checkbox" aria-describedby="f-privacy-error" required>
               <span><a href="../privacy/" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>を確認し、個人情報の取り扱いに同意します。<span class="req" aria-hidden="true">*</span></span>
@@ -254,6 +308,6 @@
   <div id="support-footer-placeholder"></div>
 </div>
 <script type="module" src="../assets/js/support-shell.js?v=20260519-plans-news"></script>
-<script type="module" src="../assets/js/contact-form.js?v=20260621-webp-viewer"></script>
+<script type="module" src="../assets/js/contact-form.js?v=20260712-turnstile"></script>
 </body>
 </html>

@@ -6,6 +6,8 @@ import test from 'node:test';
 const CONTACT_FORM_HELPERS = '05_support/assets/js/contact-attachment-utils.js';
 const CONTACT_FORM_UTILS = '05_support/assets/js/contact-form-utils.js';
 const CONTACT_FORM_SCRIPT = '05_support/assets/js/contact-form.js';
+const CONTACT_FORM_HTML = '05_support/contact/index.html';
+const CONTACT_PRIVACY_HTML = '05_support/privacy/index.html';
 const PUBLIC_GAS_CODE = '99_backend-docs/10_support-contact/gas/Code.gs';
 const VIEWER_GAS_CODE = '99_backend-docs/10_support-contact/viewer-gas/Code.gs';
 const VIEWER_GAS_HTML = '99_backend-docs/10_support-contact/viewer-gas/Index.html';
@@ -87,6 +89,63 @@ test('support contact form test mode URL helpers protect test tokens', async () 
       cleanedUrl: 'https://support.speed-ad.com/contact/',
     }
   );
+  assert.deepEqual(
+    helpers.buildContactAntiBotSignals({
+      honeypotValue: '  hidden  ',
+      formLoadedAt: 1000,
+      submittedAt: 5000,
+      interactionCount: 2,
+      sourceUrl: 'https://support.speed-ad.com/contact/',
+    }),
+    {
+      honeypotValue: 'hidden',
+      formLoadedAt: 1000,
+      submittedAt: 5000,
+      elapsedMs: 4000,
+      interactionCount: 2,
+      sourceUrl: 'https://support.speed-ad.com/contact/',
+    }
+  );
+  assert.deepEqual(
+    helpers.evaluateContactSubmissionSignals({
+      honeypotValue: '',
+      elapsedMs: 1200,
+      interactionCount: 0,
+      sourceUrl: 'https://support.speed-ad.com/contact/',
+    }),
+    {
+      blocked: true,
+      reasonCode: 'submitted_too_fast',
+      reason: 'submission elapsed time is too short',
+    }
+  );
+  assert.deepEqual(
+    helpers.evaluateContactSubmissionSignals({
+      honeypotValue: '',
+      elapsedMs: 4200,
+      interactionCount: 1,
+      sourceUrl: 'https://support.speed-ad.com/contact/',
+    }),
+    {
+      blocked: false,
+      reasonCode: '',
+      reason: '',
+    }
+  );
+  assert.equal(helpers.TURNSTILE_ACTION, 'contact_submit');
+  assert.equal(helpers.TURNSTILE_HOSTNAME, 'support.speed-ad.com');
+  assert.equal(
+    helpers.buildTurnstileSubmissionPayload('token-123', 'site-key-123').turnstileAction,
+    'contact_submit'
+  );
+  assert.equal(
+    helpers.buildTurnstileSubmissionPayload('token-123', 'site-key-123').turnstileHostname,
+    'support.speed-ad.com'
+  );
+  assert.equal(
+    helpers.buildTurnstileSubmissionPayload('token-123', 'site-key-123').turnstileSiteKey,
+    'site-key-123'
+  );
 });
 
 test('public support contact GAS advertises viewer detail links', async () => {
@@ -94,14 +153,34 @@ test('public support contact GAS advertises viewer detail links', async () => {
     readFile(PUBLIC_GAS_CODE, 'utf8'),
     readFile(CONTACT_FORM_SCRIPT, 'utf8'),
   ]);
+  const [html, privacyHtml] = await Promise.all([
+    readFile(CONTACT_FORM_HTML, 'utf8'),
+    readFile(CONTACT_PRIVACY_HTML, 'utf8'),
+  ]);
 
   assert.match(code, /CONTACT_VIEWER_BASE_URL/);
   assert.match(code, /CONTACT_VIEWER_ACCESS_TOKEN/);
   assert.match(code, /CONTACT_TEST_MODE_TOKEN/);
   assert.match(code, /TEST_NOTIFY_EMAIL = 's-umeda@abroad-o\.com'/);
+  assert.match(code, /CONTACT_ALLOWED_SOURCE_URL_PREFIXES/);
+  assert.match(code, /CONTACT_MIN_FORM_AGE_MS = 2500/);
+  assert.match(code, /CONTACT_MIN_INTERACTION_COUNT = 1/);
+  assert.match(code, /CONTACT_BOT_REJECTION_MESSAGE/);
+  assert.match(code, /CONTACT_TURNSTILE_VERIFY_URL/);
+  assert.match(code, /CONTACT_TURNSTILE_ACTION = 'contact_submit'/);
+  assert.match(code, /CONTACT_TURNSTILE_HOSTNAME = 'support.speed-ad.com'/);
   assert.match(code, /function validateTestMode_/);
   assert.match(code, /function setContactTestModeToken/);
   assert.match(code, /throw new Error\('テストモードトークンが不正です。'\)/);
+  assert.match(code, /function buildAntiBotSignals_/);
+  assert.match(code, /function evaluateAntiBotSignals_/);
+  assert.match(code, /function verifyTurnstile_/);
+  assert.match(code, /function isAllowedSourceUrl_/);
+  assert.match(code, /function normalizePositiveInteger_/);
+  assert.match(code, /function logContactSecurityEvent_/);
+  assert.match(code, /CONTACT_TURNSTILE_SECRET/);
+  assert.match(code, /turnstileAction/);
+  assert.match(code, /turnstileHostname/);
   assert.match(code, /function getInternalNotifyEmails_/);
   assert.match(code, /payload && payload\.testMode \? \[TEST_NOTIFY_EMAIL\] : getNotifyEmails_\(\)/);
   assert.match(code, /function getUserReceiptEmail_/);
@@ -115,14 +194,59 @@ test('public support contact GAS advertises viewer detail links', async () => {
   assert.match(code, /【TEST】/);
   assert.match(code, /handled_by/);
   assert.match(code, /internal_note/);
+  assert.match(code, /honeypot/);
+  assert.match(code, /formLoadedAt/);
+  assert.match(code, /formSubmittedAt/);
+  assert.match(code, /formInteractionCount/);
+  assert.match(code, /turnstileToken/);
+  assert.match(code, /turnstileAction/);
+  assert.match(code, /bot_rejected/);
+  assert.match(code, /turnstile_rejected/);
+  assert.match(code, /送信できませんでした。入力内容をご確認のうえ、数秒おいてから再度お試しください。/);
   assert.match(formScript, /getContactTestModeFromUrl/);
   assert.match(formScript, /TEST_MODE_MISSING_TOKEN_MESSAGE/);
   assert.match(formScript, /TEST_MODE_REJECTED_MESSAGE/);
+  assert.match(formScript, /buildContactAntiBotSignals/);
+  assert.match(formScript, /buildTurnstileSubmissionPayload/);
+  assert.match(formScript, /getTurnstileSiteKey/);
+  assert.match(formScript, /TURNSTILE_SCRIPT_SRC/);
+  assert.match(formScript, /TURNSTILE_FALLBACK_MESSAGE/);
+  assert.match(formScript, /TURNSTILE_FALLBACK_CONTACT/);
+  assert.match(formScript, /TURNSTILE_ACTION/);
   assert.match(formScript, /function validateTestModeBeforeSubmit/);
   assert.match(formScript, /submit\.disabled = isProcessingFiles \|\| isSubmitting \|\| isTestModeTokenMissing\(\)/);
   assert.match(formScript, /テストモードURLが不完全です。/);
   assert.match(formScript, /testModeToken = testModeState\.token|payload\.testModeToken = testModeState\.token/);
   assert.match(formScript, /sourceUrl: window\.location\.href/);
+  assert.match(formScript, /formLoadedAtEl/);
+  assert.match(formScript, /formInteractionCount/);
+  assert.match(formScript, /honeypotEl/);
+  assert.match(formScript, /contactAntiBot/);
+  assert.match(formScript, /formElapsedMs/);
+  assert.match(formScript, /turnstileSiteKeyEl/);
+  assert.match(formScript, /turnstileContainer/);
+  assert.match(formScript, /turnstileTokenEl/);
+  assert.match(formScript, /turnstileUnavailable/);
+  assert.match(formScript, /ensureTurnstileScript/);
+  assert.match(formScript, /renderTurnstileWidget/);
+  assert.match(formScript, /setTurnstileUnavailable/);
+  assert.match(html, /name="website"/);
+  assert.match(html, /name="formLoadedAt"/);
+  assert.match(html, /name="formInteractionCount"/);
+  assert.match(html, /name="turnstileToken"/);
+  assert.match(html, /name="turnstileAction"/);
+  assert.match(html, /name="turnstileSitekey"/);
+  assert.match(html, /contactTurnstileWidget/);
+  assert.match(html, /contactTurnstileNotice/);
+  assert.match(html, /contactTurnstileFallback/);
+  assert.match(html, /contactTurnstileError/);
+  assert.match(html, /data-turnstile-sitekey/);
+  assert.match(html, /challenges\.cloudflare\.com/);
+  assert.doesNotMatch(html, /onload="this\.rel='stylesheet'"/);
+  assert.match(privacyHtml, /お問い合わせフォームで利用する外部サービス/);
+  assert.match(privacyHtml, /Cloudflare Turnstile/);
+  assert.match(privacyHtml, /氏名、メールアドレス、件名、本文、添付ファイルはCloudflare Turnstileへ送信しません。/);
+  assert.match(privacyHtml, /Google Workspace/);
 });
 
 test('support contact viewer GAS is token-gated and updates status', async () => {

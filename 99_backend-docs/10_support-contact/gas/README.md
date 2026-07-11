@@ -8,12 +8,13 @@
 - Web App は `executeAs: USER_DEPLOYING` / `access: ANYONE_ANONYMOUS` で配備します。
 - 投稿は GAS の CORS 制約を避けるため `Content-Type: text/plain;charset=utf-8` で送信します。
 - `CONTACT_FROM_EMAIL` がデプロイユーザー本人、または `GmailApp.getAliases()` に含まれる送信エイリアスである場合は、そのアドレスを From にします。利用できない場合でも送信は停止せず、Gmail の既定送信者から送信し、`CONTACT_REPLY_TO_EMAIL` を Reply-To として保持します。
+- bot 対策として、公開投稿GAS側では honeypot、フォーム表示からの経過時間、ユーザー操作有無、投稿元URL、User-Agent に加えて Cloudflare Turnstile を保存前に検証し、bot 判定時は保存・通知・受付メールを行いません。
 
 ## 現行デプロイ
 
 - Script ID: `1qODYRRKo8X2ps9V6TI5Q8RzR-TswCUS7sx8gZYDEpfgaKeqJhHDl10KT`
 - Web App URL: `https://script.google.com/macros/s/AKfycbw6xaQvmfspOOxXEs4DMqfLxQ3Aev6Qi8RcfiFu7iFwOHos48eAPvmmjxSnteN1Lj0D/exec`
-- Current version: `16` (`support contact test mode all mail to umeda`)
+- Current version: `17` (`support contact Turnstile bot defense`)
 - Rollback candidate: version `12` (`support contact viewer fragment token links`)
 - Owner: `customer@speed-ad.com`
 
@@ -31,6 +32,7 @@
 | `CONTACT_VIEWER_BASE_URL` | 任意 | 確認者専用GAS Web App URL。設定時は社内通知の主リンクになります。 |
 | `CONTACT_VIEWER_ACCESS_TOKEN` | 確認アプリ利用時必須 | 確認アプリURLに付与する共有トークン。確認者GAS側と同じ値を設定し、repoには実値を記録しません。 |
 | `CONTACT_TEST_MODE_TOKEN` | テストモード利用時必須 | `testMode:true` 投稿を許可する共有トークン。repoには実値を記録しません。 |
+| `CONTACT_TURNSTILE_SECRET` | Turnstile 利用時必須 | Cloudflare Turnstile の secret。保存前の Siteverify で使用します。repo には実値を記録しません。 |
 
 2026-06-22 時点の追加運用値:
 
@@ -39,6 +41,7 @@ CONTACT_NOTIFY_EMAIL=customer@speed-ad.com,s-umeda@abroad-o.com,t-hayashi@abroad
 CONTACT_VIEWER_BASE_URL=https://script.google.com/macros/s/AKfycbxz4foQKPlgAeF5ShuM2RBudUpYD8VOvIi7riU1j4QtghnHzvpw9JSKQgfcm61hJKh3/exec
 CONTACT_VIEWER_ACCESS_TOKEN=<Script Properties only>
 CONTACT_TEST_MODE_TOKEN=<Script Properties only>
+CONTACT_TURNSTILE_SECRET=<Script Properties only>
 ```
 
 ## OAuth scopes
@@ -75,6 +78,11 @@ Content-Type: text/plain;charset=utf-8
     ],
     "sourceUrl": "https://support.speed-ad.com/contact/",
     "userAgent": "...",
+    "honeypot": "",
+    "formLoadedAt": 1710000000000,
+    "formSubmittedAt": 1710000004200,
+    "formElapsedMs": 4200,
+    "formInteractionCount": 3,
     "privacyConsent": true
   }
 }
@@ -119,9 +127,11 @@ Apps Script エディタ上で、Web App 公開前に以下の関数を手動実
 
 既存の Spreadsheet / Drive フォルダを使う場合は、先に Script Properties の `SPREADSHEET_ID` / `DRIVE_FOLDER_ID` を手動設定します。未設定のまま `initializeContactStorage` を実行した場合は、新規作成した ID が Script Properties に保存されます。
 
-`CONTACT_FROM_EMAIL`、`CONTACT_REPLY_TO_EMAIL`、`CONTACT_NOTIFY_EMAIL` は未設定の場合 `customer@speed-ad.com` で初期化されます。社内通知先を追加する場合は、初期化後に `CONTACT_NOTIFY_EMAIL` をカンマ、セミコロン、または改行区切りの複数宛先へ変更します。`setContactNotifyEmail` を使う場合は、メールアドレスリストを引数に渡すと Script Properties の `CONTACT_NOTIFY_EMAIL` を更新できます。`CONTACT_TEST_MODE_TOKEN` は Apps Script エディタの Project Settings から Script Property として追加します。API executable を別途有効化済みの環境では、補助関数 `setContactTestModeToken` でも設定できます。
+`CONTACT_FROM_EMAIL`、`CONTACT_REPLY_TO_EMAIL`、`CONTACT_NOTIFY_EMAIL` は未設定の場合 `customer@speed-ad.com` で初期化されます。社内通知先を追加する場合は、初期化後に `CONTACT_NOTIFY_EMAIL` をカンマ、セミコロン、または改行区切りの複数宛先へ変更します。`setContactNotifyEmail` を使う場合は、メールアドレスリストを引数に渡すと Script Properties の `CONTACT_NOTIFY_EMAIL` を更新できます。`CONTACT_TEST_MODE_TOKEN` は Apps Script エディタの Project Settings から Script Property として追加します。`CONTACT_TURNSTILE_SECRET` も同じく Script Property として追加します。API executable を別途有効化済みの環境では、補助関数 `setContactTestModeToken` でも設定できます。
 
 確認者専用GASを配備した後は、公開投稿GASの `CONTACT_VIEWER_BASE_URL` に確認者専用GAS Web App URLを設定します。`CONTACT_VIEWER_ACCESS_TOKEN` も設定済みの場合、社内通知メールの主導線は `CONTACT_VIEWER_BASE_URL?id=<submission_id>#token=<token>` になります。確認用トークンはURLフラグメントに置き、Apps Script の初回リクエストやサーバー側アクセスログへ載せない運用にします。
+
+`CONTACT_TURNSTILE_SECRET` を設定し、Turnstile の action は `contact_submit`、hostname は `support.speed-ad.com` に固定します。sitekey は公開値として `05_support/contact/index.html` の `data-turnstile-sitekey` に反映します。Cloudflare 側では Managed mode の widget を作成し、本番 hostname を `support.speed-ad.com` に限定します。
 
 `checkContactConfiguration` の戻り値で `ok: true` になることを本番有効化条件にします。`from.available` が `false` の場合は From 表示がGAS実行ユーザーになるため、メール実着信時に Reply-To が `CONTACT_REPLY_TO_EMAIL` になっていることを確認します。
 
@@ -138,6 +148,8 @@ Apps Script エディタ上で、Web App 公開前に以下の関数を手動実
 - 社内通知メールが `CONTACT_NOTIFY_EMAIL` の全宛先に届くこと。
 - テストモード投稿では社内通知メールと投稿者向け受付メールが `s-umeda@abroad-o.com` のみに届き、件名に `【TEST】` が付くこと。
 - `testMode:true` かつ不正な `testModeToken` では保存・メール送信前に `ok:false` になること。
+- honeypot が埋まっている、またはフォーム表示からの経過時間が短すぎる投稿は `ok:false` で拒否されること。
+- Turnstile トークンが欠落・不正・失効・再利用・hostname/action 不一致、または検証API障害のときは保存前に `ok:false` で拒否されること。
 - 社内通知メールの件名に問い合わせ種別が含まれること。
 - 社内通知メールに `submission_id`、問い合わせ種別、投稿者メールアドレス、確認アプリ詳細URLが含まれること。
 
