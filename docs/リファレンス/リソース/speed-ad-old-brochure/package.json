@@ -1,0 +1,18 @@
+{
+  "name": "speed-ad-old-brochure",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "prepare-assets": "node scripts/generate-qr.mjs",
+    "export": "npm run prepare-assets && node scripts/export.mjs",
+    "verify": "node scripts/verify.mjs",
+    "build": "npm run export && npm run verify"
+  },
+  "devDependencies": {
+    "@zxing/library": "^0.21.3",
+    "playwright": "^1.55.0",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.34.3"
+  }
+}

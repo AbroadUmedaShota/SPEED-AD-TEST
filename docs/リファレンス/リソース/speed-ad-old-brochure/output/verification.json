@@ -1,0 +1,147 @@
+{
+  "generatedAt": "2026-07-13T21:39:08.840Z",
+  "expectedTarget": "https://speed-ad.com/",
+  "expectedContactEmail": "info@abroad-o.com",
+  "qrAssetIsVector": true,
+  "qrDecode": {
+    "htmlAsset": "https://speed-ad.com/",
+    "png": "https://speed-ad.com/",
+    "pdf300dpi": "https://speed-ad.com/"
+  },
+  "pdfInfo": {
+    "pages": 2,
+    "widthPt": 841.92,
+    "heightPt": 594.96
+  },
+  "pngInfo": {
+    "outside": {
+      "width": 4492,
+      "height": 3176,
+      "effectiveDpi": 384.2
+    },
+    "inside": {
+      "width": 4492,
+      "height": 3180,
+      "effectiveDpi": 384.2
+    }
+  },
+  "panelGeometryPass": true,
+  "contactEmail": {
+    "html": "info@abroad-o.com",
+    "pdfTextIncludesExpected": true
+  },
+  "pass": true,
+  "results": [
+    {
+      "viewport": {
+        "width": 1684,
+        "height": 1191
+      },
+      "errors": [],
+      "layout": {
+        "sheets": [
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              97.1,
+              99.75,
+              99.75
+            ]
+          },
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              100.01,
+              99.75,
+              96.84
+            ]
+          }
+        ],
+        "qrAlt": "https://speed-ad.com/ へのQRコード",
+        "target": "https://speed-ad.com/",
+        "contactEmail": "info@abroad-o.com",
+        "overflowElements": []
+      }
+    },
+    {
+      "viewport": {
+        "width": 1188,
+        "height": 840
+      },
+      "errors": [],
+      "layout": {
+        "sheets": [
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              97.1,
+              99.75,
+              99.75
+            ]
+          },
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              100.01,
+              99.75,
+              96.84
+            ]
+          }
+        ],
+        "qrAlt": "https://speed-ad.com/ へのQRコード",
+        "target": "https://speed-ad.com/",
+        "contactEmail": "info@abroad-o.com",
+        "overflowElements": []
+      }
+    },
+    {
+      "viewport": {
+        "width": 900,
+        "height": 1200
+      },
+      "errors": [],
+      "layout": {
+        "sheets": [
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              97.1,
+              99.75,
+              99.75
+            ]
+          },
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              100.01,
+              99.75,
+              96.84
+            ]
+          }
+        ],
+        "qrAlt": "https://speed-ad.com/ へのQRコード",
+        "target": "https://speed-ad.com/",
+        "contactEmail": "info@abroad-o.com",
+        "overflowElements": []
+      }
+    }
+  ]
+}

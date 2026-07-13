@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPEED AD 旧パンフレット - A4巻三つ折り</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="symbol-library" aria-hidden="true">
+    <defs>
+      <linearGradient id="brandGradient" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#05a9a9"/>
+        <stop offset="1" stop-color="#063679"/>
+      </linearGradient>
+      <symbol id="icon-user" viewBox="0 0 64 64"><circle cx="32" cy="20" r="10"/><path d="M13 55c2-14 9-21 19-21s17 7 19 21"/></symbol>
+      <symbol id="icon-form" viewBox="0 0 64 64"><rect x="12" y="7" width="40" height="50" rx="4"/><path d="M21 19h22M21 30h22M21 41h14"/><circle cx="44" cy="41" r="4"/></symbol>
+      <symbol id="icon-phone" viewBox="0 0 64 64"><rect x="18" y="5" width="28" height="54" rx="6"/><path d="M24 12h16M29 51h6"/><rect x="25" y="22" width="14" height="14" rx="2"/></symbol>
+      <symbol id="icon-card" viewBox="0 0 64 64"><rect x="6" y="13" width="52" height="38" rx="5"/><circle cx="21" cy="29" r="7"/><path d="M11 44c2-7 5-10 10-10s8 3 10 10M36 24h13M36 33h13M36 42h8"/></symbol>
+      <symbol id="icon-table" viewBox="0 0 64 64"><rect x="7" y="10" width="50" height="44" rx="4"/><path d="M7 23h50M23 23v31M40 23v31M7 38h50"/></symbol>
+      <symbol id="icon-file" viewBox="0 0 64 64"><path d="M14 5h24l12 12v42H14zM38 5v13h12"/><path d="M22 35h20M22 44h20"/></symbol>
+      <symbol id="icon-chat" viewBox="0 0 64 64"><path d="M7 10h50v34H30L17 55V44H7z"/><circle cx="22" cy="27" r="3"/><circle cx="32" cy="27" r="3"/><circle cx="42" cy="27" r="3"/></symbol>
+      <symbol id="icon-search" viewBox="0 0 64 64"><circle cx="27" cy="27" r="17"/><path d="M40 40l16 16"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 64 64"><circle cx="32" cy="32" r="25"/><path d="M18 33l10 10 19-23"/></symbol>
+      <symbol id="icon-building" viewBox="0 0 64 64"><path d="M8 57h48M14 57V27h15v30M29 57V10h21v47"/><path d="M21 35h2M21 44h2M36 19h4M36 29h4M36 39h4M36 49h4"/></symbol>
+      <symbol id="icon-people" viewBox="0 0 64 64"><circle cx="20" cy="22" r="8"/><circle cx="44" cy="22" r="8"/><path d="M5 53c1-12 6-19 15-19s14 7 15 19M29 53c1-12 6-19 15-19s14 7 15 19"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="screen-intro">
+    <p class="eyebrow">PRINT MASTER / A4 ROLL FOLD</p>
+    <h1>SPEED AD 旧パンフレット</h1>
+    <p>外面・内面とも左から右へ配置。画面上の破線は折り位置の確認用で、印刷には出ません。</p>
+  </header>
+
+  <main class="brochure" aria-label="SPEED AD A4巻三つ折りパンフレット">
+    <section class="sheet sheet--outside" data-side="outside" aria-label="外面">
+      <span class="sheet-label">外面：左から 折込フラップ 97mm / 裏表紙 100mm / 表紙 100mm</span>
+
+      <article class="panel panel--flow flow--early" aria-label="折込フラップ：サービスの流れ前半">
+        <p class="panel-role">FOLD-IN FLAP / 先に内側へ折る面</p>
+        <h2>サービスの流れ</h2>
+        <p class="lead">アカウント登録からクローズまでの全体プロセス</p>
+        <ol class="flow-list">
+          <li><span>01</span><div><h3>アカウント登録</h3><p>管理者アカウントを作成し、サービスを有効化します。</p></div><svg><use href="#icon-user"/></svg></li>
+          <li><span>02</span><div><h3>アンケート作成・公開</h3><p>用途に合わせてアンケートを作成し、公開します。</p></div><svg><use href="#icon-form"/></svg></li>
+          <li><span>03</span><div><h3>QRコード発行</h3><p>アンケートに紐づくQRコードを発行・共有します。</p></div><svg><use href="#icon-phone"/></svg></li>
+          <li><span>04</span><div><h3>回答・名刺取得</h3><p>回答者がアンケートに回答し、名刺を撮影・送信します。</p></div><svg><use href="#icon-card"/></svg></li>
+        </ol>
+        <p class="continue-note">開くと、確認・活用・請求までの流れが続きます。</p>
+      </article>
+
+      <article class="panel panel--back" aria-label="裏表紙：お問い合わせ">
+        <p class="wordmark wordmark--small">SPEED AD</p>
+        <p class="eyebrow">CONTACT</p>
+        <h2>サービスのご相談</h2>
+        <p class="contact-lead">対象イベントや想定回答数、名刺データ化の要否など、運用内容に合わせてご相談ください。</p>
+        <div class="contact-block">
+          <a class="qr-frame contact-link" href="https://speed-ad.com/" aria-label="SPEED ADサービスサイトを開く">
+            <img class="contact-qr" src="assets/speed-ad-qr.svg" alt="https://speed-ad.com/ へのQRコード">
+          </a>
+          <div><p class="contact-title">サービス内容・<br>導入相談はこちら</p><p class="eyebrow">SERVICE WEBSITE</p><p class="url"><span>https://</span><span>speed-ad.com/</span></p><p class="contact-note">対象イベントや運用条件についてご相談いただけます。</p></div>
+        </div>
+        <div class="company-block">
+          <p class="eyebrow">OPERATED BY</p>
+          <h3>アブロードアウトソーシング株式会社</h3>
+          <address>〒101-0032<br>東京都千代田区岩本町2-11-9 IT2ビル8階</address>
+          <dl><div><dt>TEL</dt><dd>03-5835-0250</dd></div><div><dt>E-MAIL</dt><dd>info@abroad-o.com</dd></div></dl>
+        </div>
+        <p class="fine-print">掲載内容は運用条件により異なる場合があります。<br>詳細はお問い合わせください。</p>
+      </article>
+
+      <article class="panel panel--cover" aria-label="表紙">
+        <div class="cover-orbit orbit--one"></div><div class="cover-orbit orbit--two"></div>
+        <div class="cover-copy"><p class="tagline">データ活用を、スマートに加速。</p><h2 class="wordmark">SPEED AD</h2><p class="cover-lead">アンケート・名刺・請求までを<br>つなぐ業務効率化サービス</p></div>
+        <div class="cover-visual" aria-hidden="true">
+          <div class="browser-card"><span></span><span></span><span></span><svg><use href="#icon-form"/></svg><i></i><i></i><i></i></div>
+          <div class="status-check"><svg><use href="#icon-check"/></svg></div>
+        </div>
+        <div class="cover-gradient-card">
+          <div><svg><use href="#icon-form"/></svg><h3>簡単セットアップ</h3><p>アカウント登録から<br>すぐに始められます</p></div>
+          <div><svg><use href="#icon-table"/></svg><h3>データを一元管理</h3><p>アンケート・名刺・請求を<br>まとめて管理</p></div>
+          <div><svg><use href="#icon-check"/></svg><h3>業務をスムーズに</h3><p>確認から請求・フォローまで<br>一気通貫でサポート</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="sheet sheet--inside" data-side="inside" aria-label="内面">
+      <span class="sheet-label">内面：左から 100mm / 100mm / 折込面の裏 97mm</span>
+      <article class="panel panel--flow flow--late" aria-label="サービスの流れ後半">
+        <p class="panel-role">INSIDE LEFT / 表紙の裏</p><h2>確認からクローズまで</h2><p class="lead">取得したデータを、次の業務につなげます</p>
+        <ol class="flow-list flow-list--late">
+          <li><span>05</span><div><h3>データ確認・レビュー</h3><p>回答・名刺データを一覧で確認し、必要に応じて確認・修正します。</p></div><svg><use href="#icon-table"/></svg></li>
+          <li><span>06</span><div><h3>CSVエクスポート</h3><p>確認済みデータをCSVでエクスポートします。</p></div><svg><use href="#icon-file"/></svg></li>
+          <li><span>07</span><div><h3>営業・フォロー活動</h3><p>取得したデータをもとに、営業・フォロー活動を行います。</p></div><svg><use href="#icon-chat"/></svg></li>
+          <li><span>08</span><div><h3>請求内容の確認</h3><p>請求額・請求明細・名刺データなど請求内容を確認します。</p></div><svg><use href="#icon-search"/></svg></li>
+          <li><span>09</span><div><h3>クローズ（完了）</h3><p>入金確認後、データ利用を終了し、クローズします。</p></div><svg><use href="#icon-check"/></svg></li>
+        </ol>
+      </article>
+
+      <article class="panel panel--features" aria-label="主な機能">
+        <p class="panel-role">INSIDE CENTER</p><h2>主な機能</h2><p class="lead">業務を支える主な機能をご紹介します</p>
+        <ul class="feature-list">
+          <li><svg><use href="#icon-form"/></svg><div><h3>アンケート管理</h3><p>多彩な設問タイプで、簡単にアンケートを作成・公開。</p></div></li>
+          <li><svg><use href="#icon-phone"/></svg><div><h3>QRコード連携</h3><p>QRコードでスムーズに誘導し、回答・名刺取得を促進。</p></div></li>
+          <li><svg><use href="#icon-card"/></svg><div><h3>名刺アップロード</h3><p>スマホで名刺を撮影するだけで、データを自動で取り込み。</p></div></li>
+          <li><svg><use href="#icon-table"/></svg><div><h3>データ一覧・検索</h3><p>回答・名刺データを一元管理。検索・フィルタで素早く確認。</p></div></li>
+          <li><svg><use href="#icon-file"/></svg><div><h3>CSVエクスポート</h3><p>必要なデータをCSVで出力し、外部システムと連携。</p></div></li>
+          <li><svg><use href="#icon-check"/></svg><div><h3>請求管理</h3><p>請求書・明細・入金状況を可視化し、効率的に管理。</p></div></li>
+        </ul>
+        <div class="problem-box"><h3>こんな課題を解決します</h3><p>✓ アンケート・名刺・請求の管理がバラバラで手間がかかる</p><p>✓ 手入力や転記作業が多く、ミスや漏れが発生する</p><p>✓ データ活用が進まず、営業フォローに繋がらない</p><p>✓ 請求・入金の確認に時間がかかる</p></div>
+      </article>
+
+      <article class="panel panel--scenes" aria-label="利用シーン">
+        <p class="panel-role">INSIDE FOLD-IN / 折込面の裏</p><h2>利用シーン</h2><p class="lead">さまざまなビジネスシーンで活躍します</p>
+        <ul class="scene-list">
+          <li><svg><use href="#icon-chat"/></svg><div><h3>営業・商談</h3><p>商談後のフォローとデータ管理をスムーズに。</p></div></li>
+          <li><svg><use href="#icon-people"/></svg><div><h3>セミナー・ウェビナー</h3><p>参加者データの収集・管理とフォロー施策に活用。</p></div></li>
+          <li><svg><use href="#icon-form"/></svg><div><h3>問い合わせ・アンケート管理</h3><p>回答情報をまとめて確認し、次の対応へつなげます。</p></div></li>
+          <li><svg><use href="#icon-building"/></svg><div><h3>パートナー・代理店管理</h3><p>提携先の情報管理と請求業務を効率化。</p></div></li>
+          <li><svg><use href="#icon-people"/></svg><div><h3>展示会・イベント</h3><p>来場者アンケートと名刺取得をその場で実施。</p></div></li>
+        </ul>
+        <div class="scene-gradient"><h3>データ活用で、ビジネスを加速。</h3><p>SPEED ADは、データ収集から請求・クローズまでを一気通貫で支援し、貴社の生産性向上に貢献します。</p><div class="mini-flow"><span>収集</span><b>→</b><span>管理・確認</span><b>→</b><span>活用・フォロー</span><b>→</b><span>請求・クローズ</span></div></div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
