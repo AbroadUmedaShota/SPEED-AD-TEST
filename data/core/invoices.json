@@ -817,10 +817,10 @@
       "from": "2026-07-01",
       "to": "2026-07-31"
     },
-    "subtotalTaxable": 24712,
+    "subtotalTaxable": 24686,
     "subtotalNonTaxable": 0,
-    "tax": 2471,
-    "totalAmount": 27183,
+    "tax": 2468,
+    "totalAmount": 27154,
     "status": "unpaid",
     "bankInfo": {
       "bankName": "三井住友銀行",
@@ -848,11 +848,11 @@
         "lineId": "INV-2026-07-005-ADDON-2",
         "category": "ADD_ON",
         "itemName": "お礼メール送信費用",
-        "description": "SV-10233 / 送信 512 通・無料枠 100 通控除",
-        "quantity": 412,
+        "description": "SV-10233 / 送信 486 通・無料枠 100 通控除",
+        "quantity": 386,
         "unit": "通",
         "unitPrice": 1,
-        "amount": 412,
+        "amount": 386,
         "taxable": true
       }
     ]
