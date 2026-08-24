@@ -80,7 +80,7 @@
               <div id="couponList-empty" style="display:none;padding:26px 18px;text-align:center;font-size:13px;color:var(--a-fg-faint)">条件に一致する行がありません。条件を変えるか「条件をクリア」で全件に戻せます。</div>
               </div>
               <div style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--a-fg-muted);flex-wrap:wrap;row-gap:8px">
-                <div style="display:flex;align-items:center;gap:16px"><span style="font-variant-numeric:tabular-nums">全 <span id="couponList-total">4</span> 件中 <span id="couponList-range">1〜4</span> 件を表示</span><label style="display:flex;align-items:center;gap:6px">表示件数 <select aria-label="表示件数" onchange="pPageSize('couponList', parseInt(this.value, 10))" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"><option>10</option><option>25</option><option>50</option></select></label></div>
+                <div style="display:flex;align-items:center;gap:16px"><span style="font-variant-numeric:tabular-nums">全 <span id="couponList-total">4</span> 件中 <span id="couponList-range">1〜4</span> 件を表示</span><label style="display:flex;align-items:center;gap:6px">表示件数 <select aria-label="表示件数" onchange="pPageSize('couponList', parseInt(this.value, 10))" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"><option selected>50</option><option>100</option><option>150</option></select></label></div>
                 <div id="couponList-pager" data-current="1" style="display:flex;gap:4px;font-variant-numeric:tabular-nums"><button onclick="pPageStep('couponList',-1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">‹</button><button data-page="1" data-range="1〜4" onclick="pPage('couponList',1)" style="border:1px solid var(--a-accent);background:var(--a-accent-bg);color:var(--a-on-accent);border-radius:6px;padding:5px 10px;font-weight:700;cursor:pointer;font-family:inherit">1</button><button onclick="pPageStep('couponList',1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">›</button></div>
               </div>
               <div style="margin-top:12px;font-size:11.5px;color:var(--a-fg-faint)">個別の請求への適用は請求管理で実行。使用可能期限まで1ヶ月以内のクーポンには「期限間近」を表示する(閾値は2026-08-18確定)。</div>
@@ -234,10 +234,21 @@ window.pCouponEdit = function (cid) {
         ? m[1] + ' / ' + (row.getAttribute('data-f-limit') || '—') + (m[2] ? ' (' + m[2] + ')' : '')
         : (used || '—');
     var meta = document.getElementById('cpMeta');
+    // 履歴リンクは onclick 文字列連結にすると「HTML属性内のJS文字列リテラル」の二重文脈になり、
+    // cid に ' が混じった場合にエスケープが崩れる。DOM API + addEventListener で組み立てる
     meta.innerHTML = 'ID: ' + cpEsc(cid)
         + '・作成日: ' + cpEsc(row.getAttribute('data-f-date') || '—')
         + '・使用回数: ' + cpEsc(usedStr)
-        + '　<a href="#c" onclick="pClose(\'mCoupon\');pCouponHistory(\'' + cpEsc(cid) + '\');return false">利用履歴を表示</a>';
+        + '　';
+    var histLink = document.createElement('a');
+    histLink.href = '#c';
+    histLink.textContent = '利用履歴を表示';
+    histLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        pClose('mCoupon');
+        pCouponHistory(cid);
+    });
+    meta.appendChild(histLink);
     meta.hidden = false;
     document.getElementById('cpErr').hidden = true;
     window.pOpen('mCoupon');
@@ -325,9 +336,9 @@ window.pCouponSave = function () {
                  + '<span>' + esc(c.name) + '</span>'
                  + '<span style="font-family:ui-monospace,monospace;font-size:12px">' + esc(c.code) + '</span>'
                  + '<span class="c-opt">' + today() + '</span>'
-                 + '<span>' + until + '</span>'
-                 + '<span style="text-align:right">' + c.rate + '%</span>'
-                 + '<span style="text-align:right">' + c.limit + '</span>'
+                 + '<span>' + esc(until) + '</span>'
+                 + '<span style="text-align:right">' + esc(c.rate) + '%</span>'
+                 + '<span style="text-align:right">' + esc(c.limit) + '</span>'
                  + '<span style="text-align:right">0 <span style="color:var(--a-fg-muted2);font-size:11.5px">(0%)</span></span>'
                  + '<span class="c-opt" style="font-size:12px;color:var(--a-fg-muted)">' + (esc(c.memo) || '—') + '</span>'
                  + '<span style="padding-left:12px;display:flex;gap:10px;font-size:12px">'
@@ -354,12 +365,12 @@ window.pCouponHistory = function (cid) {
     for (var i = 0; i < c.rows.length; i++) {
         var r = c.rows[i];
         html += '<div style="display:grid;grid-template-columns:150px minmax(0,1fr) 110px 64px 110px 120px;align-items:center;height:44px;border-bottom:1px solid var(--a-border-soft);font-size:12.5px;font-variant-numeric:tabular-nums">'
-             + '<span>' + r[0] + '</span>'
-             + '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px">' + r[1] + '</span>'
-             + '<a href="survey-detail.html?id=' + r[2] + '">' + r[2] + '</a>'
-             + '<span style="text-align:right">' + c.rate + '%</span>'
-             + '<span style="text-align:right;color:var(--a-ok);font-weight:700">-' + r[3] + ' 円</span>'
-             + '<span style="text-align:right;font-weight:700">' + r[4] + ' 円</span></div>';
+             + '<span>' + cpEsc(r[0]) + '</span>'
+             + '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px">' + cpEsc(r[1]) + '</span>'
+             + '<a href="survey-detail.html?id=' + encodeURIComponent(r[2]) + '">' + cpEsc(r[2]) + '</a>'
+             + '<span style="text-align:right">' + cpEsc(c.rate) + '%</span>'
+             + '<span style="text-align:right;color:var(--a-ok);font-weight:700">-' + cpEsc(r[3]) + ' 円</span>'
+             + '<span style="text-align:right;font-weight:700">' + cpEsc(r[4]) + ' 円</span></div>';
     }
     if (!html) {
         html = '<div style="padding:18px 0;text-align:center;font-size:12.5px;color:var(--a-fg-faint)">請求管理に残っている適用はありません</div>';
@@ -440,10 +451,10 @@ window.pCouponHistory = function (cid) {
                 html += '<div style="display:grid;grid-template-columns:44px 200px minmax(0,1fr);column-gap:10px;'
                      + 'align-items:center;padding:5px 12px;border-bottom:1px solid var(--a-border-soft)">'
                      + '<span style="font-size:12px;color:var(--a-fg-faint)">' + (i + 1) + '</span>'
-                     + '<input class="bk-code" value="' + codes[i] + '" style="width:100%;box-sizing:border-box;'
+                     + '<input class="bk-code" value="' + cpEsc(codes[i]) + '" style="width:100%;box-sizing:border-box;'
                      + 'border:1px solid var(--a-border-strong);border-radius:5px;padding:5px 8px;font-size:12.5px;'
                      + 'font-family:ui-monospace,monospace">'
-                     + '<input class="bk-name" value="' + (memo || '一括作成') + ' ' + (i + 1)
+                     + '<input class="bk-name" value="' + cpEsc(memo || '一括作成') + ' ' + (i + 1)
                      + '" style="width:100%;box-sizing:border-box;border:1px solid var(--a-border-strong);border-radius:5px;'
                      + 'padding:5px 8px;font-size:12.5px;font-family:inherit"></div>';
             }
