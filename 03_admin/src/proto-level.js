@@ -32,6 +32,13 @@
         return LEVELS[currentKey()].lang.slice();
     };
 
+    // 現在のシナリオのメールアドレス。監査表示などで「操作者」を書く場面の参照先。
+    // ヘッダーの #profileMail は非同期注入のため、読込前に操作されると値が取れない。
+    // localStorage 由来のこの関数は同期的に正しい値を返す
+    window.pAccountMail = function () {
+        return LEVELS[currentKey()].mail;
+    };
+
     function applyVisibility(lv) {
         document.querySelectorAll('[data-min-lv], [data-max-lv]').forEach(function (el) {
             var min = parseInt(el.getAttribute('data-min-lv') || '1', 10);

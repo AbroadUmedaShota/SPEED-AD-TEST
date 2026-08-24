@@ -120,6 +120,22 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(t3, '再送で実行日が上書きされた').toContain('2026/07/21 10:30 招待を実行');
   });
 
+  test('再送の実行者はシナリオ定義から取り、共通部品の読込に依存しない', async ({ page }) => {
+    // 実行者をヘッダーの #profileMail(非同期注入)から読むと、読込前の操作が
+    // Lv4 名義に化ける。Lv3 シナリオ + #profileMail 不在の経路で正しい帰属を確かめる
+    await page.addInitScript(() => { localStorage.setItem('adminMockLevel', 'lv3'); });
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.evaluate(() => {
+      const el = document.getElementById('profileMail');
+      if (el) { el.remove(); }   // 共通部品が未到着の状態を再現する
+    });
+    await page.click('#operatorsList [data-f-oid="OP-0075"]');
+    await page.click('#opModal button:has-text("再送")');
+    const audit = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
+    expect(audit, 'Lv3 の再送が Lv4 名義で記録された').toContain('招待を再送 実行者: admin@abroad-o.com');
+    expect(audit.split('招待を再送')[1], '再送行の実行者が master になっている').not.toContain('master@abroad-o.com');
+  });
+
   test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {
     // SV-10233 がデータ化中のまま「納品済 2026/07/27」を出していた(2026-08-24 修正)。
     // 納品済はデータ化完了の含意なので、作業ステータスと矛盾する

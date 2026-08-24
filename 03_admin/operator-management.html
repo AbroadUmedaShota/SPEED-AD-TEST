@@ -458,10 +458,11 @@ window.pOpSetPw = function () {
     // resends は再送のたびに追記する(監査ログは追記専用・23号 §7.5)。sent は上書きしない
     var INVITE = { 'OP-0075': { sent: '2026-07-21', exp: '2026-07-24', resends: [] } };
 
-    // 操作の実行者は現在の表示シナリオのアカウント(ヘッダーのプロフィール表示から取る)
+    // 操作の実行者は現在の表示シナリオのアカウント。
+    // ヘッダーの #profileMail は共通部品の非同期注入で、読込完了前に再送されると
+    // 取得に失敗して Lv4 名義に化けるため、同期的な proto-level の定義から取る
     function currentActor() {
-        var el = document.getElementById('profileMail');
-        return (el && el.textContent.trim()) || 'master@abroad-o.com';
+        return (window.pAccountMail && window.pAccountMail()) || 'master@abroad-o.com';
     }
 
     // モックの現在時刻(09:45)から操作のたびに1分ずつ進める。同時刻の行が並ぶと重複に見えるため
