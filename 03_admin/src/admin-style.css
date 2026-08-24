@@ -484,7 +484,7 @@ main button:not([disabled]):hover, .proto-modal button:not([disabled]):hover { f
 .row-act > button, .row-act > a { width: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .row-act.slots-1 { grid-template-columns: minmax(0, 1fr); }
 .row-act.slots-2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.row-act.slots-3 { grid-template-columns: 70px 52px minmax(0, 1fr); }
+.row-act.slots-3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); }
 
 /* ダークは影が効かないため、ダイアログの輪郭を足して背面と分ける */
 :root[data-theme="dark"] .proto-dialog { border: 1px solid var(--a-border); }

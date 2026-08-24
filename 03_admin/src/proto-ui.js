@@ -6,6 +6,9 @@
 
     var lastFocused = null;
 
+    // 一覧の表示件数の既定値。選択肢は各画面の「表示件数」セレクト(50/100/150)と揃える
+    var PAGE_SIZE_DEFAULT = '50';
+
     // モーダル表示中は背面(ヘッダー・サイドバー・メイン)を inert 化し、Tab移動もクリックも遮断する
     function setBackgroundInert(on) {
         ['header-placeholder', 'sidebar-placeholder', 'main-content'].forEach(function (id) {
@@ -270,7 +273,7 @@
         }).forEach(function (r) { list.appendChild(r); });
         paintSortHead(list);
         if (list.querySelector('[data-pg]')) {
-            window.pPageSize(listId, parseInt(list.getAttribute('data-page-size') || '10', 10));
+            window.pPageSize(listId, parseInt(list.getAttribute('data-page-size') || PAGE_SIZE_DEFAULT, 10));
         }
     };
     window.pSortable = function (listId) {
@@ -425,7 +428,7 @@
         var totalEl = document.getElementById(listId + '-total');
         if (totalEl) { totalEl.textContent = shown.toLocaleString('en-US'); }
         pRenderChip(listId, use);
-        window.pPageSize(listId, parseInt(list.getAttribute('data-page-size') || '10', 10));
+        window.pPageSize(listId, parseInt(list.getAttribute('data-page-size') || PAGE_SIZE_DEFAULT, 10));
     };
 
     // 「検索」ボタン: 絞り込みバーの入力値を集めて適用する。
@@ -941,8 +944,13 @@
             var listId = pager.id.slice(0, -6);
             var list = document.getElementById(listId);
             if (!list) { return; }
-            if (!list.getAttribute('data-page-size')) { list.setAttribute('data-page-size', '10'); }
-            window.pPage(listId, parseInt(pager.getAttribute('data-current') || '1', 10));
+            // 静的マークアップのページ分割に関わらず、既定の表示件数で振り直す
+            // (件数が増えて存在しなくなったページ番号は開かず、1ページ目のままにする)
+            var current = parseInt(pager.getAttribute('data-current') || '1', 10);
+            window.pPageSize(listId, parseInt(list.getAttribute('data-page-size') || PAGE_SIZE_DEFAULT, 10));
+            if (current > 1 && pager.querySelector('button[data-page="' + current + '"]')) {
+                window.pPage(listId, current);
+            }
         });
         // 他画面から引き継いだ絞り込み条件を適用する(ページャの有無は問わない)
         document.querySelectorAll('[data-filter-keys]').forEach(function (list) {

@@ -17,7 +17,9 @@
   grid-template-columns: 116px repeat(5, minmax(92px,1fr)) minmax(140px,1.2fr) minmax(120px,1.05fr) 56px;
   align-items: center;
 }
-#rcScroll { height: 318px; }   /* 見出し36px + 6行 × 47px */
+#rcScroll { height: 400px; }   /* 見出し36px + 8行 × 41px + 36px(9行目の見切れで続きがあることを示す) */
+/* 行高は入力欄の行送りで決まる。41px = 行送り18 + 入力欄の余白10 + 枠線2 + 行の余白10 + 罫線1 */
+.rc-row input[type="text"], .rc-row input:not([type]) { line-height: 18px; }
 </style>
 </head>
 <body>
@@ -36,9 +38,11 @@
               <span style="font-size:12px;color:var(--a-fg-muted)"><span id="titleM">製造業DXセミナー2026</span></span>
               <span style="font-size:12px;color:var(--a-danger);font-weight:700">納期 <span id="dueM">2026/07/30 15:00</span> <span id="overdueM" style="background:var(--a-danger-bg-solid);color:var(--a-on-accent);border-radius:4px;padding:1px 6px;font-size:11px">超過</span></span><span id="rcMismatch" tabindex="0" role="button" title="押すと次の不一致へ移動します(N キー)" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--a-warn);background:var(--a-warn-bg);border:1px solid var(--a-warn-border);border-radius:999px;padding:3px 12px;cursor:pointer;font-variant-numeric:tabular-nums"></span><span id="rcAllMatch" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--a-ok);background:var(--a-ok-bg);border:1px solid var(--a-ok-border);border-radius:999px;padding:3px 12px">全 16 項目が一致</span>
             </div>
-            <div style="display:flex;align-items:center;gap:14px;font-size:12px">
+            <div style="display:flex;align-items:center;gap:14px;font-size:12px;flex-wrap:wrap;justify-content:flex-end">
               <span id="lockBadge" style="color:var(--a-accent-deep);background:var(--a-info-bg);border:1px solid var(--a-info-border);border-radius:999px;padding:3px 12px;font-weight:700;font-variant-numeric:tabular-nums"></span>
-              <span tabindex="0" role="button" title="クリックまたは?キーでショートカット一覧を表示" onclick="pOpen('mShortcuts')" style="color:var(--a-fg-faint);cursor:pointer;border-bottom:1px dotted var(--a-border-strong);white-space:nowrap">⌨ ショートカット一覧(?キー)</span>
+              <span tabindex="0" role="button" title="クリックまたは?キーで、行の色の意味とショートカットを表示" onclick="pOpen('mShortcuts')" style="color:var(--a-fg-faint);cursor:pointer;border-bottom:1px dotted var(--a-border-strong);white-space:nowrap">⌨ 画面の見かた(?キー)</span>
+              <span id="matchState" style="font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap"></span>
+              <button id="btnMatchConfirm" disabled title="確定チェックが付いていない項目が残っています" onclick="pMatchConfirm()" style="background:var(--a-disabled-bg);color:var(--a-fg-faint);border:none;border-radius:6px;padding:8px 18px;font-size:13px;font-weight:700;cursor:default;font-family:inherit;white-space:nowrap;flex-shrink:0">確定して次へ <span style="font-weight:400;font-size:11px">Ctrl+Enter</span></button>
             </div>
           </div>
           <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:10px">
@@ -77,15 +81,8 @@
                   <div id="rcBody"></div>
                 </div>
               </div>
-              <div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 20px;border-top:1px solid var(--a-border);background:var(--a-surface-2)">
-                <span style="font-size:11.5px;color:var(--a-fg-muted)"><span style="font-size:11px;color:var(--a-fg-faint);margin-right:2px">凡例</span><span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px"><span style="width:12px;height:12px;background:var(--a-ok-bg);border:1px solid var(--a-ok-border-soft);border-radius:3px"></span>一致</span><span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px"><span style="width:12px;height:12px;background:var(--a-warn-bg);border:1px solid var(--a-warn-border);border-radius:3px"></span>不一致(修正対象)</span><span style="display:inline-flex;align-items:center;gap:6px;margin-right:16px"><span style="width:12px;height:12px;background:var(--a-info-bg);border:1px solid var(--a-info-border);border-radius:3px"></span>確定済み</span><span id="matchState"></span></span>
-                <div style="display:flex;gap:10px">
-                  <button id="btnMatchConfirm" disabled title="確定チェックが付いていない項目が残っています" onclick="pMatchConfirm()" style="background:var(--a-disabled-bg);color:var(--a-fg-faint);border:none;border-radius:6px;padding:9px 22px;font-size:13px;font-weight:700;cursor:default;font-family:inherit">確定して次へ <span style="font-weight:400;font-size:11px">Ctrl+Enter</span></button>
-                </div>
-              </div>
             </div>
           </div>
-          <div style="font-size:11.5px;color:var(--a-fg-faint)">確定チェックを外すと修正入力を編集し直せます。修正入力を空のまま確定すると「(記載なし)」として扱います。ロックは無操作で自動解除し、解除中は名刺画像を伏せます(修正入力は保持)。OCR・入力1〜3の値はクリックで修正入力へ複写。</div>
         </div>
         </main>
     </div>
@@ -107,14 +104,24 @@
 </div>
 
 
-<!-- ショートカット一覧 -->
+<!-- 画面の見かたとショートカット -->
 <div id="mShortcuts" class="proto-modal" hidden>
   <div class="proto-dialog" style="width:500px">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--a-border)">
-      <span style="font-size:15px;font-weight:700">ショートカット一覧</span>
+      <span style="font-size:15px;font-weight:700">画面の見かたとショートカット</span>
       <span role="button" onclick="pClose('mShortcuts')" tabIndex="0" title="閉じる" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--a-fg-muted);cursor:pointer;border-radius:8px;margin:-6px -10px">×</span>
     </div>
-    <div style="padding:16px 22px;display:grid;grid-template-columns:150px 1fr;gap:9px 14px;font-size:12.5px;align-items:center">
+    <div style="padding:16px 22px 0">
+      <div style="font-size:11.5px;font-weight:700;color:var(--a-fg-muted);letter-spacing:.5px">画面の見かた</div>
+      <div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12.5px">
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:12px;height:12px;background:var(--a-ok-bg);border:1px solid var(--a-ok-border-soft);border-radius:3px"></span>一致</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:12px;height:12px;background:var(--a-warn-bg);border:1px solid var(--a-warn-border);border-radius:3px"></span>不一致(修正対象・項目名の横に「!不一致」)</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:12px;height:12px;background:var(--a-info-bg);border:1px solid var(--a-info-border);border-radius:3px"></span>確定済み(右端の確定チェックが付いた行)</span>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--a-fg-muted);line-height:1.8">確定チェックを外すと修正入力を編集し直せます。修正入力を空のまま確定すると「(記載なし)」として扱います。ロックは無操作で自動解除し、解除中は名刺画像を伏せます(修正入力は保持)。OCR・入力1〜3の値はクリックで修正入力へ複写。</div>
+      <div style="margin-top:16px;font-size:11.5px;font-weight:700;color:var(--a-fg-muted);letter-spacing:.5px">ショートカット</div>
+    </div>
+    <div style="padding:10px 22px 16px;display:grid;grid-template-columns:150px 1fr;gap:9px 14px;font-size:12.5px;align-items:center">
       <span style="font-weight:700">Ctrl + Enter</span><span>確定して次へ(確認画面ではそのまま実行)</span>
       <span style="font-weight:700">Enter</span><span>確定チェックが付いていない次の修正入力へ(すべて確定済みなら確定ボタンへ)</span>
       <span style="font-weight:700">Alt + Enter</span><span>フォーカス中の行の確定チェックを切り替え</span>
@@ -124,7 +131,7 @@
       <span style="font-weight:700">＋ / −</span><span>画像の拡大率(入力中は Alt を併用)</span>
       <span style="font-weight:700">R</span><span>画像を90度回転(入力中は Alt+R)</span>
       <span style="font-weight:700">画像ホバー / クリック</span><span>カーソル位置を拡大 / その位置で固定(再クリックで解除)</span>
-      <span style="font-weight:700">?</span><span>この一覧を表示</span>
+      <span style="font-weight:700">?</span><span>この画面を表示</span>
     </div>
     <div style="display:flex;justify-content:flex-end;padding:0 22px 18px">
       <button onclick="pClose('mShortcuts')" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">閉じる</button>
@@ -183,7 +190,7 @@
         var html = '';
         ROWS.forEach(function (r) {
             var tag = r.mismatch ? ' <span style="color:var(--a-warn);font-size:11px;font-weight:700">!不一致</span>' : '';
-            html += '<div class="rc-grid rc-row" data-k="' + r.k + '"' + (r.mismatch ? ' data-rc="mismatch"' : ' data-rc="match"') + ' style="padding:5px 14px;min-height:42px;border-bottom:1px solid var(--a-border-soft);font-size:12.5px">'
+            html += '<div class="rc-grid rc-row" data-k="' + r.k + '"' + (r.mismatch ? ' data-rc="mismatch"' : ' data-rc="match"') + ' style="padding:5px 14px;min-height:40px;border-bottom:1px solid var(--a-border-soft);font-size:12.5px">'
                 + '<span style="font-weight:700">' + r.label + ' <span style="font-size:10.5px;color:var(--a-fg-faint);font-weight:400">' + r.g + '</span>' + tag + '</span>'
                 + cand(r, r.ocr) + cand(r, r.db) + cand(r, r.i1) + cand(r, r.i2) + cand(r, r.i3)
                 + '<span style="padding-right:10px"><input id="fix_' + r.k + '" aria-label="' + esc(r.label) + 'の修正入力" spellcheck="false" value="' + esc(r.fix) + '" style="width:100%;box-sizing:border-box;border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"></span>'
@@ -253,14 +260,17 @@
         all.checked = (done === ROWS.length);
         all.indeterminate = (done > 0 && done < ROWS.length);
         var rest = ROWS.length - done;
+        // 画面上部は幅が限られる。長くすると見出しが2段になって名刺画像が縮むため短く出し、
+        // 残りの理由はボタンの説明で、記載なしの件数は確定の確認ダイアログで補う
         setState(rest
-            ? '確定 ' + done + ' / ' + ROWS.length + ' 項目。残り ' + rest + ' 項目に確定チェックが付くと確定できます。'
-            : '全 ' + ROWS.length + ' 項目が確定済み。確定できます。'
-                + (blanks ? '(うち ' + blanks + ' 項目は記載なし)' : ''),
+            ? '確定 ' + done + ' / ' + ROWS.length + '(残り ' + rest + ')'
+            : '全 ' + ROWS.length + ' 項目が確定済み',
             rest ? '' : 'var(--a-ok)', rest ? '' : '700');
         var btn = document.getElementById('btnMatchConfirm');
         btn.disabled = !!rest;
-        btn.title = rest ? '確定チェックが付いていない項目が ' + rest + ' 件あります' : 'ショートカット: Ctrl+Enter';
+        btn.title = rest
+            ? '残り ' + rest + ' 項目に確定チェックが付くと確定できます'
+            : 'ショートカット: Ctrl+Enter';
         btn.style.background = rest ? 'var(--a-disabled-bg)' : 'var(--a-accent-bg)';
         btn.style.color = rest ? 'var(--a-fg-faint)' : 'var(--a-on-accent)';
         btn.style.cursor = rest ? 'default' : 'pointer';

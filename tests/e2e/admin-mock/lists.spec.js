@@ -58,7 +58,7 @@ test.describe('一覧のページング', () => {
 });
 
 test.describe('アンケート管理の表示仕様', () => {
-  test('有効回答数・データ化件数・納品予定日と内訳ツールチップが表示される', async ({ page }) => {
+  test('有効回答数・データ化件数・納期日と内訳ツールチップが表示される', async ({ page }) => {
     const errors = await openScreen(page, '/03_admin/survey-management.html');
     const info = await page.evaluate(() => {
       const list = document.getElementById('surveysList');
@@ -86,7 +86,7 @@ test.describe('アンケート管理の表示仕様', () => {
     expect(info.visibleRows).toBe(22);
     expect(info.heads).toContain('有効回答数');
     expect(info.heads).toContain('データ化件数');
-    expect(info.heads).toContain('納品予定日');
+    expect(info.heads).toContain('納期日');
     expect(info.effective).toBe('3,651');
     expect(info.total).toBe('3842');
     expect(info.tooltip).toContain('実際のアンケート回答数: 3,842件');

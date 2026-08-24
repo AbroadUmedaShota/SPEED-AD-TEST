@@ -147,10 +147,10 @@
               <div id="usersList-empty" style="display:none;padding:26px 18px;text-align:center;font-size:13px;color:var(--a-fg-faint)">条件に一致する行がありません。条件を変えるか「条件をクリア」で全件に戻せます。</div>
             </div>
             <div style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--a-fg-muted);flex-wrap:wrap;row-gap:8px">
-              <span style="font-variant-numeric:tabular-nums">全 <span id="usersList-total">24</span> 名中 <span id="usersList-range">1〜10</span> 名を表示</span>
+              <span style="font-variant-numeric:tabular-nums">全 <span id="usersList-total">24</span> 名中 <span id="usersList-range">1〜24</span> 名を表示</span>
               <div style="display:flex;align-items:center;gap:16px">
-                <label style="display:flex;align-items:center;gap:6px">表示件数 <select aria-label="表示件数" onchange="pPageSize('usersList', parseInt(this.value, 10))" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"><option>10</option><option>25</option><option>50</option></select></label>
-                <div id="usersList-pager" data-current="1" style="display:flex;gap:4px;font-variant-numeric:tabular-nums"><button onclick="pPageStep('usersList',-1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">‹</button><button data-page="1" data-range="1〜10" onclick="pPage('usersList',1)" style="border:1px solid var(--a-accent);background:var(--a-accent-bg);color:var(--a-on-accent);border-radius:6px;padding:5px 10px;font-weight:700;cursor:pointer;font-family:inherit">1</button><button data-page="2" data-range="11〜20" onclick="pPage('usersList',2)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">2</button><button data-page="3" data-range="21〜24" onclick="pPage('usersList',3)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">3</button><button onclick="pPageStep('usersList',1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">›</button></div>
+                <label style="display:flex;align-items:center;gap:6px">表示件数 <select aria-label="表示件数" onchange="pPageSize('usersList', parseInt(this.value, 10))" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"><option selected>50</option><option>100</option><option>150</option></select></label>
+                <div id="usersList-pager" data-current="1" style="display:flex;gap:4px;font-variant-numeric:tabular-nums"><button onclick="pPageStep('usersList',-1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">‹</button><button data-page="1" data-range="1〜24" onclick="pPage('usersList',1)" style="border:1px solid var(--a-accent);background:var(--a-accent-bg);color:var(--a-on-accent);border-radius:6px;padding:5px 10px;font-weight:700;cursor:pointer;font-family:inherit">1</button><button onclick="pPageStep('usersList',1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">›</button></div>
               </div>
             </div>
           </div>
@@ -370,6 +370,7 @@ window.pInviteSend = function () {
     window.pToast(mail + ' へ招待メールを送信しました');
     window.pClose('mInviteUser');
 };
+
 </script>
 </body>
 </html>
