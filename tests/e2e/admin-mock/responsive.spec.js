@@ -60,7 +60,7 @@ test.describe('アンケート管理のタブレット表示', () => {
         };
       });
       expect(info.overflow, `${width}px で一覧が ${info.overflow}px 溢れている`).toBeLessThanOrEqual(1);
-      expect(info.headers).toEqual(['タイトル', '作業ステータス', '有効回答数', 'データ化件数', '納品予定日', '操作']);
+      expect(info.headers).toEqual(['タイトル', '作業ステータス', '有効回答数', 'データ化件数', '納期日', '操作']);
       expect(info.rowCells).toBe(6);
     });
   }
@@ -222,7 +222,7 @@ test.describe('スマホ幅(390px)は最低限の閲覧に徹する(2026-08-19�
     }
   });
 
-  test('ユーザー管理・アンケート管理は識別列と主要操作を残す', async ({ page }) => {
+  test('ユーザー管理・アンケート管理は識別列だけ残る', async ({ page }) => {
     await openAt(page, '/03_admin/user-management.html', 390);
     const heads = await page.evaluate(() => [...document.querySelector('#usersList > div').children]
       .filter((c) => getComputedStyle(c).display !== 'none')
@@ -233,7 +233,17 @@ test.describe('スマホ幅(390px)は最低限の閲覧に徹する(2026-08-19�
     const heads2 = await page.evaluate(() => [...document.querySelector('#surveysList > div').children]
       .filter((c) => getComputedStyle(c).display !== 'none')
       .map((c) => c.textContent.replace(/[▲▼\s]+$/g, '').trim()));
-    expect(heads2).toEqual(['タイトル', '作業ステータス', '操作']);
+    expect(heads2).toEqual(['タイトル', '作業ステータス', '納期日']);
+  });
+
+  test('データ入力対象一覧は情報列を隠さない(2026-08-20)', async ({ page }) => {
+    // 進捗・入力中はこの一覧にしか無く、行押下先も無い(19 §4.4)。操作列だけを隠し、
+    // 情報列4つはすべて残す(05 §6.2)。列を削る変更が入ったら落ちるようヘッダーで固定する
+    await openAt(page, '/03_admin/data-entry/index.html', 390);
+    const heads = await page.evaluate(() => [...document.querySelector('#groupList .dg-row--header').children]
+      .filter((c) => getComputedStyle(c).display !== 'none')
+      .map((c) => c.textContent.trim()));
+    expect(heads).toEqual(['作業項目', '残り作業件数', '進捗', '入力中']);
   });
 
   test('残す列は「一覧にしか無い情報」を優先する(2026-08-19)', async ({ page }) => {
