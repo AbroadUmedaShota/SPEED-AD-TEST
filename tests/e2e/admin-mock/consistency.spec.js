@@ -125,15 +125,21 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
   });
 
   test('一覧の操作ボタンは幅が揃う', async ({ page }) => {
-    await openScreen(page, '/03_admin/user-management.html');
-    // ラベルが長いとトラックが広がって、行ごとにボタンの右端がずれる
-    const rows = await page.evaluate(() => [...document.querySelectorAll('#usersList [data-pg] .row-act')]
-      .map((el) => [...el.querySelectorAll('button')]
-        .filter((b) => b.getBoundingClientRect().width > 0)   // 状態で隠している側は除く
-        .map((b) => Math.round(b.getBoundingClientRect().width))));
-    const widths = [...new Set(rows.flat())];
-    expect(rows.length).toBeGreaterThan(0);
-    expect(widths, `ボタンの幅が揃っていない: ${widths.join(', ')}px`).toHaveLength(1);
+    const targets = [
+      { path: '/03_admin/user-management.html', listId: 'usersList' },
+      { path: '/03_admin/survey-management.html', listId: 'surveysList' },
+    ];
+    for (const t of targets) {
+      await openScreen(page, t.path);
+      // ラベルが長いとトラックが広がって、行ごとにボタン(リンクを含む)の右端がずれる
+      const rows = await page.evaluate((listId) => [...document.querySelectorAll('#' + listId + ' [data-pg] .row-act')]
+        .map((el) => [...el.querySelectorAll('button, a')]
+          .filter((b) => b.getBoundingClientRect().width > 0)   // 状態で隠している側は除く
+          .map((b) => Math.round(b.getBoundingClientRect().width))), t.listId);
+      const widths = [...new Set(rows.flat())];
+      expect(rows.length, `${t.path} に行が無い`).toBeGreaterThan(0);
+      expect(widths, `${t.path} でボタンの幅が揃っていない: ${widths.join(', ')}px`).toHaveLength(1);
+    }
   });
 });
 
@@ -453,10 +459,19 @@ test.describe('R-19 〜 R-23 表示の読み取りやすさ', () => {
     expect(hits, `同じ制約が ${hits} 箇所に出ている`).toBe(1);
   });
 
-  test('R-23 照合画面の色見本が凡例だと分かる', async ({ page }) => {
+  // 色見本は「押せる操作に見える」問題があり、比較表の表示行数も削っていたため常時表示をやめた。
+  // 色に頼らずに読める手掛かり（不一致の併記・確定チェック）が本文に残っていることを確かめる。
+  test('R-23 照合画面は色見本を常時表示せず、状態は色以外からも読める', async ({ page }) => {
     await openScreen(page, '/03_admin/reconciliation/detail.html');
     const t = await page.locator('#main-content').innerText();
-    expect(t, '色見本に「凡例」の断りが無く、押せる操作に見える').toContain('凡例');
+    expect(t, '色見本が本文に残っている').not.toContain('凡例');
+    expect(t, '不一致が色だけでしか分からない').toContain('!不一致');
+    expect(await page.locator('#ok_mail').isChecked(), '確定済みがチェックで読めない').toBe(true);
+
+    // 色と状態の対応は「画面の見かた」で読める
+    await page.getByRole('button', { name: '画面の見かた(?キー)' }).click();
+    const help = await page.locator('#mShortcuts').innerText();
+    expect(help, '画面の見かたに3状態の説明が無い').toContain('不一致(修正対象');
   });
 });
 

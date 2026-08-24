@@ -89,14 +89,31 @@ test.describe('名刺情報照合', () => {
     expect(m.clipped).toEqual(['hidden', 'hidden']);
   });
 
-  test('1920x1080 で比較表に 6 行が収まる（§4.1）', async ({ page }) => {
+  test('1920x1080 で比較表に 8 行が収まる（§4.1）', async ({ page }) => {
     await openScreen(page, FORM);
     const rows = await page.evaluate(() => {
       const box = document.getElementById('rcScroll');
       const h = document.querySelector('.rc-row').getBoundingClientRect().height;
       return (box.clientHeight - 36) / h;   // 36px は見出し行
     });
-    expect(Math.round(rows)).toBe(6);
+    expect(Math.floor(rows)).toBe(8);
+  });
+
+  test('確定の操作は画面上部にあり、比較表の下に帯を作らない（§4.1・§4.5）', async ({ page }) => {
+    await openScreen(page, FORM);
+    const m = await page.evaluate(() => {
+      const btn = document.getElementById('btnMatchConfirm');
+      const table = document.getElementById('rcScroll');
+      return {
+        btnBottom: btn.getBoundingClientRect().bottom,
+        tableTop: table.getBoundingClientRect().top,
+        state: document.getElementById('matchState').textContent,
+        title: btn.title,
+      };
+    });
+    expect(m.btnBottom, '確定ボタンが比較表より下にある').toBeLessThan(m.tableTop);
+    // 非活性の理由は、残件の表示かボタンの説明のどちらかで読めること
+    expect(`${m.state} ${m.title}`).toContain('残り 5');
   });
 
   test('一致した項目は確定済みで始まり、チェックを外すと編集できる（§4.4・§4.5）', async ({ page }) => {
