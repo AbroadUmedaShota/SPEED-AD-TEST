@@ -817,10 +817,10 @@
       "from": "2026-07-01",
       "to": "2026-07-31"
     },
-    "subtotalTaxable": 20912,
+    "subtotalTaxable": 24712,
     "subtotalNonTaxable": 0,
-    "tax": 2091,
-    "totalAmount": 23003,
+    "tax": 2471,
+    "totalAmount": 27183,
     "status": "unpaid",
     "bankInfo": {
       "bankName": "三井住友銀行",
@@ -838,21 +838,21 @@
         "category": "ADD_ON",
         "itemName": "名刺データ化費用",
         "description": "SV-10233 / 通常 プラン",
-        "quantity": 412,
+        "quantity": 486,
         "unit": "枚",
         "unitPrice": 50,
-        "amount": 20600,
+        "amount": 24300,
         "taxable": true
       },
       {
         "lineId": "INV-2026-07-005-ADDON-2",
         "category": "ADD_ON",
         "itemName": "お礼メール送信費用",
-        "description": "SV-10233 / 送信 412 通・無料枠 100 通控除",
-        "quantity": 312,
+        "description": "SV-10233 / 送信 512 通・無料枠 100 通控除",
+        "quantity": 412,
         "unit": "通",
         "unitPrice": 1,
-        "amount": 312,
+        "amount": 412,
         "taxable": true
       }
     ]
