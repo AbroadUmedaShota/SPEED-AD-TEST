@@ -179,8 +179,8 @@
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border)">アカウント情報</div>
         <div style="display:grid;grid-template-columns:110px 1fr;gap:8px 12px;padding-top:12px;font-size:13px">
           <span style="color:var(--a-fg-muted2)">メール</span><span>d.tanaka@officeworks.co.jp</span>
-          <span style="color:var(--a-fg-muted2)">登録日時</span><span style="font-variant-numeric:tabular-nums">2025/11/12 10:30</span>
-          <span style="color:var(--a-fg-muted2)">最終ログイン</span><span style="font-variant-numeric:tabular-nums">2026/07/30 18:45</span>
+          <span style="color:var(--a-fg-muted2)">登録日時</span><span data-slot="opCreated" style="font-variant-numeric:tabular-nums">2025/11/12 10:30</span>
+          <span style="color:var(--a-fg-muted2)">最終ログイン</span><span data-slot="opLastLogin" style="font-variant-numeric:tabular-nums">2026/07/30 18:45</span>
         </div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">設定</div>
         <div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;font-size:13px">
@@ -204,13 +204,15 @@
         </div>
       </div>
       <div>
+        <div data-slot="opPw" style="display:contents">
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border)">パスワード操作</div>
         <div style="padding-top:12px;display:flex;flex-direction:column;gap:8px">
           <button style="align-self:flex-start;background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit" onclick="pOpen('mConfirmResetPwOp')">初期化メールを送信</button>
           <button data-min-lv="4" onclick="pOpen('mSetPwOp')" style="align-self:flex-start;background:var(--a-surface);color:var(--a-warn-deep);border:1px solid var(--a-warn-border);border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">管理者による直接設定</button>
         </div>
+        </div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">監査ログ<span style="font-weight:400;color:var(--a-fg-faint);margin-left:8px">このアカウントに対する操作</span></div>
-        <div style="padding-top:12px;display:flex;flex-direction:column;gap:10px;font-size:12px">
+        <div data-slot="opAudit" style="padding-top:12px;display:flex;flex-direction:column;gap:10px;font-size:12px">
           <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2026/07/29 14:02</span><span>権限レベルを Lv1 → Lv2 に変更<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>
           <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2026/07/12 09:18</span><span>パスワード初期化メールを送信<br><span style="color:var(--a-fg-faint)">実行者: y.sato@abroad-o.com</span></span></div>
           <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2025/11/12 10:30</span><span>招待を実行(登録完了 2025/11/13)<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>
@@ -549,6 +551,39 @@ window.pOpSetPw = function () {
         }
     }
 
+    // 招待中はまだ登録もログインもしていないため、登録済みアカウント向けの
+    // サンプル表示(登録日時・最終ログイン・監査ログの履歴)をそのまま出すと矛盾する。
+    // パスワード操作も招待中は不可(23号 §4.8)。状態に応じて出し分ける
+    function paintInvitedState(m, oid, d) {
+        var invited = d.status === '招待中';
+        var created = m.querySelector('[data-slot="opCreated"]');
+        var login = m.querySelector('[data-slot="opLastLogin"]');
+        var audit = m.querySelector('[data-slot="opAudit"]');
+        var pw = m.querySelector('[data-slot="opPw"]');
+        if (created) {
+            if (!created.__sample) { created.__sample = created.textContent; }
+            created.textContent = invited ? '—(本登録前)' : created.__sample;
+        }
+        if (login) {
+            if (!login.__sample) { login.__sample = login.textContent; }
+            login.textContent = invited ? '—' : login.__sample;
+        }
+        if (audit) {
+            if (!audit.__sample) { audit.__sample = audit.innerHTML; }
+            if (invited) {
+                var inv = INVITE[oid];
+                var sent = inv ? inv.sent.replace(/-/g, '/') : '';
+                audit.innerHTML = '<div style="display:flex;gap:10px">'
+                    + '<span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">' + sent + ' 10:30</span>'
+                    + '<span>招待を実行<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>';
+            } else {
+                audit.innerHTML = audit.__sample;
+            }
+        }
+        // 属性 hidden はインラインの display:contents に負けるため display で切り替える
+        if (pw) { pw.style.display = invited ? 'none' : 'contents'; }
+    }
+
     window.pOpenOperator = function (oid) {
         var m = document.getElementById('opModal');
         var d = OPS[oid] || OPS[DEF];
@@ -574,6 +609,7 @@ window.pOpSetPw = function () {
         if (b) { b.textContent = d.status; b.className = 'status-badge ' + (BADGE[d.status] || 'status-inactive'); }
         fillFields(m, d);
         renderInvite(m, oid, d);
+        paintInvitedState(m, oid, d);
         var go = m.querySelector('[data-go="perf"]');
         if (go) { go.onclick = function () { location.href = 'performance-management.html?oid=' + oid; return false; }; }
         cur = oid;

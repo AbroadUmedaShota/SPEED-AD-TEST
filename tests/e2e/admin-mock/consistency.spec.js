@@ -80,6 +80,27 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(hit, `会期に時刻が出ている: ${hit.join(' / ')}`).toEqual([]);
   });
 
+  test('招待中のオペレーター詳細に登録済みアカウントの履歴を出さない', async ({ page }) => {
+    // 招待中はまだ登録もログインもしていない。全アカウント共通のサンプル履歴
+    // (登録日時・最終ログイン・登録完了の監査ログ)がそのまま出ていた(2026-08-24 修正)。
+    // パスワード操作も招待中は不可(23号 §4.8)
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('#operatorsList [data-f-oid="OP-0075"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    const t = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
+    expect(t, '登録完了の履歴が出ている').not.toContain('登録完了');
+    expect(t, '登録日時が本登録前になっていない').toContain('—(本登録前)');
+    expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible(),
+      '招待中なのにパスワード操作が出ている').toBe(false);
+
+    // 登録済みアカウントでは従来どおり履歴とパスワード操作が出る
+    await page.keyboard.press('Escape');
+    await page.click('#operatorsList [data-f-oid="OP-0034"]');
+    const t2 = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
+    expect(t2).toContain('登録完了');
+    expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible()).toBe(true);
+  });
+
   test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {
     // SV-10233 がデータ化中のまま「納品済 2026/07/27」を出していた(2026-08-24 修正)。
     // 納品済はデータ化完了の含意なので、作業ステータスと矛盾する
