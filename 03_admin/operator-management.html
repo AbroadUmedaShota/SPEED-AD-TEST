@@ -179,7 +179,7 @@
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border)">アカウント情報</div>
         <div style="display:grid;grid-template-columns:110px 1fr;gap:8px 12px;padding-top:12px;font-size:13px">
           <span style="color:var(--a-fg-muted2)">メール</span><span>d.tanaka@officeworks.co.jp</span>
-          <span style="color:var(--a-fg-muted2)">登録日時</span><span style="font-variant-numeric:tabular-nums">2026/07/21 10:30</span>
+          <span style="color:var(--a-fg-muted2)">登録日時</span><span style="font-variant-numeric:tabular-nums">2025/11/12 10:30</span>
           <span style="color:var(--a-fg-muted2)">最終ログイン</span><span style="font-variant-numeric:tabular-nums">2026/07/30 18:45</span>
         </div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">設定</div>
@@ -213,7 +213,7 @@
         <div style="padding-top:12px;display:flex;flex-direction:column;gap:10px;font-size:12px">
           <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2026/07/29 14:02</span><span>権限レベルを Lv1 → Lv2 に変更<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>
           <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2026/07/12 09:18</span><span>パスワード初期化メールを送信<br><span style="color:var(--a-fg-faint)">実行者: y.sato@abroad-o.com</span></span></div>
-          <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2026/07/21 10:30</span><span>招待を実行(登録完了 2025/11/13)<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>
+          <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2025/11/12 10:30</span><span>招待を実行(登録完了 2025/11/13)<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>
         </div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">実績</div>
         <div style="padding-top:12px"><a href="#op" data-go="perf" style="font-size:13px">オペレーター実績確認でこのオペレーターの集計を表示 →</a></div>
@@ -453,7 +453,7 @@ window.pOpSetPw = function () {
     var LV_LABEL = { 1: 'Lv1(Operator)', 2: 'Lv2(OperatorAdmin)', 3: 'Lv3(Admin)', 4: 'Lv4(MasterAdmin)' };
     var TODAY = '2026-07-31';
     // 招待メールの送信日と有効期限(72時間)。期限切れはデータから自動判定し、手動の操作は再送とキャンセルに限る
-    var INVITE = { 'OP-0075': { sent: '2026-07-21', exp: '2025-11-15' } };
+    var INVITE = { 'OP-0075': { sent: '2026-07-21', exp: '2026-07-24' } };
 
     function renderInvite(m, oid, d) {
         var box = m.querySelector('[data-slot="opInvite"]');
