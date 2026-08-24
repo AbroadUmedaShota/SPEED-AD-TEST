@@ -72,8 +72,22 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     for (const [name, t] of Object.entries(texts)) {
       const m = t.match(/20\d\d\/\d\d\/\d\d \d\d:\d\d\s*[〜~]/g);
       if (m) { hit.push(`${name}: ${m.join(' ')}`); }
+      // 営業日カレンダーは「会期 7/30–8/1 10:00–17:00」の年なし形式で時刻を出していた
+      // (2026-08-24 撤去)。年あり前提の上の正規表現では拾えないため別に見る
+      const m2 = t.match(/会期[^\n]*\d\d?:\d\d/g);
+      if (m2) { hit.push(`${name}: ${m2.join(' ')}`); }
     }
     expect(hit, `会期に時刻が出ている: ${hit.join(' / ')}`).toEqual([]);
+  });
+
+  test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {
+    // SV-10233 がデータ化中のまま「納品済 2026/07/27」を出していた(2026-08-24 修正)。
+    // 納品済はデータ化完了の含意なので、作業ステータスと矛盾する
+    await openScreen(page, '/03_admin/survey-management.html');
+    const bad = await page.$$eval('#surveysList [data-f-status="データ化中"]', (els) => els
+      .filter((el) => el.innerText.includes('納品済'))
+      .map((el) => el.getAttribute('data-f-sid')));
+    expect(bad, `データ化中なのに納品済: ${bad.join(', ')}`).toEqual([]);
   });
 
   test('会期の入力欄は日付だけを選ばせる', async ({ page }) => {
@@ -188,7 +202,8 @@ test.describe('R-14 日付の書式', () => {
   }
 
   test('ISO 形式（2026-08-08）と和式（2026年04月）を表示に使わない', async ({ page }) => {
-    test.fail(); // 未修正: 営業日カレンダー2件・ユーザー詳細の請求月
+    // 2026-08-24 修正済み: ユーザー詳細の請求月(2026年04月→2026/04)・クーポン管理の脚注(ISO)・
+    // 営業日カレンダーのタイトル(2026年 7月→2026/07)
     test.slow();
     const texts = await allText(page);
     const hit = [];

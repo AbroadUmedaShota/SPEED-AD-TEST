@@ -168,6 +168,28 @@ test.describe('ユーザーの値が画面をまたいで一致する', () => {
   });
 });
 
+test('照合対象の総件数が アンケート管理の有効回答数を超えない', async ({ page }) => {
+  // 名刺は名刺画像付きの有効回答から生じるため「照合対象 ≦ 有効回答数」(13号 §11 の #10)。
+  // SV-10233(486 > 394)・SV-10250(2,150 > 2,040) の逆転を 2026-08-24 に修正した
+  await openScreen(page, '/03_admin/reconciliation/index.html');
+  const recon = await page.$$eval('#reconList [data-pg]', (els) => els.map((el) => {
+    // 進捗セルは「2,134 / 2,180」とスラッシュの前後に空白を挟む。
+    // 空白を必須にしないと会期の日付(2026/08/03)を誤って拾う
+    const m = el.innerText.match(/([\d,]+) \/ ([\d,]+)/);
+    return { sid: el.getAttribute('data-f-sid'), total: m ? Number(m[2].replace(/,/g, '')) : null };
+  }));
+  const surveys = await listRows(page, '/03_admin/survey-management.html', 'surveysList');
+  const checked = [];
+  for (const r of recon.filter((x) => x.sid && x.total)) {
+    const s = surveys.find((x) => x.sid === r.sid);
+    expect(s, `${r.sid} がアンケート管理に無い`).toBeTruthy();
+    const effective = Number(s['effective-answers']);
+    expect(effective, `${r.sid}: 照合対象 ${r.total} 件 > 有効回答 ${effective} 件`).toBeGreaterThanOrEqual(r.total);
+    checked.push(r.sid);
+  }
+  expect(checked.length, '突合できた行が無い').toBeGreaterThan(2);
+});
+
 test('グループ名が 請求管理 と アンケート詳細 で揃う', async ({ page }) => {
   const bl = await listRows(page, '/03_admin/billing-management.html', 'billingList');
   const withGroup = bl.filter((r) => r.group && r.sid);
