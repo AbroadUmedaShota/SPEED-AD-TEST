@@ -21,22 +21,29 @@
         return LEVELS[v] ? v : 'lv4';
     }
 
+    // シナリオは読み込み時に確定し、以後このタブでは再読みしない。
+    // 表示(バッジ・出し分け)は読み込み時のシナリオで描かれるため、別タブで
+    // localStorage が切り替わった後に click 時再読みすると、表示と操作記録
+    // (監査ログの実行者など)が食い違う。同一タブの切替は reload を伴うので、
+    // 読み込み時固定でもタブ内の切替は正しく反映される
+    var SESSION_KEY = currentKey();
+
     // 現在の表示シナリオを数値(1〜4)で返す。未設定・未定義値は 4(MasterAdmin)。
     // 各画面が localStorage を直読みすると、ここのフォールバック規則と食い違うため窓口を1本にする
     window.pLevel = function () {
-        return LEVELS[currentKey()].n;
+        return LEVELS[SESSION_KEY].n;
     };
 
     // 現在のシナリオの対応可能言語を返す。対象言語「自動」の参照先(19号 §4.2)
     window.pAccountLangs = function () {
-        return LEVELS[currentKey()].lang.slice();
+        return LEVELS[SESSION_KEY].lang.slice();
     };
 
     // 現在のシナリオのメールアドレス。監査表示などで「操作者」を書く場面の参照先。
     // ヘッダーの #profileMail は非同期注入のため、読込前に操作されると値が取れない。
-    // localStorage 由来のこの関数は同期的に正しい値を返す
+    // シナリオ定義から同期的に返し、表示と同じ読み込み時の値に固定する
     window.pAccountMail = function () {
-        return LEVELS[currentKey()].mail;
+        return LEVELS[SESSION_KEY].mail;
     };
 
     function applyVisibility(lv) {
@@ -131,13 +138,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        var key = currentKey();
-        applyPage(key);
-        wireChrome(key);  // 既に揃っている場合(注入が先に終わっていた場合)の保険
+        applyPage(SESSION_KEY);
+        wireChrome(SESSION_KEY);  // 既に揃っている場合(注入が先に終わっていた場合)の保険
     });
 
     // ヘッダー・サイドバーは admin.js が非同期に注入する。完了通知を受けてから配線する
     document.addEventListener('admin:chrome-ready', function () {
-        wireChrome(currentKey());
+        wireChrome(SESSION_KEY);
     });
 })();

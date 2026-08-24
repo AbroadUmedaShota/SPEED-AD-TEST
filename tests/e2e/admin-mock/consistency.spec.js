@@ -136,6 +136,20 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(audit.split('招待を再送')[1], '再送行の実行者が master になっている').not.toContain('master@abroad-o.com');
   });
 
+  test('別タブでシナリオが変わっても、表示中のタブの実行者は表示と一致する', async ({ page }) => {
+    // localStorage は全タブ共有だが、切替は切り替えたタブしか reload しない。
+    // click 時に localStorage を再読みすると、表示(Lv4)と記録(Lv3)が食い違う。
+    // シナリオは読み込み時に確定する(2026-08-24 修正)
+    await openScreen(page, '/03_admin/operator-management.html');   // 既定 lv4 で表示
+    await page.evaluate(() => { localStorage.setItem('adminMockLevel', 'lv3'); });  // 別タブでの切替を再現
+    await page.click('#operatorsList [data-f-oid="OP-0075"]');
+    await page.click('#opModal button:has-text("再送")');
+    const audit = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
+    expect(audit, '表示は Lv4 のままなのに記録が別シナリオになった')
+      .toContain('招待を再送 実行者: master@abroad-o.com');
+    await page.evaluate(() => { localStorage.setItem('adminMockLevel', 'lv4'); });
+  });
+
   test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {
     // SV-10233 がデータ化中のまま「納品済 2026/07/27」を出していた(2026-08-24 修正)。
     // 納品済はデータ化完了の含意なので、作業ステータスと矛盾する
