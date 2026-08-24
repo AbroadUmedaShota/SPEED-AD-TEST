@@ -455,7 +455,20 @@ window.pOpSetPw = function () {
     var LV_LABEL = { 1: 'Lv1(Operator)', 2: 'Lv2(OperatorAdmin)', 3: 'Lv3(Admin)', 4: 'Lv4(MasterAdmin)' };
     var TODAY = '2026-07-31';
     // 招待メールの送信日と有効期限(72時間)。期限切れはデータから自動判定し、手動の操作は再送とキャンセルに限る
-    var INVITE = { 'OP-0075': { sent: '2026-07-21', exp: '2026-07-24' } };
+    // resends は再送のたびに追記する(監査ログは追記専用・23号 §7.5)。sent は上書きしない
+    var INVITE = { 'OP-0075': { sent: '2026-07-21', exp: '2026-07-24', resends: [] } };
+
+    // 操作の実行者は現在の表示シナリオのアカウント(ヘッダーのプロフィール表示から取る)
+    function currentActor() {
+        var el = document.getElementById('profileMail');
+        return (el && el.textContent.trim()) || 'master@abroad-o.com';
+    }
+
+    // モックの現在時刻(09:45)から操作のたびに1分ずつ進める。同時刻の行が並ぶと重複に見えるため
+    function opTime(n) {
+        var mins = 9 * 60 + 45 + n;
+        return String(Math.floor(mins / 60)).padStart(2, '0') + ':' + String(mins % 60).padStart(2, '0');
+    }
 
     function renderInvite(m, oid, d) {
         var box = m.querySelector('[data-slot="opInvite"]');
@@ -463,9 +476,11 @@ window.pOpSetPw = function () {
         var info = INVITE[oid];
         if (d.status !== '招待中' || !info) { box.hidden = true; box.innerHTML = ''; return; }
         var expired = info.exp < TODAY;
+        var lastResend = (info.resends && info.resends.length) ? info.resends[info.resends.length - 1] : null;
         box.hidden = false;
         box.innerHTML = '招待メール送信 ' + info.sent.replace(/-/g, '/')
-            + (info.resent ? ' ・ 再送 ' + info.resent.replace(/-/g, '/') : '')
+            + (lastResend ? ' ・ 再送 ' + lastResend.d.replace(/-/g, '/') + ' ' + lastResend.t
+                + (info.resends.length > 1 ? '(計' + info.resends.length + '回)' : '') : '')
             + ' ・ 有効期限 ' + info.exp.replace(/-/g, '/')
             + (expired ? ' <span style="color:var(--a-danger);font-weight:700">(期限切れ)</span>' : '')
             + '<br>期限切れはデータから自動で判定します。行える操作は招待の再送とキャンセルの2つです。'
@@ -476,9 +491,13 @@ window.pOpSetPw = function () {
     }
 
     window.opInviteResend = function () {
-        // 招待の実行と再送は別の操作として記録する(23号 §7.5)。実行日は上書きしない
-        var info = INVITE[cur] || { sent: TODAY };
-        INVITE[cur] = { sent: info.sent, resent: TODAY, exp: '2026-08-03' };
+        // 招待の実行と再送は別の操作として記録する(23号 §7.5)。実行日は上書きせず、
+        // 再送は成立のたびに1件ずつ追記する(監査ログは追記専用)
+        var info = INVITE[cur] || { sent: TODAY, resends: [] };
+        info.resends = info.resends || [];
+        info.resends.push({ d: TODAY, t: opTime(info.resends.length), by: currentActor() });
+        info.exp = '2026-08-03';
+        INVITE[cur] = info;
         var row = window.pRow('operatorsList', 'oid', cur);
         if (row) { window.pRowSet(row, { 6: '<span class="status-badge status-info">招待中</span>' }); }
         var m = document.getElementById('opModal');
@@ -571,10 +590,10 @@ window.pOpSetPw = function () {
         };
     })();
 
-    function auditRow(dt, text) {
+    function auditRow(dt, text, actor) {
         return '<div style="display:flex;gap:10px">'
             + '<span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">' + dt + '</span>'
-            + '<span>' + text + '<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>';
+            + '<span>' + text + '<br><span style="color:var(--a-fg-faint)">実行者: ' + actor + '</span></span></div>';
     }
 
     // 招待中はまだ登録もログインもしていないため、登録済みアカウント向けの
@@ -590,11 +609,13 @@ window.pOpSetPw = function () {
         if (login) { login.textContent = invited ? '—' : PRISTINE.login; }
         if (audit) {
             if (invited) {
-                // 招待の実行と再送は個別に記録する(23号 §7.5)。新しい操作を上に置く
+                // 招待の実行と再送は個別に記録する(23号 §7.5)。追記専用で、新しい操作を上に置く
                 var inv = INVITE[oid] || {};
                 var html = '';
-                if (inv.resent) { html += auditRow(inv.resent.replace(/-/g, '/') + ' 09:40', '招待を再送'); }
-                if (inv.sent) { html += auditRow(inv.sent.replace(/-/g, '/') + ' 10:30', '招待を実行'); }
+                (inv.resends || []).slice().reverse().forEach(function (r) {
+                    html += auditRow(r.d.replace(/-/g, '/') + ' ' + r.t, '招待を再送', r.by);
+                });
+                if (inv.sent) { html += auditRow(inv.sent.replace(/-/g, '/') + ' 10:30', '招待を実行', 'admin@abroad-o.com'); }
                 audit.innerHTML = html;
             } else {
                 audit.innerHTML = PRISTINE.audit;

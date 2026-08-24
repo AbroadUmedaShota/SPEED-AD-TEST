@@ -103,12 +103,20 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(t2, '権限変更の履歴が識別子置換で壊れている').toContain('Lv1 → Lv2 に変更');
     expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible()).toBe(true);
 
-    // 招待の再送は実行と別の操作として履歴に残り、実行日は上書きされない(23号 §7.5)
+    // 招待の再送は実行と別の操作として履歴に残り、実行日は上書きされない(23号 §7.5)。
+    // 監査ログは追記専用: 繰り返し再送しても1件に潰れず、成立ごとに1行増える。
+    // 実行者は現在の表示シナリオのアカウント(既定 lv4 = master@abroad-o.com)
     await page.keyboard.press('Escape');
     await page.click('#operatorsList [data-f-oid="OP-0075"]');
     await page.click('#opModal button:has-text("再送")');
+    await page.click('#opModal button:has-text("再送")');
     const t3 = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    expect(t3, '再送の履歴が残らない').toContain('招待を再送');
+    // 再送ボタン自体も「招待を再送」の文字を持つため、件数は監査ログ領域だけで数える
+    const audit3 = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
+    const resends = (audit3.match(/招待を再送/g) || []).length;
+    expect(resends, '2回再送したのに履歴が2件残らない').toBe(2);
+    expect(t3, '再送の実行者が現在シナリオでない').toContain('実行者: master@abroad-o.com');
+    expect(t3, '再送の時刻が同一で重複に見える').toMatch(/09:45[\s\S]*09:46|09:46[\s\S]*09:45/);
     expect(t3, '再送で実行日が上書きされた').toContain('2026/07/21 10:30 招待を実行');
   });
 
