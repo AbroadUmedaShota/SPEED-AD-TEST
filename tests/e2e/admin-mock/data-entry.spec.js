@@ -37,6 +37,100 @@ test.describe('データ入力対象一覧', () => {
   });
 });
 
+/** 作業グループごとの総件数（進捗の「入力済み / 総件数」の右側） */
+function totals(page) {
+  return page.$$eval('#groupList .dg-row[data-g]', (els) => {
+    const out = {};
+    els.forEach((e) => {
+      const m = e.querySelector('.dg-progress small').textContent.match(/([\d,]+)\s*\/\s*([\d,]+)/);
+      out[e.getAttribute('data-g')] = m ? Number(m[2].replace(/,/g, '')) : 0;
+    });
+    return out;
+  });
+}
+
+const LANG_FREE = ['1', '5', '6'];       // 言語非依存（20 §4.4）
+const LANG_BOUND = ['2', '3', '4', '7', '8'];
+const CODES = ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko'];
+
+test.describe('対象言語の選択（19 §4.2・§4.3）', () => {
+  test('選択肢は言語マスタの全件で、対応可能言語では絞らない', async ({ page }) => {
+    // Lv1 は対応可能言語が日本語・中国語簡体字だが、選択肢はマスタ全件が並ぶ
+    await openAs(page, LIST, 'lv1');
+    const opts = await page.$$eval('#langSelect option', (els) => els.map((e) => e.value));
+    expect(opts).toEqual(['auto'].concat(CODES));
+    expect(await page.locator('#langSelect').inputValue()).toBe('auto');
+
+    // 「自動」が指す範囲は画面上で読める
+    expect(await page.locator('#langNote').innerText()).toContain('日本語・中国語簡体字');
+  });
+
+  test('「自動」の作業可能件数は対応可能言語の合計になる', async ({ page }) => {
+    await openAs(page, LIST, 'lv4');   // 全言語
+    const all = await page.locator('#availCount').innerText();
+
+    await page.addInitScript(() => { localStorage.setItem('adminMockLevel', 'lv1'); });
+    await openScreen(page, LIST);
+    const lv1 = await page.locator('#availCount').innerText();
+    expect(Number(lv1.replace(/,/g, ''))).toBeLessThan(Number(all.replace(/,/g, '')));
+  });
+
+  test('言語非依存の作業グループだけに「全言語」バッジが付く', async ({ page }) => {
+    await openScreen(page, LIST);
+    for (const g of LANG_FREE) {
+      expect(await page.locator(`#groupList .dg-row[data-g="${g}"] .dg-status-badge`, { hasText: '全言語' }).count(),
+        `グループ${g} に全言語バッジが無い`).toBe(1);
+    }
+    for (const g of LANG_BOUND) {
+      expect(await page.locator(`#groupList .dg-row[data-g="${g}"] .dg-status-badge`, { hasText: '全言語' }).count(),
+        `グループ${g} に全言語バッジが付いている`).toBe(0);
+    }
+  });
+
+  test('対象言語を切り替えると言語依存のグループだけ件数が変わる', async ({ page }) => {
+    await openScreen(page, LIST);
+    const before = await totals(page);
+
+    await page.selectOption('#langSelect', 'zh-Hans');
+    const after = await totals(page);
+
+    for (const g of LANG_FREE) {
+      expect(after[g], `グループ${g} は対象言語で絞ってはいけない`).toBe(before[g]);
+    }
+    // ⑦は全言語で 0 件のため、言語を絞っても 0 のまま変わらない
+    for (const g of LANG_BOUND.filter((x) => before[x] > 0)) {
+      expect(after[g], `グループ${g} が対象言語で絞られていない`).toBeLessThan(before[g]);
+    }
+  });
+
+  test('各言語の総件数の合計が全言語の総件数と一致する', async ({ page }) => {
+    await openScreen(page, LIST);
+    const all = await totals(page);
+
+    const sum = {};
+    for (const code of CODES) {
+      await page.selectOption('#langSelect', code);
+      const t = await totals(page);
+      Object.keys(t).forEach((g) => { sum[g] = (sum[g] || 0) + t[g]; });
+    }
+    for (const g of LANG_BOUND) {
+      expect(sum[g], `グループ${g} の言語別合計が全言語値と合わない`).toBe(all[g]);
+    }
+  });
+
+  test('対象言語が入力画面へ引き継がれ、戻っても保たれる', async ({ page }) => {
+    await openScreen(page, LIST);
+    await page.selectOption('#langSelect', 'en');
+    await page.click('#groupList .dg-row[data-g="3"] .dg-action button');
+
+    await expect(page).toHaveURL(/g=3&lang=en/);
+    expect(await page.locator('#langBadge').innerText()).toBe('対象言語: 英語');
+
+    await page.goBack();
+    expect(await page.locator('#langSelect').inputValue()).toBe('en');
+  });
+});
+
 test.describe('名刺入力画面', () => {
   test('スキップの理由からエスカレーションを外している（§4.5）', async ({ page }) => {
     await openScreen(page, `${FORM}?g=3`);
@@ -45,6 +139,17 @@ test.describe('名刺入力画面', () => {
     expect(reasons.some((r) => r.includes('エスカレーション'))).toBe(false);
     expect(reasons.some((r) => r.startsWith('名刺ではない'))).toBe(true);
     expect(reasons.some((r) => r.startsWith('対応言語外'))).toBe(true);
+  });
+
+  test('言語非依存の作業グループでは「対応言語外」を出さない（§4.5）', async ({ page }) => {
+    // ①⑤⑥ は入力値が言語に左右されず、読めない言語でも入力できるため理由が成立しない
+    for (const g of ['1', '5', '6']) {
+      await openScreen(page, `${FORM}?g=${g}&lang=zh-Hans`);
+      expect(await page.locator('#langBadge').innerText(), `g=${g} の対象言語表示`).toBe('対象言語: 全言語');
+      await page.click('#btnSkip');
+      expect(await page.locator('#skipLangOut').isVisible(), `g=${g} で対応言語外が出ている`).toBe(false);
+      await page.keyboard.press('Escape');
+    }
   });
 
   test('裏面の画像が無い名刺では「裏面なし」と出す（§4.2）', async ({ page }) => {

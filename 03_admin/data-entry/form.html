@@ -24,6 +24,7 @@
               <span style="font-size:12px;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:2px 8px;background:var(--a-surface);font-variant-numeric:tabular-nums;white-space:nowrap" title="入力対象が属するアンケート(オペレーターへ見せる情報はIDのみ)"><span id="svBadge">アンケートID SV-10238</span></span>
               <span style="font-size:11px;font-weight:700;color:var(--a-warn-deep);border:1px solid var(--a-warn-border);border-radius:4px;padding:2px 8px;background:var(--a-warn-bg);white-space:nowrap"><span id="planBadge">オンデマンド</span></span>
               <span id="groupBadge" style="font-size:11px;font-weight:700;color:var(--a-accent-deep);border:1px solid var(--a-info-border);border-radius:4px;padding:2px 8px;background:var(--a-info-bg);white-space:nowrap">作業中: グループ③ 会社・部署・役職</span>
+              <span id="langBadge" style="font-size:11px;font-weight:700;color:var(--a-accent-deep);border:1px solid var(--a-info-border);border-radius:4px;padding:2px 8px;background:var(--a-info-bg);white-space:nowrap"></span>
             </div>
             <div style="display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;font-size:12px;color:var(--a-fg-muted)">
               <span>残りの作業可能件数 <strong id="remainCount" style="font-size:15px;font-variant-numeric:tabular-nums">1,283</strong> 件</span>
@@ -89,7 +90,7 @@
     </div>
     <div style="padding:18px 22px;display:flex;flex-direction:column;gap:10px">
       <label style="display:flex;align-items:center;gap:10px;border:1px solid var(--a-border-strong);border-radius:6px;padding:11px 14px;font-size:13px;cursor:pointer"><input type="radio" name="skipReason" data-initial-focus checked>名刺ではない</label>
-      <label style="display:flex;align-items:center;gap:10px;border:1px solid var(--a-border-strong);border-radius:6px;padding:11px 14px;font-size:13px;cursor:pointer"><input type="radio" name="skipReason">対応言語外</label>
+      <label id="skipLangOut" style="display:flex;align-items:center;gap:10px;border:1px solid var(--a-border-strong);border-radius:6px;padding:11px 14px;font-size:13px;cursor:pointer"><input type="radio" name="skipReason">対応言語外</label>
       <label style="display:flex;flex-direction:column;gap:8px;border:1px solid var(--a-border-strong);border-radius:6px;padding:11px 14px;font-size:13px;cursor:pointer">
         <span style="display:flex;align-items:center;gap:10px"><input type="radio" name="skipReason" id="skipReasonOther">その他</span>
         <input id="skipReasonText" placeholder="理由を入力(その他を選択した場合は必須)" spellcheck="false" aria-describedby="skipReasonErr" style="width:100%;box-sizing:border-box;border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:12.5px;font-family:inherit">
@@ -337,6 +338,14 @@
     var groupNo = GROUP_DEFS[parseInt(param, 10)] ? parseInt(param, 10) : 3;
     var order = [];
 
+    // ?lang= は一覧で選んだ対象言語。auto は対応可能言語すべて(19号 §4.2)
+    var LANG_LABELS = { ja: '日本語', en: '英語', 'zh-Hans': '中国語簡体字', 'zh-Hant': '中国語繁体字', ko: '韓国語' };
+    // 言語非依存の作業グループ。入力値が言語に左右されないため対象言語で絞らない(20号 §4.4)
+    var LANG_FREE = { 1: true, 5: true, 6: true };
+    var langParam = new URLSearchParams(location.search).get('lang') || 'auto';
+    if (langParam !== 'auto' && !LANG_LABELS[langParam]) { langParam = 'auto'; }
+    var langFree = !isAll && !!LANG_FREE[groupNo];
+
     if (isAll && window.pLevel() < 4) {
         document.getElementById('main-content').innerHTML =
             '<div class="w-full max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">' +
@@ -414,9 +423,28 @@
         wireZip();
         var badge = document.getElementById('groupBadge');
         badge.textContent = isAll ? '作業中: 全グループ①〜⑧' : '作業中: ' + GROUP_DEFS[groupNo].label;
+        paintLangBadge();
         document.getElementById('scopeNote').textContent = isAll
             ? '全グループ入力では、1枚の名刺の①〜⑧すべてを続けて入力します。'
             : 'この個票では担当グループの項目のみを入力します。';
+    }
+
+    // 対象言語のバッジ。言語非依存グループは対象言語で絞られないため「全言語」と出す。
+    // あわせてスキップ理由の「対応言語外」を出し分ける(言語非依存では成立しないため)
+    function paintLangBadge() {
+        var el = document.getElementById('langBadge');
+        if (langFree) {
+            el.textContent = '対象言語: 全言語';
+            el.title = 'この作業グループは入力値が言語に左右されないため、すべての言語の名刺が出題されます';
+        } else if (langParam === 'auto') {
+            el.textContent = '対象言語: 自動';
+            el.title = 'このアカウントの対応可能言語の名刺が出題されます';
+        } else {
+            el.textContent = '対象言語: ' + LANG_LABELS[langParam];
+            el.title = '選んだ言語の名刺だけが出題されます';
+        }
+        var langOut = document.getElementById('skipLangOut');
+        if (langOut) { langOut.hidden = langFree; }
     }
 
     // 郵便番号を入力すると、住所1へ入れられる候補を辞書から出す(自動では上書きしない)

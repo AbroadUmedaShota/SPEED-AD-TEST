@@ -25,6 +25,7 @@
 .dg-progress small { color:var(--a-fg-muted2); font-size:12px }
 .dg-status-badge { display:inline-flex; min-width:64px; align-items:center; justify-content:center; padding:3px 8px; border:1px solid transparent; border-radius:4px; font-size:12px; font-weight:700; line-height:1.2; white-space:nowrap }
 .dg-status-badge.dg-status-badge--warn { color:var(--a-warn); background:var(--a-warn-bg); border-color:var(--a-warn-border) }
+.dg-status-badge.dg-status-badge--info { color:var(--a-accent-deep); background:var(--a-info-bg); border-color:var(--a-info-border) }
 .dg-item .dg-status-badge { min-width:auto; flex:none; padding:2px 6px; font-size:11px }
 .dg-action button { white-space:nowrap }
 .dg-row.is-empty { color:var(--a-fg-faint) }
@@ -73,79 +74,82 @@
           <div style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:18px 22px;display:flex;align-items:center;gap:28px;flex-wrap:wrap">
             <div style="flex:none">
               <div style="font-size:12px;color:var(--a-fg-muted);font-weight:500">あなたの作業可能件数</div>
-              <div style="font-size:36px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums">1,284<span style="font-size:14px;font-weight:500;color:var(--a-fg-muted);margin-left:4px">件</span></div>
+              <div style="font-size:36px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums"><span id="availCount">1,284</span><span style="font-size:14px;font-weight:500;color:var(--a-fg-muted);margin-left:4px">件</span></div>
+              <label style="margin-top:10px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--a-fg-muted);font-weight:500">対象言語
+                <select id="langSelect" aria-label="対象言語" autocomplete="off" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit;background:var(--a-surface);color:var(--a-fg)"></select>
+              </label>
             </div>
             <div style="width:1px;align-self:stretch;background:var(--a-border)"></div>
-            <div style="flex:1;min-width:280px;font-size:12px;color:var(--a-fg-muted2);line-height:1.9">全体キューから算出した現在着手できる件数です。他のオペレーターの作業進行によって変動します。スキップした名刺は全体キューへ戻ります。<br>入力する作業グループは下の一覧から選びます。</div>
+            <div style="flex:1;min-width:280px;font-size:12px;color:var(--a-fg-muted2);line-height:1.9">全体キューから算出した現在着手できる件数です。他のオペレーターの作業進行によって変動します。スキップした名刺は全体キューへ戻ります。<br>入力する作業グループは下の一覧から選びます。<br><span id="langNote">対象言語を選ぶと、その言語の名刺だけを出題します。「自動」では対応可能言語すべてが対象です。</span></div>
             <div data-min-lv="4" data-lv-display="flex" style="align-self:stretch;width:1px;background:var(--a-border)"></div>
             <div data-min-lv="4" data-lv-display="flex" style="flex:none;max-width:280px;display:flex;flex-direction:column;align-items:flex-start;gap:8px">
               <div style="font-size:12px;color:var(--a-fg-muted);font-weight:700">全グループ入力</div>
               <div style="font-size:11.5px;color:var(--a-fg-muted2);line-height:1.8">1枚の名刺の①〜⑧をまとめて入力します。</div>
-              <button onclick="location.href='form.html?g=all'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">全グループ入力画面へ</button>
+              <button data-start-all style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">全グループ入力画面へ</button>
             </div>
           </div>
           <div id="groupList" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
             <div class="dg-row dg-row--header" style="min-height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
               <span>作業項目</span><span class="dg-number">残り作業件数</span><span class="dg-progress">進捗</span><span class="dg-number">入力中</span><span>操作</span>
             </div>
-            <div class="dg-row" data-progress="78">
+            <div class="dg-row" data-g="1" data-progress="78">
               <span class="dg-item"><span class="dg-item-number">①</span><span class="dg-item-label">メールアドレス</span></span>
               <span class="dg-number dg-remaining">547件</span>
               <span class="dg-progress"><strong>78%</strong><small>1,933 / 2,480</small></span>
               <span class="dg-number dg-active-count">2人</span>
-              <span class="dg-action"><button onclick="location.href='form.html?g=1'" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
+              <span class="dg-action"><button data-start style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
             </div>
-            <div class="dg-row" data-progress="84">
+            <div class="dg-row" data-g="2" data-progress="84">
               <span class="dg-item"><span class="dg-item-number">②</span><span class="dg-item-label">姓・名</span></span>
               <span class="dg-number dg-remaining">298件</span>
               <span class="dg-progress"><strong>84%</strong><small>1,562 / 1,860</small></span>
               <span class="dg-number dg-active-count">1人</span>
-              <span class="dg-action"><button onclick="location.href='form.html?g=2'" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
+              <span class="dg-action"><button data-start style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
             </div>
-            <div class="dg-row" data-progress="39">
+            <div class="dg-row" data-g="3" data-progress="39">
               <span class="dg-item"><span class="dg-item-number">③</span><span class="dg-item-label">会社・部署・役職</span></span>
               <span class="dg-number dg-remaining">1,914件</span>
               <span class="dg-progress"><strong>39%</strong><small>1,206 / 3,120</small></span>
               <span class="dg-number dg-active-count">4人</span>
-              <span class="dg-action"><button onclick="location.href='form.html?g=3'" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
+              <span class="dg-action"><button data-start style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
             </div>
-            <div class="dg-row" data-progress="88">
+            <div class="dg-row" data-g="4" data-progress="88">
               <span class="dg-item"><span class="dg-item-number">④</span><span class="dg-item-label">郵便番号・住所</span></span>
               <span class="dg-number dg-remaining">114件</span>
               <span class="dg-progress"><strong>88%</strong><small>812 / 926</small></span>
               <span class="dg-number dg-active-count">1人</span>
-              <span class="dg-action"><button onclick="location.href='form.html?g=4'" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
+              <span class="dg-action"><button data-start style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
             </div>
-            <div class="dg-row" data-progress="30">
+            <div class="dg-row" data-g="5" data-progress="30">
               <span class="dg-item"><span class="dg-item-number">⑤</span><span class="dg-item-label">電話番号・FAX</span></span>
               <span class="dg-number dg-remaining">1,078件</span>
               <span class="dg-progress"><strong>30%</strong><small>462 / 1,540</small></span>
               <span class="dg-number dg-active-count">3人</span>
-              <span class="dg-action"><button onclick="location.href='form.html?g=5'" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
+              <span class="dg-action"><button data-start style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
             </div>
-            <div class="dg-row" data-progress="91">
+            <div class="dg-row" data-g="6" data-progress="91">
               <span class="dg-item"><span class="dg-item-number">⑥</span><span class="dg-item-label">URL</span></span>
               <span class="dg-number dg-remaining">182件</span>
               <span class="dg-progress"><strong>91%</strong><small>1,890 / 2,072</small></span>
               <span class="dg-number dg-active-count">1人</span>
-              <span class="dg-action"><button onclick="location.href='form.html?g=6'" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
+              <span class="dg-action"><button data-start style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
             </div>
-            <div class="dg-row is-empty">
+            <div class="dg-row is-empty" data-g="7">
               <span class="dg-item"><span class="dg-item-number">⑦</span><span class="dg-item-label">その他メモ</span></span>
               <span class="dg-number dg-remaining">0件</span>
               <span class="dg-progress"><strong>—</strong><small>対象なし</small></span>
               <span class="dg-number dg-active-count">0人</span>
               <span class="dg-action"><button disabled title="このグループに出題できる名刺がありません" style="background:var(--a-disabled-bg);color:var(--a-fg-faint);border:none;border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:default;font-family:inherit">対象なし</button></span>
             </div>
-            <div class="dg-row" data-progress="87" style="border-bottom:none">
+            <div class="dg-row" data-g="8" data-progress="87" style="border-bottom:none">
               <span class="dg-item"><span class="dg-item-number">⑧</span><span class="dg-item-label">フリー入力</span></span>
               <span class="dg-number dg-remaining">86件</span>
               <span class="dg-progress"><strong>87%</strong><small>598 / 684</small></span>
               <span class="dg-number dg-active-count">1人</span>
-              <span class="dg-action"><button onclick="location.href='form.html?g=8'" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
+              <span class="dg-action"><button data-start style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">入力を開始</button></span>
             </div>
           </div>
-          <div style="margin-top:12px;font-size:12px;color:var(--a-fg-muted2)">作業グループ①〜⑧は名刺データ化の作業分割単位です(会社・法人単位のグループとは別の概念)。進捗が最も低い2グループを作業項目内の「滞留」バッジと行背景で識別します。</div>
+          <div style="margin-top:12px;font-size:12px;color:var(--a-fg-muted2)">作業グループ①〜⑧は名刺データ化の作業分割単位です(会社・法人単位のグループとは別の概念)。進捗が最も低い2グループを作業項目内の「滞留」バッジと行背景で識別します。「全言語」バッジの作業項目は入力値が言語に左右されないため、対応可能言語に関わらず全オペレーターへ出題します。</div>
         </div>
         </main>
     </div>
@@ -154,23 +158,181 @@
 <script src="../src/proto-ui.js"></script>
 <script src="../src/proto-level.js"></script>
 <script>
-// 進捗が低い順に2グループを「滞留」として識別する。出題対象が無いグループは対象外
+// 対象言語の切替と、作業グループ①〜⑧の件数・進捗・バッジの描画(モック)
 (function () {
-    var rows = Array.prototype.slice.call(document.querySelectorAll('#groupList .dg-row[data-progress]'));
-    rows.sort(function (a, b) {
-        return parseInt(a.getAttribute('data-progress'), 10) - parseInt(b.getAttribute('data-progress'), 10);
-    });
-    rows.slice(0, 2).forEach(function (r) {
-        r.classList.add('is-stuck');
-        var item = r.querySelector('.dg-item');
-        if (item) {
+    'use strict';
+
+    // 言語マスタ。オペレーター管理(SCR-A-014)の設定値と揃える。
+    // 実データではDBのマスタから引く(23号 §4.10)
+    var LANGS = [
+        { code: 'ja', label: '日本語' },
+        { code: 'en', label: '英語' },
+        { code: 'zh-Hans', label: '中国語簡体字' },
+        { code: 'zh-Hant', label: '中国語繁体字' },
+        { code: 'ko', label: '韓国語' }
+    ];
+
+    // 言語非依存の作業グループ。入力値が言語に左右されないため、対応可能言語に関わらず
+    // 全オペレーターへ出題する。件数も対象言語で絞らない(20号 §4.4)
+    var LANG_FREE = { 1: true, 5: true, 6: true };
+
+    // 言語非依存グループの [総件数, 入力済み]。言語で分かれない
+    var TOTAL_FREE = { 1: [2480, 1933], 5: [1540, 462], 6: [2072, 1890] };
+
+    // 言語依存グループの言語別 [総件数, 入力済み]。各言語の合計が全言語の総数になる
+    var BY_LANG = {
+        2: { ja: [1302, 1105], en: [279, 232], 'zh-Hans': [149, 121], 'zh-Hant': [93, 77], ko: [37, 27] },
+        3: { ja: [2184, 880], en: [468, 168], 'zh-Hans': [250, 92], 'zh-Hant': [156, 48], ko: [62, 18] },
+        4: { ja: [648, 573], en: [139, 121], 'zh-Hans': [74, 63], 'zh-Hant': [46, 40], ko: [19, 15] },
+        7: { ja: [0, 0], en: [0, 0], 'zh-Hans': [0, 0], 'zh-Hant': [0, 0], ko: [0, 0] },
+        8: { ja: [479, 421], en: [103, 89], 'zh-Hans': [55, 47], 'zh-Hant': [34, 30], ko: [13, 11] }
+    };
+
+    // 対象言語ごとの作業可能件数(名刺の枚数)。全言語の合計が 1,284 件
+    var AVAIL = { ja: 892, en: 191, 'zh-Hans': 102, 'zh-Hant': 64, ko: 35 };
+
+    // 入力中の人数は名刺ではなく人の数のため、対象言語では分けない(19号 §11 の #12)
+    var ACTIVE = { 1: 2, 2: 1, 3: 4, 4: 1, 5: 3, 6: 1, 7: 0, 8: 1 };
+
+    var STORE = 'adminMockDataEntryLang';   // 入力画面から戻っても選択を保つ
+    var sel = document.getElementById('langSelect');
+    var rows = Array.prototype.slice.call(document.querySelectorAll('#groupList .dg-row[data-g]'));
+
+    function labelOf(code) {
+        for (var i = 0; i < LANGS.length; i++) {
+            if (LANGS[i].code === code) { return LANGS[i].label; }
+        }
+        return code;
+    }
+
+    /** アカウントの対応可能言語。「自動」が指す範囲(19号 §4.2) */
+    function accountLangs() {
+        var a = window.pAccountLangs ? window.pAccountLangs() : null;
+        return (a && a.length) ? a : LANGS.map(function (l) { return l.code; });
+    }
+
+    function current() {
+        var v = sel.value || localStorage.getItem(STORE) || 'auto';
+        return (v === 'auto' || BY_LANG[2][v]) ? v : 'auto';
+    }
+
+    /** 集計対象の言語。「自動」なら対応可能言語すべて */
+    function scope() {
+        var v = current();
+        return v === 'auto' ? accountLangs() : [v];
+    }
+
+    function num(n) { return n.toLocaleString('en-US'); }
+
+    // 選択肢は言語マスタ全件。対応可能言語で絞らず、選んだ言語が「自動」より優先される。
+    // select に autocomplete="off" を付けているのは、戻る操作でブラウザがフォームの状態を
+    // 復元する際、JSで後から足した option を知らないまま先頭へ戻してしまうため
+    function buildSelect() {
+        var v = localStorage.getItem(STORE) || 'auto';
+        var html = '<option value="auto">自動(対応可能言語すべて)</option>';
+        LANGS.forEach(function (l) {
+            html += '<option value="' + l.code + '">' + l.label + '</option>';
+        });
+        sel.innerHTML = html;
+        sel.value = (v === 'auto' || BY_LANG[2][v]) ? v : 'auto';
+    }
+
+    function render() {
+        var langs = scope();
+        var pcts = {};
+
+        rows.forEach(function (row) {
+            var g = parseInt(row.getAttribute('data-g'), 10);
+            var total = 0, done = 0;
+            if (LANG_FREE[g]) {
+                total = TOTAL_FREE[g][0];
+                done = TOTAL_FREE[g][1];
+            } else {
+                langs.forEach(function (code) {
+                    var v = BY_LANG[g][code];
+                    if (v) { total += v[0]; done += v[1]; }
+                });
+            }
+            var remain = total - done;
+            var pct = total ? Math.round((done / total) * 100) : null;
+            if (pct !== null) { pcts[g] = pct; }
+
+            row.classList.toggle('is-empty', total === 0);
+            if (pct === null) { row.removeAttribute('data-progress'); } else { row.setAttribute('data-progress', String(pct)); }
+            row.querySelector('.dg-remaining').textContent = num(remain) + '件';
+            row.querySelector('.dg-progress').innerHTML = total
+                ? '<strong>' + pct + '%</strong><small>' + num(done) + ' / ' + num(total) + '</small>'
+                : '<strong>—</strong><small>対象なし</small>';
+            row.querySelector('.dg-active-count').textContent = ACTIVE[g] + '人';
+            paintBadges(row, g);
+            paintButton(row, total);
+        });
+
+        paintStuck(pcts);
+
+        var avail = 0;
+        langs.forEach(function (code) { avail += (AVAIL[code] || 0); });
+        document.getElementById('availCount').textContent = num(avail);
+
+        var v = current();
+        document.getElementById('langNote').textContent = v === 'auto'
+            ? '「自動」の対象はこのアカウントの対応可能言語(' + accountLangs().map(labelOf).join('・') + ')です。'
+                + '対象言語を選ぶと、対応可能言語の外でもその言語だけを出題します。'
+            : '対象言語「' + labelOf(v) + '」の名刺だけを出題します。'
+                + '「全言語」の作業項目は言語で分かれないため、全言語の件数を表示します。';
+    }
+
+    function paintBadges(row, g) {
+        var item = row.querySelector('.dg-item');
+        Array.prototype.slice.call(item.querySelectorAll('.dg-status-badge')).forEach(function (b) {
+            b.parentNode.removeChild(b);
+        });
+        if (!LANG_FREE[g]) { return; }
+        var badge = document.createElement('span');
+        badge.className = 'dg-status-badge dg-status-badge--info';
+        badge.textContent = '全言語';
+        badge.title = '入力値が言語に左右されないため、対応可能言語に関わらず全オペレーターへ出題します';
+        item.appendChild(badge);
+    }
+
+    // 進捗が低い順に2グループを「滞留」として識別する。出題対象が無いグループは対象外
+    function paintStuck(pcts) {
+        rows.forEach(function (r) { r.classList.remove('is-stuck'); });
+        Object.keys(pcts).sort(function (a, b) { return pcts[a] - pcts[b]; }).slice(0, 2).forEach(function (g) {
+            var row = rows.filter(function (r) { return r.getAttribute('data-g') === g; })[0];
+            if (!row) { return; }
+            row.classList.add('is-stuck');
             var badge = document.createElement('span');
             badge.className = 'dg-status-badge dg-status-badge--warn';
             badge.textContent = '滞留';
             badge.title = '進捗が低く作業が溜まっているグループです';
-            item.appendChild(badge);
-        }
+            row.querySelector('.dg-item').appendChild(badge);
+        });
+    }
+
+    function paintButton(row, total) {
+        var btn = row.querySelector('.dg-action button');
+        if (!btn) { return; }
+        var g = row.getAttribute('data-g');
+        btn.disabled = (total === 0);
+        btn.textContent = total ? '入力を開始' : '対象なし';
+        btn.title = total ? '' : 'このグループに出題できる名刺がありません';
+        btn.style.cssText = total
+            ? 'background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:7px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit'
+            : 'background:var(--a-disabled-bg);color:var(--a-fg-faint);border:none;border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:default;font-family:inherit';
+        btn.onclick = total ? function () { location.href = 'form.html?g=' + g + '&lang=' + current(); } : null;
+    }
+
+    buildSelect();
+    sel.addEventListener('change', function () {
+        localStorage.setItem(STORE, sel.value);
+        render();
     });
+    var all = document.querySelector('[data-start-all]');
+    if (all) {
+        all.onclick = function () { location.href = 'form.html?g=all&lang=' + current(); };
+    }
+    render();
 }());
 </script>
 </body>

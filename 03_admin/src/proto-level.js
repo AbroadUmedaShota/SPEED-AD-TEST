@@ -6,11 +6,13 @@
 (function () {
     'use strict';
 
+    // lang はアカウントの対応可能言語(23号 §4.2)。出題を制限するものではなく、
+    // データ入力対象一覧の対象言語「自動」が何を指すかを決める既定値として使う
     var LEVELS = {
-        lv1: { n: 1, label: 'Lv1 Operator',      mail: 'l.wang@officeworks.co.jp', group: 'オフィスワークス株式会社' },
-        lv2: { n: 2, label: 'Lv2 OperatorAdmin', mail: 'a.yamamoto@abroad-o.com',  group: 'アブロード本体' },
-        lv3: { n: 3, label: 'Lv3 Admin',         mail: 'admin@abroad-o.com',       group: '' },
-        lv4: { n: 4, label: 'Lv4 MasterAdmin',   mail: 'master@abroad-o.com',      group: '' }
+        lv1: { n: 1, label: 'Lv1 Operator',      mail: 'l.wang@officeworks.co.jp', group: 'オフィスワークス株式会社', lang: ['ja', 'zh-Hans'] },
+        lv2: { n: 2, label: 'Lv2 OperatorAdmin', mail: 'a.yamamoto@abroad-o.com',  group: 'アブロード本体',           lang: ['ja', 'en'] },
+        lv3: { n: 3, label: 'Lv3 Admin',         mail: 'admin@abroad-o.com',       group: '',                        lang: ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko'] },
+        lv4: { n: 4, label: 'Lv4 MasterAdmin',   mail: 'master@abroad-o.com',      group: '',                        lang: ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko'] }
     };
     var KEY = 'adminMockLevel'; // 既定はLv4(MasterAdmin)
 
@@ -23,6 +25,11 @@
     // 各画面が localStorage を直読みすると、ここのフォールバック規則と食い違うため窓口を1本にする
     window.pLevel = function () {
         return LEVELS[currentKey()].n;
+    };
+
+    // 現在のシナリオの対応可能言語を返す。対象言語「自動」の参照先(19号 §4.2)
+    window.pAccountLangs = function () {
+        return LEVELS[currentKey()].lang.slice();
     };
 
     function applyVisibility(lv) {
