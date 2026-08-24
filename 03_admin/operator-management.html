@@ -464,7 +464,9 @@ window.pOpSetPw = function () {
         if (d.status !== '招待中' || !info) { box.hidden = true; box.innerHTML = ''; return; }
         var expired = info.exp < TODAY;
         box.hidden = false;
-        box.innerHTML = '招待メール送信 ' + info.sent.replace(/-/g, '/') + ' ・ 有効期限 ' + info.exp.replace(/-/g, '/')
+        box.innerHTML = '招待メール送信 ' + info.sent.replace(/-/g, '/')
+            + (info.resent ? ' ・ 再送 ' + info.resent.replace(/-/g, '/') : '')
+            + ' ・ 有効期限 ' + info.exp.replace(/-/g, '/')
             + (expired ? ' <span style="color:var(--a-danger);font-weight:700">(期限切れ)</span>' : '')
             + '<br>期限切れはデータから自動で判定します。行える操作は招待の再送とキャンセルの2つです。'
             + '<div style="margin-top:8px;display:flex;gap:8px">'
@@ -474,10 +476,14 @@ window.pOpSetPw = function () {
     }
 
     window.opInviteResend = function () {
-        INVITE[cur] = { sent: TODAY, exp: '2026-08-03' };
+        // 招待の実行と再送は別の操作として記録する(23号 §7.5)。実行日は上書きしない
+        var info = INVITE[cur] || { sent: TODAY };
+        INVITE[cur] = { sent: info.sent, resent: TODAY, exp: '2026-08-03' };
         var row = window.pRow('operatorsList', 'oid', cur);
         if (row) { window.pRowSet(row, { 6: '<span class="status-badge status-info">招待中</span>' }); }
-        renderInvite(document.getElementById('opModal'), cur, OPS[cur]);
+        var m = document.getElementById('opModal');
+        renderInvite(m, cur, OPS[cur]);
+        paintInvitedState(m, cur, OPS[cur]);
         window.pToast(cur + ' へ招待メールを再送しました(有効期限 2026/08/03)');
     };
     window.opInviteCancel = function () {
@@ -551,6 +557,26 @@ window.pOpSetPw = function () {
         }
     }
 
+    // 登録日時・最終ログイン・監査ログの素のサンプルを読み込み時に確保する。
+    // pOpenOperator の walk() がテキストを識別子置換するため、開いた後に保存すると
+    // 置換済みの内容(例: 権限変更の「Lv2」が書き換わった行)を復元してしまう
+    var PRISTINE = (function () {
+        var m = document.getElementById('opModal');
+        if (!m) { return {}; }
+        var q = function (s) { return m.querySelector(s); };
+        return {
+            created: (q('[data-slot="opCreated"]') || {}).textContent || '',
+            login: (q('[data-slot="opLastLogin"]') || {}).textContent || '',
+            audit: (q('[data-slot="opAudit"]') || {}).innerHTML || ''
+        };
+    })();
+
+    function auditRow(dt, text) {
+        return '<div style="display:flex;gap:10px">'
+            + '<span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">' + dt + '</span>'
+            + '<span>' + text + '<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>';
+    }
+
     // 招待中はまだ登録もログインもしていないため、登録済みアカウント向けの
     // サンプル表示(登録日時・最終ログイン・監査ログの履歴)をそのまま出すと矛盾する。
     // パスワード操作も招待中は不可(23号 §4.8)。状態に応じて出し分ける
@@ -560,24 +586,18 @@ window.pOpSetPw = function () {
         var login = m.querySelector('[data-slot="opLastLogin"]');
         var audit = m.querySelector('[data-slot="opAudit"]');
         var pw = m.querySelector('[data-slot="opPw"]');
-        if (created) {
-            if (!created.__sample) { created.__sample = created.textContent; }
-            created.textContent = invited ? '—(本登録前)' : created.__sample;
-        }
-        if (login) {
-            if (!login.__sample) { login.__sample = login.textContent; }
-            login.textContent = invited ? '—' : login.__sample;
-        }
+        if (created) { created.textContent = invited ? '—(本登録前)' : PRISTINE.created; }
+        if (login) { login.textContent = invited ? '—' : PRISTINE.login; }
         if (audit) {
-            if (!audit.__sample) { audit.__sample = audit.innerHTML; }
             if (invited) {
-                var inv = INVITE[oid];
-                var sent = inv ? inv.sent.replace(/-/g, '/') : '';
-                audit.innerHTML = '<div style="display:flex;gap:10px">'
-                    + '<span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">' + sent + ' 10:30</span>'
-                    + '<span>招待を実行<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad-o.com</span></span></div>';
+                // 招待の実行と再送は個別に記録する(23号 §7.5)。新しい操作を上に置く
+                var inv = INVITE[oid] || {};
+                var html = '';
+                if (inv.resent) { html += auditRow(inv.resent.replace(/-/g, '/') + ' 09:40', '招待を再送'); }
+                if (inv.sent) { html += auditRow(inv.sent.replace(/-/g, '/') + ' 10:30', '招待を実行'); }
+                audit.innerHTML = html;
             } else {
-                audit.innerHTML = audit.__sample;
+                audit.innerHTML = PRISTINE.audit;
             }
         }
         // 属性 hidden はインラインの display:contents に負けるため display で切り替える

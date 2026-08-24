@@ -93,12 +93,23 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible(),
       '招待中なのにパスワード操作が出ている').toBe(false);
 
-    // 登録済みアカウントでは従来どおり履歴とパスワード操作が出る
+    // 登録済みアカウントでは従来どおり履歴とパスワード操作が出る。
+    // 復元は素のサンプルからで、識別子置換(walk)後の内容を保存し直していないこと。
+    // 「Lv1 → Lv1」のように権限変更の行が壊れて戻る事故があった(2026-08-24 修正)
     await page.keyboard.press('Escape');
     await page.click('#operatorsList [data-f-oid="OP-0034"]');
     const t2 = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
     expect(t2).toContain('登録完了');
+    expect(t2, '権限変更の履歴が識別子置換で壊れている').toContain('Lv1 → Lv2 に変更');
     expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible()).toBe(true);
+
+    // 招待の再送は実行と別の操作として履歴に残り、実行日は上書きされない(23号 §7.5)
+    await page.keyboard.press('Escape');
+    await page.click('#operatorsList [data-f-oid="OP-0075"]');
+    await page.click('#opModal button:has-text("再送")');
+    const t3 = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
+    expect(t3, '再送の履歴が残らない').toContain('招待を再送');
+    expect(t3, '再送で実行日が上書きされた').toContain('2026/07/21 10:30 招待を実行');
   });
 
   test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {
