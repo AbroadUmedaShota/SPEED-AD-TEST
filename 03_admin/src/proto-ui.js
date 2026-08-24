@@ -354,7 +354,9 @@
     // 行に data-f-<key>、絞り込みUIに data-f-key、一覧容器に data-filter-keys、
     // 絞り込みバーに data-filter-for="{listId}" を付けて使う。
     // 他画面からは同名のクエリ(?uid=U-1052 等)で同じ条件を引き継ぐ
-    var P_EXACT = { status: 1, plan: 1, coupon: 1, group: 1, lv: 1, lang: 1, month: 1, type: 1, today: 1, isnew: 1, premium: 1, unpaid: 1 };
+    // lang は完全一致にしない。行の値が「日本語・英語」のような複合文字列のため、
+    // 完全一致だと「英語」で絞り込んでも1件も当たらない(行側は言語マスタの正式名で持つ)
+    var P_EXACT = { status: 1, plan: 1, coupon: 1, group: 1, lv: 1, month: 1, type: 1, today: 1, isnew: 1, premium: 1, unpaid: 1 };
     var P_LABEL = {
         uid: 'ユーザーID', sid: 'アンケートID', oid: 'オペレーターID', cid: 'クーポンID',
         company: '会社名', name: '氏名', mail: 'メールアドレス', code: 'コード', cname: 'クーポン名',

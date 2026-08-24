@@ -202,4 +202,46 @@ test.describe('一覧の絞り込み', () => {
       expect(await visibleRows(page, list.id), 'クリアしても件数が戻らない').toBe(before);
     });
   }
+
+  // 対応可能言語は「日本語・英語」のような複合値。完全一致で照合すると
+  // 「英語」で絞り込んでも1件も当たらない事故があった（2026-08-24 修正）
+  test('オペレーター管理: 言語の絞り込みが複合値の行にも当たる', async ({ page }) => {
+    await openScreen(page, '/03_admin/operator-management.html');
+    const count = () => visibleRows(page, 'operatorsList');
+    const filterBy = async (label) => {
+      await page.selectOption('select[data-f-key="lang"]', { label });
+      await page.click('[data-filter-for="operatorsList"] button:has-text("検索")');
+      await page.waitForTimeout(250);
+    };
+    await filterBy('日本語');
+    expect(await count(), '全員が日本語対応のはず').toBe(13);
+    await filterBy('英語');
+    expect(await count(), '日本語・英語の4名が当たるはず').toBe(4);
+    await filterBy('中国語簡体字');
+    expect(await count(), '中国語対応の2名が当たるはず').toBe(2);
+  });
+});
+
+test.describe('一覧の既定の並び順', () => {
+  // 見出しの▲▼は初期状態の印で、表示時に並び替えは走らない。
+  // 静的マークアップの行順が崩れていても気づけないため、単調性を直接見る
+  // （監査ログ2行・請求管理1行の逆転を検出できなかった実績から追加。2026-08-24）
+  test('監査ログ: 操作日時の降順で並んでいる', async ({ page }) => {
+    await openScreen(page, '/03_admin/audit-log.html');
+    const times = await page.$$eval('#auditList [data-pg] > span:first-child', (els) => els.map((e) => e.textContent.trim()));
+    expect(times.length).toBeGreaterThan(5);
+    const sorted = [...times].sort().reverse();
+    expect(times, `降順が崩れている: ${times.join(' / ')}`).toEqual(sorted);
+  });
+
+  test('請求管理: 支払期日の昇順で並び、支払期日なしは末尾に寄る', async ({ page }) => {
+    await openScreen(page, '/03_admin/billing-management.html');
+    const dates = await page.$$eval('#billingList [data-pg]', (els) => els.map((e) => e.getAttribute('data-f-date') || ''));
+    const dated = dates.filter(Boolean);
+    const blankFrom = dates.findIndex((d) => !d);
+    expect(dated, `昇順が崩れている: ${dated.join(' / ')}`).toEqual([...dated].sort());
+    if (blankFrom >= 0) {
+      expect(dates.slice(blankFrom).every((d) => !d), '支払期日なしの行の後に日付ありの行がある').toBe(true);
+    }
+  });
 });
