@@ -141,6 +141,46 @@ test('?oid= 遷移でオペレーター別集計が対象オペレーターに�
 });
 
 /**
+ * Lv2(OperatorAdmin)は自グループのオペレーターのみ閲覧できる(00号§5)。
+ * グループ別集計は一覧側(renderGroups)で自グループへ絞られていたが、詳細2画面
+ * (グループ実績詳細・オペレーター実績詳細)は存在チェックのみで、他社の gid/oid を
+ * URL に直打ちすると報酬金額まで見えていた不具合の回帰(ストップ時レビュー検出)。
+ */
+test.describe('Lv2は実績詳細2画面で他社の対象を直打ちしても見られない', () => {
+  test('グループ実績詳細: 自グループは開けるが他社グループは見つからない扱いになる', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('adminMockLevel', 'lv2'));
+
+    // 自グループ(アブロード本体・gid=abroad)は通常どおり開ける
+    await page.goto(`${BASE}/performance-group-detail.html?group=abroad`, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => typeof window.pLevel === 'function', null, { timeout: 20000 });
+    await expect(page.locator('[data-slot="gname"]')).toHaveText('アブロード本体');
+
+    // 他社グループ(オフィスワークス株式会社・gid=officeworks)は直打ちしても見つからない扱い
+    await page.goto(`${BASE}/performance-group-detail.html?group=officeworks`, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => typeof window.pLevel === 'function', null, { timeout: 20000 });
+    const main = (await page.locator('#main-content').innerText()).trim();
+    expect(main, '他社グループが見えてしまっている(存在しない体になっていない)').toContain('指定されたグループが見つかりません');
+    expect(main, '他社の報酬金額が漏れている').not.toContain('円');
+  });
+
+  test('オペレーター実績詳細: 自グループのオペレーターは開けるが他社オペレーターは見つからない扱いになる', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('adminMockLevel', 'lv2'));
+
+    // 自グループ(アブロード本体)所属のOP-0012は通常どおり開ける
+    await page.goto(`${BASE}/performance-operator-detail.html?oid=OP-0012`, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => typeof window.pLevel === 'function', null, { timeout: 20000 });
+    await expect(page.locator('[data-slot="opid"]')).toHaveText('OP-0012');
+
+    // 他社(オフィスワークス株式会社)所属のOP-0058は直打ちしても見つからない扱い
+    await page.goto(`${BASE}/performance-operator-detail.html?oid=OP-0058`, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => typeof window.pLevel === 'function', null, { timeout: 20000 });
+    const main = (await page.locator('#main-content').innerText()).trim();
+    expect(main, '他社オペレーターが見えてしまっている(存在しない体になっていない)').toContain('指定されたオペレーターが見つかりません');
+    expect(main, '他社の報酬金額が漏れている').not.toContain('円');
+  });
+});
+
+/**
  * proto-level.js のドメイン置換(@abroad-o.com → @abroad.example.com)後、
  * pAccountMail() を参照する画面のヘッダー表示が壊れていないことを確認する(Lv2〜Lv4)。
  */

@@ -103,6 +103,8 @@
     var gid = q.get('group');
     // 指定が無ければ既定表示、指定があって実在しなければ「見つかりません」(存在しないIDへ黙ってフォールバックしない)
     if (gid && !D.GROUPS[gid]) { window.pNotFound('グループ', gid, 'performance-management.html', 'オペレーター実績確認へ戻る'); return; }
+    // Lv2は自グループのみ閲覧可(00号§5)。他社グループIDをURLで直打ちされても、存在しない体で扱う(別レコードを黙って出さない)
+    if (gid && window.pLevel() === 2 && D.GROUPS[gid].name !== window.pAccountGroup()) { window.pNotFound('グループ', gid, 'performance-management.html', 'オペレーター実績確認へ戻る'); return; }
     if (!D.GROUPS[gid]) { gid = 'abroad'; }
     var month = '2026-07';
 

@@ -99,6 +99,8 @@
     var oid = q.get('oid');
     // 指定が無ければ既定表示、指定があって実在しなければ「見つかりません」(存在しないIDへ黙ってフォールバックしない)
     if (oid && !D.PERF[oid]) { window.pNotFound('オペレーター', oid, 'performance-management.html', 'オペレーター実績確認へ戻る'); return; }
+    // Lv2は自グループ配下のオペレーターのみ閲覧可(00号§5)。他社オペレーターIDをURLで直打ちされても、存在しない体で扱う(別レコードを黙って出さない)
+    if (oid && window.pLevel() === 2 && D.GROUPS[D.opGroup(oid)].name !== window.pAccountGroup()) { window.pNotFound('オペレーター', oid, 'performance-management.html', 'オペレーター実績確認へ戻る'); return; }
     if (!D.PERF[oid]) { oid = 'OP-0058'; }
     var month = '2026-07';
     var openG = -1; // 展開中の作業グループ(①〜⑧)の添字。-1は全閉
