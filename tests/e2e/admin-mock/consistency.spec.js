@@ -105,7 +105,7 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
 
     // 招待の再送は実行と別の操作として履歴に残り、実行日は上書きされない(23号 §7.5)。
     // 監査ログは追記専用: 繰り返し再送しても1件に潰れず、成立ごとに1行増える。
-    // 実行者は現在の表示シナリオのアカウント(既定 lv4 = master@abroad-o.com)
+    // 実行者は現在の表示シナリオのアカウント(既定 lv4 = master@abroad.example.com)
     await page.keyboard.press('Escape');
     await page.click('#operatorsList [data-f-oid="OP-0075"]');
     await page.click('#opModal button:has-text("再送")');
@@ -115,7 +115,7 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     const audit3 = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
     const resends = (audit3.match(/招待を再送/g) || []).length;
     expect(resends, '2回再送したのに履歴が2件残らない').toBe(2);
-    expect(t3, '再送の実行者が現在シナリオでない').toContain('実行者: master@abroad-o.com');
+    expect(t3, '再送の実行者が現在シナリオでない').toContain('実行者: master@abroad.example.com');
     expect(t3, '再送の時刻が同一で重複に見える').toMatch(/09:45[\s\S]*09:46|09:46[\s\S]*09:45/);
     expect(t3, '再送で実行日が上書きされた').toContain('2026/07/21 10:30 招待を実行');
   });
@@ -132,8 +132,8 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     await page.click('#operatorsList [data-f-oid="OP-0075"]');
     await page.click('#opModal button:has-text("再送")');
     const audit = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
-    expect(audit, 'Lv3 の再送が Lv4 名義で記録された').toContain('招待を再送 実行者: admin@abroad-o.com');
-    expect(audit.split('招待を再送')[1], '再送行の実行者が master になっている').not.toContain('master@abroad-o.com');
+    expect(audit, 'Lv3 の再送が Lv4 名義で記録された').toContain('招待を再送 実行者: admin@abroad.example.com');
+    expect(audit.split('招待を再送')[1], '再送行の実行者が master になっている').not.toContain('master@abroad.example.com');
   });
 
   test('別タブでシナリオが変わっても、表示中のタブの実行者は表示と一致する', async ({ page }) => {
@@ -146,8 +146,120 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     await page.click('#opModal button:has-text("再送")');
     const audit = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
     expect(audit, '表示は Lv4 のままなのに記録が別シナリオになった')
-      .toContain('招待を再送 実行者: master@abroad-o.com');
+      .toContain('招待を再送 実行者: master@abroad.example.com');
     await page.evaluate(() => { localStorage.setItem('adminMockLevel', 'lv4'); });
+  });
+
+  test('招待を送信すると新規行が本人の詳細を開く(OPS未登録で既定のOP-0034へ差し替わらない)', async ({ page }) => {
+    // 2026-08-25 修正: 招待送信時に OPS/INVITE へ登録していなかったため、招待直後の行を
+    // クリックすると OPS[oid] が見つからず既定の OP-0034(田中 大輔)の詳細が開いていた
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('button:has-text("＋ 新規招待")');
+    await expect(page.locator('#mInviteOp')).toBeVisible();
+    const mail = 'new.invite.test@example.co.jp';
+    await page.fill('#mInviteOp input[aria-label="メールアドレス"]', mail);
+    await page.click('#mInviteOp button:has-text("招待を送信")');
+    await page.waitForTimeout(300);
+
+    const oid = await page.evaluate(() => {
+      const rows = [...document.querySelectorAll('#operatorsList [data-f-oid]')];
+      let max = 0, maxOid = '';
+      rows.forEach((r) => {
+        const n = parseInt(r.getAttribute('data-f-oid').replace(/\D/g, ''), 10);
+        if (n > max) { max = n; maxOid = r.getAttribute('data-f-oid'); }
+      });
+      return maxOid;
+    });
+    expect(oid, '招待後に新規行が見つからない').not.toBe('');
+
+    await page.click(`#operatorsList [data-f-oid="${oid}"]`);
+    await expect(page.locator('#opModal')).toBeVisible();
+    const t = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
+    expect(t, '招待直後の詳細に入力したメールが出ていない').toContain(mail);
+    expect(t, '招待直後の詳細に新規行のIDが出ていない').toContain(oid);
+    expect(t, '既定のOP-0034(田中 大輔)の氏名が残ったまま開いている').not.toContain('田中 大輔');
+    expect(t, '既定のOP-0034のメールが残ったまま開いている').not.toContain('d.tanaka@officeworks.co.jp');
+    expect(await page.getByRole('button', { name: '招待を再送' }).isVisible(), '招待中なのに再送ボタンが出ない').toBe(true);
+    expect(await page.getByRole('button', { name: '招待をキャンセル' }).isVisible(), '招待中なのにキャンセルボタンが出ない').toBe(true);
+
+    // 一覧の既定並び順(ID昇順)も壊れていないか(新規行は末尾=最大IDのはず)
+    const oids = await page.$$eval('#operatorsList [data-f-oid]', (els) => els.map((e) => e.getAttribute('data-f-oid')));
+    const nums = oids.map((o) => parseInt(o.replace(/\D/g, ''), 10));
+    expect(nums[nums.length - 1], '新規招待行がID昇順の末尾にない').toBe(Math.max(...nums));
+  });
+
+  test('パスワード直接設定モーダルの入力が対象を切り替えても残らない', async ({ page }) => {
+    // 2026-08-25 修正: #opPwNew/#opPwConfirm/#opPwReason がモーダルを閉じても初期化されず、
+    // 別対象に前回の平文パスワードと理由が残ったまま「設定する」が押せてしまっていた
+    await openScreen(page, '/03_admin/operator-management.html'); // 既定lv4でパスワード直接設定が見える
+    await page.click('#operatorsList [data-f-oid="OP-0034"]');
+    await page.click('#opModal button:has-text("管理者による直接設定")');
+    await expect(page.locator('#mSetPwOp')).toBeVisible();
+    await page.fill('#opPwNew', 'TempPass123!');
+    await page.fill('#opPwConfirm', 'TempPass123!');
+    await page.fill('#opPwReason', 'テスト用の理由');
+    await page.click('#mSetPwOp button:has-text("キャンセル")');
+    await page.waitForTimeout(200);
+
+    await page.click('#operatorsList [data-f-oid="OP-0012"]');
+    await page.click('#opModal button:has-text("管理者による直接設定")');
+    await expect(page.locator('#mSetPwOp')).toBeVisible();
+    expect(await page.inputValue('#opPwNew'), '前回のパスワードが残っている').toBe('');
+    expect(await page.inputValue('#opPwConfirm'), '前回の確認用パスワードが残っている').toBe('');
+    expect(await page.inputValue('#opPwReason'), '前回の理由が残っている').toBe('');
+    expect(await page.getByRole('button', { name: '設定する' }).isDisabled(), '理由が空なのに設定するボタンが押せる').toBe(true);
+  });
+
+  test('無効のオペレーターにパスワード操作が表示されない', async ({ page }) => {
+    // 2026-08-25 修正: paintInvitedState が「招待中でなければ表示」の判定だったため、
+    // 無効(ログイン不可・23号§4.7)のアカウントにも初期化メール送信・直接設定が出ていた
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('#operatorsList [data-f-oid="OP-0061"]'); // 無効
+    await expect(page.locator('#opModal')).toBeVisible();
+    expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible(), '無効なのに初期化メール送信が出ている').toBe(false);
+    expect(await page.getByRole('button', { name: '管理者による直接設定' }).isVisible(), '無効なのにパスワード直接設定が出ている').toBe(false);
+  });
+
+  test('詳細モーダルの保存が一覧とOPSの両方へ反映される(所属・権限・言語)', async ({ page }) => {
+    // 2026-08-25 修正: pOpSave がステータス列しか書き戻さず、所属グループ・権限レベル・
+    // 対応可能言語の変更が一覧にもOPS本体にも反映されなかった(開き直すと消えていた)
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('#operatorsList [data-f-oid="OP-0058"]'); // Lv1・オフィスワークス・日本語+中国語簡/繁
+    await expect(page.locator('#opModal')).toBeVisible();
+    await page.selectOption('#opModal select[data-op-field="group"]', { label: 'データパートナーズ株式会社' });
+    await page.click('#opModal [data-lang-chips] span[role="button"]:has-text("英語")');
+    await page.click('#opModal button:has-text("変更を保存")');
+    await expect(page.locator('#mConfirmDisableOp')).toBeVisible();
+    await page.click('#mConfirmDisableOp button:has-text("保存する")');
+    await page.waitForTimeout(300);
+
+    const rowText = (await page.locator('#operatorsList [data-f-oid="OP-0058"]').innerText()).replace(/\s+/g, ' ');
+    expect(rowText, '一覧の所属グループが保存後に更新されていない').toContain('データパートナーズ株式会社');
+    expect(rowText, '一覧の対応可能言語に追加した英語が反映されていない').toContain('英語');
+
+    // 開き直してもOPS本体が更新されていて保存値が見えるか
+    await page.click('#operatorsList [data-f-oid="OP-0058"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    expect(await page.locator('#opModal select[data-op-field="group"]').inputValue(),
+      '開き直しても保存した所属グループが見えない(OPS本体が更新されていない)').toBe('データパートナーズ株式会社');
+    const chipsText = await page.locator('#opModal [data-lang-chips]').innerText();
+    expect(chipsText, '開き直しても保存した対応可能言語(英語)が選択されていない').toContain('英語 ✓');
+  });
+
+  test('個別監査ログの実行者が横断ログ(監査ログ画面)と一致する', async ({ page }) => {
+    // 2026-08-25 修正: 同一イベント(2026/07/29 14:02・OP-0034のLv1→Lv2)の実行者が
+    // 個別ログ=admin@、横断ログ=master@ で食い違っていた(02号§2は同一データの参照を要求)。
+    // 横断ログ側の表記(Lv4強調バッジ)を正として揃えた
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('#operatorsList [data-f-oid="OP-0034"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    const auditText = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
+    expect(auditText, '個別ログの権限変更イベントの実行者が想定と違う')
+      .toContain('Lv1 → Lv2 に変更 実行者: master@abroad.example.com');
+
+    await openScreen(page, '/03_admin/audit-log.html');
+    const rowText = (await page.locator('#auditList [data-f-target="OP-0034 田中 大輔(Lv1 → Lv2)"]').innerText()).replace(/\s+/g, ' ');
+    expect(rowText, '横断ログの権限変更イベントの実行者が想定と違う').toContain('master@abroad.example.com');
   });
 
   test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {
