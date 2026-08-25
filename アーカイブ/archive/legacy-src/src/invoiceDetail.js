@@ -64,10 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('total-amount').textContent = `¥${invoice.totalAmount.toLocaleString()}`;
 
         // 振込先情報エリア (仮データ)
-        document.getElementById('bank-name').textContent = '三井住友銀行(0009)';
-        document.getElementById('branch-name').textContent = '小岩支店(643)';
+        document.getElementById('bank-name').textContent = 'サンプル銀行(0000)';
+        document.getElementById('branch-name').textContent = '本店(001)';
         document.getElementById('account-type').textContent = '普通';
-        document.getElementById('account-number').textContent = '7128447';
+        document.getElementById('account-number').textContent = '1234567';
         document.getElementById('account-holder').textContent = 'アブロードアウトソーシング株式会社';
     }
 
