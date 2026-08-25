@@ -9,10 +9,10 @@
     // lang はアカウントの対応可能言語(23号 §4.2)。出題を制限するものではなく、
     // データ入力対象一覧の対象言語「自動」が何を指すかを決める既定値として使う
     var LEVELS = {
-        lv1: { n: 1, label: 'Lv1 Operator',      mail: 'l.wang@officeworks.co.jp', group: 'オフィスワークス株式会社', lang: ['ja', 'zh-Hans'] },
-        lv2: { n: 2, label: 'Lv2 OperatorAdmin', mail: 'a.yamamoto@abroad-o.com',  group: 'アブロード本体',           lang: ['ja', 'en'] },
-        lv3: { n: 3, label: 'Lv3 Admin',         mail: 'admin@abroad-o.com',       group: '',                        lang: ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko'] },
-        lv4: { n: 4, label: 'Lv4 MasterAdmin',   mail: 'master@abroad-o.com',      group: '',                        lang: ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko'] }
+        lv1: { n: 1, label: 'Lv1 Operator',      mail: 'l.wang@officeworks.co.jp',      group: 'オフィスワークス株式会社', lang: ['ja', 'zh-Hans'] },
+        lv2: { n: 2, label: 'Lv2 OperatorAdmin', mail: 'a.yamamoto@abroad.example.com', group: 'アブロード本体',           lang: ['ja', 'en'] },
+        lv3: { n: 3, label: 'Lv3 Admin',         mail: 'admin@abroad.example.com',      group: '',                        lang: ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko'] },
+        lv4: { n: 4, label: 'Lv4 MasterAdmin',   mail: 'master@abroad.example.com',     group: '',                        lang: ['ja', 'en', 'zh-Hans', 'zh-Hant', 'ko'] }
     };
     var KEY = 'adminMockLevel'; // 既定はLv4(MasterAdmin)
 
@@ -46,6 +46,12 @@
         return LEVELS[SESSION_KEY].mail;
     };
 
+    // 現在のシナリオの所属グループ。Lv1/Lv2画面の自グループ限定表示の参照先(00号§5)。
+    // Lv3/Lv4は全グループ扱いのため空文字を返す(呼び出し側は空文字を「絞り込みなし」として扱う)
+    window.pAccountGroup = function () {
+        return LEVELS[SESSION_KEY].group;
+    };
+
     function applyVisibility(lv) {
         document.querySelectorAll('[data-min-lv], [data-max-lv]').forEach(function (el) {
             var min = parseInt(el.getAttribute('data-min-lv') || '1', 10);
@@ -68,11 +74,12 @@
 
         var pageMin = parseInt(main.getAttribute('data-page-min-lv') || '1', 10);
         if (conf.n < pageMin) {
+            // 1920px全幅方針(01号§共通)に合わせ、中央寄せの最大幅は持たせず本文と同じ左右パディングのみ当てる
             main.innerHTML =
-                '<div class="w-full max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">' +
+                '<div style="padding:18px 24px 40px">' +
                 '<div style="background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:40px 32px;text-align:center">' +
                 '<div style="font-size:16px;font-weight:700;color:var(--a-fg-strong)">この画面は ' + conf.label + ' シナリオでは表示されません</div>' +
-                '<div style="margin-top:10px;font-size:12.5px;color:var(--a-fg-muted)">閲覧可能: Lv' + pageMin + '以上(スプシ「管理画面_たたき台」G列)。ヘッダー右上の表示シナリオで切り替えられます。</div>' +
+                '<div style="margin-top:10px;font-size:12.5px;color:var(--a-fg-muted)">閲覧可能: Lv' + pageMin + '以上(権限一覧: 00_admin_common_permissions.md §3)。ヘッダー右上の表示シナリオで切り替えられます。</div>' +
                 '</div></div>';
             return;
         }
@@ -84,8 +91,9 @@
             && !document.querySelector('.admin-workscreen')) {
             var band = document.createElement('div');
             band.id = 'proto-range-note';
+            // 中央寄せの最大幅は持たせず、本文と同じ左右パディング(24px)だけ当てて左端を揃える(1920px全幅方針)
             band.innerHTML =
-                '<div style="max-width:72rem;margin:0 auto;padding:16px 24px 0">' +
+                '<div style="padding:16px 24px 0">' +
                 '<div style="font-size:11.5px;color:var(--a-warn);background:var(--a-warn-bg);border:1px solid var(--a-warn-border);border-radius:6px;padding:6px 12px;display:inline-block">' +
                 rangeText(conf) +
                 '</div></div>';
@@ -95,7 +103,7 @@
 
     function rangeText(conf) {
         return '表示シナリオ ' + conf.label + ': 表示範囲は自グループ(' + conf.group
-            + ')のみ(スプシG列)。モックの見せ分けのため一覧データは絞り込んでいません。';
+            + ')のみ(権限一覧: 00_admin_common_permissions.md §3)。モックの見せ分けのため一覧データは絞り込んでいません。';
     }
 
     // 作業画面用。ヘッダーの右側へ短い注記として置き、作業領域を削らない
