@@ -116,8 +116,8 @@ test.describe('表示テーマ', () => {
       for (const n of fs.readdirSync(dir)) {
         const p = path.join(dir, n);
         if (fs.statSync(p).isDirectory()) {
-          // BY-*・sample・old は凍結した旧資産。テーマの対象外
-          if (/^(BY-|sample$|old$)/.test(n)) { continue; }
+          // BY-*・sample・old・legacy は凍結した旧資産。テーマの対象外
+          if (/^(BY-|sample$|old$|legacy$)/.test(n)) { continue; }
           walk(p);
           continue;
         }

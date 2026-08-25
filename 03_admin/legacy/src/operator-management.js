@@ -501,7 +501,6 @@ function initEditOperatorModal() {
             }
 
             // In a real app, you would send this to the server.
-            console.log(`[operator-management] Passwords matched. New password for operator: ${newPassword}`); // For demonstration
             showToast('パスワードが変更されました。', 'success');
         }, {
             title: 'パスワード変更',
