@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPEED AD 名刺デザイン 30案</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="page-header">
+    <p class="eyebrow">SPEED AD / BUSINESS CARD STUDY</p>
+    <h1>名刺デザイン 30案</h1>
+    <p>91 × 55 mm・表裏セット。ブランドカラーと現行サービス仕様を基準にした比較用サンプルです。</p>
+  </header>
+
+  <main id="card-gallery" class="card-gallery" aria-live="polite"></main>
+
+  <template id="card-set-template">
+    <section class="card-set">
+      <div class="set-heading">
+        <span class="set-number"></span>
+        <div>
+          <h2 class="set-title"></h2>
+          <p class="set-description"></p>
+        </div>
+      </div>
+      <div class="card-row">
+        <article class="business-card card-front" aria-label="名刺 表面"></article>
+        <article class="business-card card-back" aria-label="名刺 裏面"></article>
+      </div>
+    </section>
+  </template>
+
+  <script src="cards.js" defer></script>
+</body>
+</html>

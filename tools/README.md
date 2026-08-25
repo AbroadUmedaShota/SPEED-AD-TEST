@@ -11,3 +11,6 @@ Utility scripts and scratch files that support the mock dashboard workflow live 
 
 ## Samples
 - `samples/test.mjs`: Scratchpad module kept for quick Node.js experiments. Feel free to delete after use.
+
+## Browser tools
+- `logo-svg-editor/`: Local browser-based editor for absolute `M` / `L` / `C` / `Z` SVG paths. See [`logo-svg-editor/README.md`](logo-svg-editor/README.md) for startup and usage instructions.

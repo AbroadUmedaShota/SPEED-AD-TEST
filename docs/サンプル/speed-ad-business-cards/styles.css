@@ -1,0 +1,823 @@
+:root {
+  --navy: #062a55;
+  --navy-2: #0d3f75;
+  --yellow: #f3c118;
+  --paper: #f7f8f6;
+  --ink: #10243d;
+  --muted: #66758a;
+  --card-w: 91mm;
+  --card-h: 55mm;
+  color: var(--ink);
+  font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #e8edf2;
+}
+
+.page-header {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 52px 36px 24px;
+}
+
+.page-header h1 {
+  margin: 7px 0 12px;
+  font-size: 34px;
+  letter-spacing: .06em;
+}
+
+.page-header p {
+  margin: 0;
+  color: #53647a;
+}
+
+.page-header .eyebrow {
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+
+.card-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(820px, 1fr));
+  gap: 22px;
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: 24px 30px 70px;
+}
+
+.card-set {
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid #d5dde6;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 35px rgba(19, 39, 65, .08);
+  break-after: page;
+}
+
+.set-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.set-number {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font: 700 12px/1 Arial, sans-serif;
+}
+
+.set-title {
+  margin: 0 0 3px;
+  font: 700 18px/1.2 Arial, sans-serif;
+  letter-spacing: .04em;
+}
+
+.set-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.card-row {
+  display: flex;
+  gap: 18px;
+}
+
+.business-card {
+  position: relative;
+  flex: 0 0 var(--card-w);
+  width: var(--card-w);
+  height: var(--card-h);
+  overflow: hidden;
+  border: 1px solid rgba(6, 42, 85, .15);
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(16, 36, 61, .12);
+}
+
+.business-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.decor {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.brand-logo {
+  width: 26mm;
+  height: 12mm;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.brand-logo--light {
+  filter: brightness(0) invert(1);
+}
+
+.front-brand {
+  position: absolute;
+  top: 5mm;
+  left: 7mm;
+}
+
+.identity {
+  position: absolute;
+  top: 20mm;
+  left: 7mm;
+}
+
+.division {
+  margin: 0 0 1.6mm;
+  color: var(--muted);
+  font-size: 6.3pt;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.person-name {
+  margin: 0;
+  font-size: 13.5pt;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.person-name-en {
+  margin: 1.1mm 0 0;
+  color: var(--muted);
+  font: 700 5.4pt/1 Arial, sans-serif;
+  letter-spacing: .18em;
+}
+
+.contact-list {
+  position: absolute;
+  right: 6mm;
+  bottom: 9mm;
+  width: 34mm;
+  margin: 0;
+  font: 6.1pt/1.55 Arial, sans-serif;
+}
+
+.contact-list div {
+  display: grid;
+  grid-template-columns: 4mm 1fr;
+}
+
+.contact-list dt {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.contact-list dd {
+  margin: 0;
+}
+
+.company-name {
+  position: absolute;
+  bottom: 5mm;
+  left: 7mm;
+  margin: 0;
+  font-size: 6.2pt;
+  font-weight: 700;
+}
+
+.sample-note {
+  position: absolute;
+  right: 5mm;
+  bottom: 3.5mm;
+  color: #9aa6b5;
+  font: 4.3pt/1 Arial, sans-serif;
+  letter-spacing: .1em;
+}
+
+.card-back {
+  padding: 6mm 7mm;
+  background: var(--navy);
+  color: #fff;
+}
+
+.back-copy {
+  width: 58mm;
+}
+
+.back-kicker {
+  margin: 0 0 3mm;
+  color: var(--yellow);
+  font: 700 5.5pt/1 Arial, sans-serif;
+  letter-spacing: .18em;
+}
+
+.back-copy h3,
+.flow-heading h3,
+.scan-copy h3 {
+  margin: 0;
+  font-size: 17pt;
+  line-height: 1.32;
+  letter-spacing: .04em;
+}
+
+.back-copy > p:last-child {
+  width: 52mm;
+  margin: 3mm 0 0;
+  color: #d9e6f2;
+  font-size: 6.5pt;
+  line-height: 1.55;
+}
+
+.qr-block {
+  position: absolute;
+  z-index: 50;
+  right: 6mm;
+  bottom: 5.5mm;
+  text-align: center;
+}
+
+.qr-block img {
+  display: block;
+  width: 19mm;
+  height: 19mm;
+  padding: 1.5mm;
+  background: #fff;
+}
+
+.qr-block p {
+  margin: 1.1mm 0 0;
+  color: inherit;
+  font-size: 4.8pt;
+  font-weight: 700;
+}
+
+.feature-heading {
+  width: 48mm;
+}
+
+.feature-heading .brand-logo {
+  width: 23mm;
+  height: 10mm;
+  margin-bottom: 2mm;
+  filter: brightness(0) invert(1);
+}
+
+.feature-heading p {
+  margin: 0;
+  font-size: 6pt;
+  line-height: 1.5;
+}
+
+.feature-list {
+  position: absolute;
+  left: 7mm;
+  bottom: 6mm;
+  display: flex;
+  gap: 2mm;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature-list li {
+  width: 17mm;
+  min-height: 13mm;
+  padding: 2mm;
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 1.5mm;
+  font-size: 5.5pt;
+  line-height: 1.35;
+}
+
+.feature-list span {
+  display: block;
+  margin-bottom: 1mm;
+  color: var(--yellow);
+  font: 700 5pt/1 Arial, sans-serif;
+}
+
+.flow-heading {
+  width: 52mm;
+}
+
+.flow-heading h3 {
+  font-size: 12.5pt;
+}
+
+.flow-list {
+  position: absolute;
+  left: 7mm;
+  bottom: 8mm;
+  display: flex;
+  width: 59mm;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-list li {
+  position: relative;
+  flex: 1;
+  padding-top: 5mm;
+  border-top: .5mm solid rgba(255, 255, 255, .35);
+  font-size: 5.4pt;
+}
+
+.flow-list li::before {
+  position: absolute;
+  top: -1.8mm;
+  left: 0;
+  width: 3mm;
+  height: 3mm;
+  border-radius: 50%;
+  background: var(--yellow);
+  content: "";
+}
+
+.flow-list span {
+  display: block;
+  margin-bottom: .6mm;
+  color: var(--yellow);
+  font: 700 4.6pt/1 Arial, sans-serif;
+}
+
+.scan-copy {
+  width: 48mm;
+}
+
+.scan-copy > p {
+  margin: 0 0 2mm;
+  color: var(--yellow);
+  font: 700 6pt/1 Arial, sans-serif;
+  letter-spacing: .18em;
+}
+
+.scan-copy h3 {
+  font-size: 21pt;
+}
+
+.scan-copy span {
+  display: block;
+  margin-top: 3mm;
+  font-size: 6pt;
+  line-height: 1.5;
+}
+
+/* 01-05: simple */
+[data-concept="navy-frame"] .business-card {
+  border: 2.2mm solid var(--navy);
+}
+
+[data-concept="navy-frame"] .front-brand,
+[data-concept="navy-frame"] .identity {
+  left: 5mm;
+}
+
+[data-concept="slate-minimal"] .card-front {
+  background: #eef1f3;
+}
+
+[data-concept="slate-minimal"] .front-brand {
+  filter: grayscale(1);
+}
+
+[data-concept="slate-minimal"] .card-back {
+  background: #283541;
+}
+
+[data-concept="vertical-mark"] .card-front::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4mm;
+  background: var(--yellow);
+  content: "";
+}
+
+[data-concept="vertical-mark"] .card-back::after {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 9mm;
+  background: var(--yellow);
+  content: "";
+}
+
+[data-concept="quiet-grid"] .business-card {
+  background-image:
+    linear-gradient(rgba(6, 42, 85, .055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6, 42, 85, .055) 1px, transparent 1px);
+  background-size: 6mm 6mm;
+}
+
+[data-concept="quiet-grid"] .card-back {
+  background-color: var(--navy);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px);
+}
+
+/* 06-10: digital */
+[data-concept="azure-mesh"] .business-card {
+  background: radial-gradient(circle at 90% 10%, #5fd0ff 0, transparent 34%),
+    linear-gradient(135deg, #082d5e, #0c78af);
+  color: #fff;
+}
+
+[data-concept="azure-mesh"] .card-front .brand-logo {
+  filter: brightness(0) invert(1);
+}
+
+[data-concept="azure-mesh"] .division,
+[data-concept="azure-mesh"] .person-name-en,
+[data-concept="azure-mesh"] .contact-list dt {
+  color: #d5f4ff;
+}
+
+[data-concept="circuit-line"] .decor-a {
+  right: -10mm;
+  top: 8mm;
+  width: 48mm;
+  height: 29mm;
+  border: 1px solid #18a7d7;
+  border-width: 1px 0 0 1px;
+  transform: rotate(-18deg);
+}
+
+[data-concept="circuit-line"] .decor-b {
+  right: 12mm;
+  top: 4mm;
+  width: 3mm;
+  height: 3mm;
+  border-radius: 50%;
+  background: var(--yellow);
+}
+
+[data-concept="data-dots"] .business-card {
+  background-image: radial-gradient(circle, rgba(6, 42, 85, .18) 1px, transparent 1.2px);
+  background-size: 4mm 4mm;
+}
+
+[data-concept="data-dots"] .card-back {
+  background-color: var(--navy);
+  background-image: radial-gradient(circle, rgba(255, 255, 255, .18) 1px, transparent 1.2px);
+}
+
+[data-concept="scan-window"] .business-card::before {
+  position: absolute;
+  inset: 4mm;
+  border: .6mm solid var(--yellow);
+  clip-path: polygon(0 0, 18% 0, 18% 4%, 4% 4%, 4% 22%, 0 22%, 0 0, 100% 0, 100% 22%, 96% 22%, 96% 4%, 82% 4%, 82% 0, 100% 0, 100% 100%, 82% 100%, 82% 96%, 96% 96%, 96% 78%, 100% 78%, 100% 100%, 0 100%, 0 78%, 4% 78%, 4% 96%, 18% 96%, 18% 100%, 0 100%);
+  content: "";
+}
+
+[data-concept="interface-panel"] .business-card {
+  background: linear-gradient(90deg, var(--navy) 0 13mm, #fff 13mm);
+}
+
+[data-concept="interface-panel"] .card-back {
+  background: linear-gradient(90deg, #0b4f86 0 13mm, var(--navy) 13mm);
+}
+
+/* 11-15: speed */
+[data-concept="velocity-slash"] .decor-a,
+[data-concept="velocity-slash"] .decor-b,
+[data-concept="motion-track"] .decor-a,
+[data-concept="aero-stripe"] .decor-a,
+[data-concept="fast-lane"] .decor-a {
+  right: -12mm;
+  top: -20mm;
+  width: 28mm;
+  height: 100mm;
+  background: var(--yellow);
+  transform: rotate(32deg);
+}
+
+[data-concept="velocity-slash"] .decor-b {
+  right: 9mm;
+  width: 3mm;
+  background: #21a7df;
+}
+
+[data-concept="motion-track"] .decor-a {
+  top: 28mm;
+  width: 58mm;
+  height: 1.2mm;
+  box-shadow: 0 4mm 0 rgba(243, 193, 24, .65), 0 8mm 0 rgba(243, 193, 24, .28);
+  transform: rotate(-9deg);
+}
+
+[data-concept="yellow-burst"] .card-front {
+  background: var(--yellow);
+}
+
+[data-concept="yellow-burst"] .card-back {
+  background: var(--yellow);
+  color: var(--navy);
+}
+
+[data-concept="yellow-burst"] .back-kicker,
+[data-concept="yellow-burst"] .flow-list span,
+[data-concept="yellow-burst"] .flow-list li::before {
+  color: var(--navy);
+  background: var(--navy);
+}
+
+[data-concept="yellow-burst"] .flow-list li {
+  border-color: rgba(6, 42, 85, .35);
+}
+
+[data-concept="aero-stripe"] .decor-a {
+  top: 3mm;
+  width: 1mm;
+  box-shadow: 4mm 0 0 #19a6d7, 8mm 0 0 rgba(6, 42, 85, .25);
+}
+
+[data-concept="fast-lane"] .decor-a {
+  top: 6mm;
+  right: -5mm;
+  width: 1.2mm;
+  background: #15a6dc;
+  box-shadow: 5mm 0 0 var(--yellow), 10mm 0 0 #58c8e9, 15mm 0 0 rgba(6, 42, 85, .35);
+}
+
+/* 16-20: exhibition */
+[data-concept="qr-hero"] .card-back .qr-block img,
+[data-concept="full-scan"] .card-back .qr-block img {
+  width: 29mm;
+  height: 29mm;
+}
+
+[data-concept="qr-hero"] .card-back .qr-block,
+[data-concept="full-scan"] .card-back .qr-block {
+  right: 8mm;
+  bottom: 7mm;
+}
+
+[data-concept="event-pass"] .business-card {
+  border-radius: 3mm;
+}
+
+[data-concept="event-pass"] .card-front::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 4mm;
+  background: repeating-linear-gradient(90deg, var(--yellow) 0 4mm, var(--navy) 4mm 8mm);
+  content: "";
+}
+
+[data-concept="feature-tiles"] .feature-list li {
+  background: rgba(255, 255, 255, .09);
+}
+
+[data-concept="follow-up"] .flow-list li::after {
+  position: absolute;
+  top: -1.1mm;
+  right: 1mm;
+  color: rgba(255, 255, 255, .65);
+  content: "→";
+}
+
+[data-concept="follow-up"] .flow-list li:last-child::after {
+  content: "";
+}
+
+/* 21-25: premium */
+[data-concept="black-gold"] .business-card {
+  background: #0d1014;
+  color: #f6e7ad;
+}
+
+[data-concept="black-gold"] .division,
+[data-concept="black-gold"] .person-name-en,
+[data-concept="black-gold"] .contact-list dt,
+[data-concept="black-gold"] .back-kicker {
+  color: var(--yellow);
+}
+
+[data-concept="midnight-foil"] .business-card {
+  background: linear-gradient(125deg, #02152e, #062a55 58%, #0f477b);
+  color: #fff;
+}
+
+[data-concept="midnight-foil"] .business-card::after {
+  position: absolute;
+  inset: -50% auto auto 45%;
+  width: .4mm;
+  height: 120mm;
+  background: linear-gradient(transparent, var(--yellow), transparent);
+  transform: rotate(41deg);
+  content: "";
+}
+
+[data-concept="executive-navy"] .business-card {
+  background: var(--navy);
+  color: #fff;
+}
+
+[data-concept="executive-navy"] .division,
+[data-concept="executive-navy"] .person-name-en,
+[data-concept="executive-navy"] .contact-list dt {
+  color: var(--yellow);
+}
+
+[data-concept="soft-ivory"] .business-card {
+  background: #f6f0e4;
+  color: #2c3540;
+}
+
+[data-concept="soft-ivory"] .card-back {
+  background: #3c4650;
+  color: #fff;
+}
+
+[data-concept="monochrome"] .business-card {
+  background: #fff;
+  color: #111;
+  filter: grayscale(1);
+}
+
+[data-concept="monochrome"] .card-back {
+  background: #111;
+  color: #fff;
+}
+
+/* 26-30: experimental */
+[data-concept="cyber-grid"] .business-card {
+  background-color: #031526;
+  background-image:
+    linear-gradient(rgba(44, 227, 255, .12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(44, 227, 255, .12) 1px, transparent 1px);
+  background-size: 5mm 5mm;
+  color: #dffcff;
+}
+
+[data-concept="cyber-grid"] .division,
+[data-concept="cyber-grid"] .person-name-en,
+[data-concept="cyber-grid"] .contact-list dt,
+[data-concept="cyber-grid"] .scan-copy > p {
+  color: #2ce3ff;
+}
+
+[data-concept="neon-signal"] .business-card {
+  background: #130c2c;
+  color: #fff;
+  box-shadow: inset 0 0 8mm rgba(255, 38, 193, .22);
+}
+
+[data-concept="neon-signal"] .decor-a {
+  inset: 6mm;
+  border: .6mm solid #1ce6ff;
+  box-shadow: 0 0 4mm #1ce6ff, inset 0 0 3mm rgba(28, 230, 255, .35);
+}
+
+[data-concept="neon-signal"] .scan-copy > p,
+[data-concept="neon-signal"] .contact-list dt {
+  color: #ff45c7;
+}
+
+[data-concept="neon-signal"] .company-name {
+  bottom: 7.5mm;
+}
+
+[data-concept="neon-signal"] .contact-list {
+  bottom: 10.5mm;
+}
+
+[data-concept="neon-signal"] .sample-note {
+  bottom: 7mm;
+}
+
+[data-concept="glass-layer"] .business-card {
+  background: linear-gradient(135deg, #0a4f86, #55c8df);
+  color: #fff;
+}
+
+[data-concept="glass-layer"] .business-card::before {
+  position: absolute;
+  inset: 4mm;
+  border: 1px solid rgba(255, 255, 255, .42);
+  border-radius: 3mm;
+  background: rgba(255, 255, 255, .14);
+  content: "";
+}
+
+[data-concept="glass-layer"] .division,
+[data-concept="glass-layer"] .person-name-en,
+[data-concept="glass-layer"] .contact-list dt {
+  color: #fff;
+}
+
+[data-concept="pixel-pulse"] .business-card {
+  background: #071d35;
+  color: #fff;
+}
+
+[data-concept="pixel-pulse"] .decor-a {
+  right: 4mm;
+  top: 4mm;
+  width: 2mm;
+  height: 2mm;
+  background: var(--yellow);
+  box-shadow:
+    -4mm 3mm 0 #29bde4, -9mm 7mm 0 var(--yellow),
+    0 8mm 0 #29bde4, -5mm 12mm 0 rgba(243, 193, 24, .5),
+    -14mm 14mm 0 #29bde4, -2mm 20mm 0 var(--yellow);
+}
+
+[data-concept="pixel-pulse"] .division,
+[data-concept="pixel-pulse"] .person-name-en,
+[data-concept="pixel-pulse"] .contact-list dt {
+  color: #d8f5ff;
+}
+
+[data-concept="future-portal"] .business-card {
+  background: #061e3a;
+  color: #fff;
+}
+
+[data-concept="future-portal"] .decor-a {
+  right: -8mm;
+  top: 4mm;
+  width: 42mm;
+  height: 42mm;
+  border: 1mm solid var(--yellow);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4mm rgba(36, 188, 229, .25), 0 0 0 9mm rgba(36, 188, 229, .11);
+}
+
+[data-concept="future-portal"] .division,
+[data-concept="future-portal"] .person-name-en,
+[data-concept="future-portal"] .contact-list dt {
+  color: #d8f5ff;
+}
+
+@media (max-width: 900px) {
+  .card-gallery {
+    display: block;
+    padding: 12px;
+  }
+
+  .card-set {
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+
+  .card-row {
+    width: max-content;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .page-header {
+    display: none;
+  }
+
+  .card-gallery {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+
+  .card-set {
+    display: flex;
+    height: 186mm;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0;
+    padding: 12mm;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    page-break-after: always;
+  }
+
+  .card-row {
+    justify-content: center;
+  }
+
+  .business-card {
+    box-shadow: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
