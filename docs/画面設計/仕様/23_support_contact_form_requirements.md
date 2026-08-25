@@ -1,7 +1,7 @@
 ---
 owner: support-contact
 status: confirmed
-last_reviewed: 2026-06-22
+last_reviewed: 2026-07-11
 ---
 
 # サポートお問い合わせフォーム仕様
@@ -21,6 +21,7 @@ last_reviewed: 2026-06-22
 - 送信先URL未設定時は成功扱いにせず、設定未完了のエラーを表示する。
 - 添付画像はフロントエンドでWEBPへ変換してから送信する。
 - 確認者向け画面は公開投稿GASと分離した専用 Google Apps Script Web App とする。短期運用では閲覧者ごとのOAuth承認ループを避けるため、GASはデプロイユーザー権限で実行し、通知URL内の確認用トークンで表示を制御する。
+- bot 対策は honeypot、フォーム表示からの経過時間、ユーザー操作有無、投稿元URL、User-Agent に加えて Cloudflare Turnstile を組み合わせた多層防御とする。
 
 ## 3. 理想仕様
 
@@ -48,12 +49,15 @@ last_reviewed: 2026-06-22
 1. フロントエンドで必須項目とメール形式を検証する。
 2. 添付画像をブラウザ側でWEBPへ変換し、WEBPの base64 と元画像メタ情報を `text/plain;charset=utf-8` の JSON として専用GASへ送信する。
 3. GAS側でも同じ入力検証を行う。
-4. 添付画像がある場合は Drive フォルダへ保存する。
-5. 投稿内容を `contact_submissions` シートへ記録する。
-6. `CONTACT_FROM_EMAIL` を From にできるか確認し、使えない場合はGAS実行ユーザーから送信して Reply-To を `CONTACT_REPLY_TO_EMAIL` にする。
-7. `SUPPORT_CONTACT_NOTIFY_EMAIL` へ社内通知メールを送信する。早期検知を優先し、社内通知は投稿者向け受付メールより先に送る。通知の主導線は確認アプリの詳細URLとする。
-8. 投稿者へ受付メールを送信する。
-9. 保存、社内通知、投稿者向けメール送信が成功した場合に、完了画面を表示する。
+4. 送信前に honeypot、フォーム表示からの経過時間、ユーザー操作有無、投稿元URL、User-Agent を検証し、bot 判定時は保存・通知・受付メールを行わない。
+5. ブラウザで取得した Cloudflare Turnstile トークンを payload に含める。
+6. GAS側で Cloudflare Siteverify API により Turnstile を検証し、token 欠落、不正、期限切れ、再利用、hostname/action 不一致、検証API障害の場合は保存前に拒否する。
+7. 添付画像がある場合は Drive フォルダへ保存する。
+8. 投稿内容を `contact_submissions` シートへ記録する。
+9. `CONTACT_FROM_EMAIL` を From にできるか確認し、使えない場合はGAS実行ユーザーから送信して Reply-To を `CONTACT_REPLY_TO_EMAIL` にする。
+10. `SUPPORT_CONTACT_NOTIFY_EMAIL` へ社内通知メールを送信する。早期検知を優先し、社内通知は投稿者向け受付メールより先に送る。通知の主導線は確認アプリの詳細URLとする。
+11. 投稿者へ受付メールを送信する。
+12. 保存、社内通知、投稿者向けメール送信が成功した場合に、完了画面を表示する。
 
 保存失敗時はメール送信せず、送信成功扱いにしない。`CONTACT_FROM_EMAIL` を From にできない場合でも送信は継続し、`CONTACT_REPLY_TO_EMAIL` を返信先として設定する。
 
@@ -91,6 +95,9 @@ Content-Type: text/plain;charset=utf-8
     ],
     "sourceUrl": "https://support.speed-ad.com/contact/",
     "userAgent": "...",
+    "turnstileToken": "...",
+    "turnstileAction": "contact_submit",
+    "turnstileHostname": "support.speed-ad.com",
     "privacyConsent": true
   }
 }
@@ -201,6 +208,7 @@ Content-Type: text/plain;charset=utf-8
 - `SUPPORT_CONTACT_MAX_ATTACHMENT_MB`
 - `SUPPORT_CONTACT_WEBP_QUALITY`
 - `SUPPORT_CONTACT_TEST_MODE_TOKEN`
+- `SUPPORT_CONTACT_TURNSTILE_SITE_KEY`
 
 GAS側 Script Properties:
 
@@ -214,6 +222,7 @@ GAS側 Script Properties:
 - `CONTACT_VIEWER_BASE_URL`
 - `CONTACT_VIEWER_ACCESS_TOKEN`
 - `CONTACT_TEST_MODE_TOKEN`
+- `CONTACT_TURNSTILE_SECRET`
 
 確認者GAS側 Script Properties:
 
@@ -251,15 +260,15 @@ GAS側 Script Properties:
 
 - フロントエンド検証だけに依存せず、サーバー側で必須項目、文字数、添付種別、添付サイズを検証する。
 - 投稿 API は HTTPS のみ許可する。
-- bot 対策として reCAPTCHA v3 または同等の仕組みを検討する。
+- bot 対策として、現行は honeypot、フォーム表示からの経過時間、ユーザー操作有無、投稿元URL、User-Agent に加えて Cloudflare Turnstile を保存前に検証する。
 - 添付ファイルは公開 URL にしない。必要に応じて権限付き URL または期限付き URL を使う。
 - スプレッドシートと添付保存先の閲覧権限は最小限にする。
 - 確認アプリは短期運用では通知URLの確認用トークンで問い合わせ情報を表示する。中期的には `abroad-o.com` 所有のGASへ移行し、Google アカウント単位の許可リスト制御へ戻す。
 - `/privacy/` への同意文言または個人情報取扱いへのリンクをフォーム内に表示する。
+- `/privacy/` では、Turnstileには氏名、メールアドレス、件名、本文、添付を送らないことと、受付データを Google Workspace で保存・対応することを明示する。
 
 ## 9. 未確定事項
 
-- bot 対策の採用方式。
 - `SUPPORT_CONTACT_GAS_WEB_APP_URL` の本番反映方法。
 - 確認アプリURLの社内ブックマーク、通知先メールでの案内方法。
 
