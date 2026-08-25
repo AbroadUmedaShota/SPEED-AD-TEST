@@ -71,7 +71,7 @@
             </div>
             <section id="paneGroups" role="tabpanel" aria-labelledby="tabGroups">
             <div style="margin-top:14px;font-size:12px;color:var(--a-fg-muted2)">行を押すとグループ実績詳細(月次推移・項目別内訳・所属オペレーター)へ移動します</div>
-            <div id="perfGroups" style="margin-top:10px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
+            <div id="perfGroups" data-a-region="summary" style="margin-top:10px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
               <div style="display:grid;grid-template-columns:minmax(200px,230fr) minmax(140px,70fr) minmax(140px,70fr) minmax(110px,52fr) minmax(150px,70fr) minmax(150px,70fr) minmax(150px,70fr);align-items:center;padding:0 18px;height:42px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
                 <span>グループ名</span><span style="text-align:right">合計作業件数</span><span class="c-opt" style="text-align:right">合計正解件数</span><span style="text-align:right">平均正答率</span><span style="text-align:right">合計スキップ回数</span><span style="text-align:right">合計報酬金額</span><span style="text-align:right">最終報酬金額</span>
               </div>
@@ -80,7 +80,7 @@
             </section>
             <section id="paneOps" role="tabpanel" aria-labelledby="tabOps" hidden>
             <div style="margin-top:14px;font-size:12px;color:var(--a-fg-muted2)">行を押すとオペレーター実績詳細(月次推移・作業グループ①〜⑧×入力項目別・日別)へ移動します</div>
-            <div id="perfList" data-sortable data-filter-keys="oid,name,group" style="margin-top:10px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
+            <div id="perfList" data-a-region="list" data-sortable data-filter-keys="oid,name,group" style="margin-top:10px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
               <div style="display:grid;grid-template-columns:110px minmax(140px,115fr) minmax(200px,230fr) minmax(130px,60fr) minmax(120px,55fr) minmax(100px,46fr) minmax(130px,60fr) minmax(130px,60fr);align-items:center;padding:0 18px;height:42px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
                 <span>ID</span><span>氏名</span><span>所属グループ</span><span title="既定の並び順" style="text-align:right;color:var(--a-fg-muted)">作業件数 ▼</span><span class="c-opt" style="text-align:right">正解件数</span><span style="text-align:right">正答率</span><span style="text-align:right">スキップ回数</span><span style="text-align:right">報酬金額</span>
               </div>
@@ -104,7 +104,7 @@
               </div>
               <div id="perfList-empty" style="display:none;padding:26px 18px;text-align:center;font-size:13px;color:var(--a-fg-faint)">条件に一致する行がありません。条件を変えるか「条件をクリア」で全件に戻せます。</div>
             </div>
-            <div style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--a-fg-muted);flex-wrap:wrap;row-gap:8px">
+            <div data-a-ctl="perfList" style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--a-fg-muted);flex-wrap:wrap;row-gap:8px">
               <div style="display:flex;align-items:center;gap:16px"><span style="font-variant-numeric:tabular-nums">全 <span id="perfList-total">6</span> 名中 <span id="perfList-range">1〜6</span> 名を表示</span><label style="display:flex;align-items:center;gap:6px">表示件数 <select aria-label="表示件数" onchange="pPageSize('perfList', parseInt(this.value, 10))" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"><option selected>50</option><option>100</option><option>150</option></select></label></div>
               <div id="perfList-pager" data-current="1" style="display:flex;gap:4px;font-variant-numeric:tabular-nums"><button onclick="pPageStep('perfList',-1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">‹</button><button data-page="1" data-range="1〜6" onclick="pPage('perfList',1)" style="border:1px solid var(--a-accent);background:var(--a-accent-bg);color:var(--a-on-accent);border-radius:6px;padding:5px 10px;font-weight:700;cursor:pointer;font-family:inherit">1</button><button onclick="pPageStep('perfList',1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">›</button></div>
             </div>

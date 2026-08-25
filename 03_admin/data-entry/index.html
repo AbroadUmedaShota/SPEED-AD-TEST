@@ -72,7 +72,7 @@
             </div>
           </div>
           <div style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:18px 22px;display:flex;align-items:center;gap:28px;flex-wrap:wrap">
-            <div style="flex:none">
+            <div id="deSummary" data-a-region="summary" style="flex:none">
               <div style="font-size:12px;color:var(--a-fg-muted);font-weight:500">あなたの作業可能件数</div>
               <div style="font-size:36px;font-weight:700;line-height:1.2;font-variant-numeric:tabular-nums"><span id="availCount">1,284</span><span style="font-size:14px;font-weight:500;color:var(--a-fg-muted);margin-left:4px">件</span></div>
               <label style="margin-top:10px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--a-fg-muted);font-weight:500">対象言語
@@ -88,7 +88,7 @@
               <button data-start-all style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">全グループ入力画面へ</button>
             </div>
           </div>
-          <div id="groupList" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
+          <div id="groupList" data-a-region="list" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
             <div class="dg-row dg-row--header" style="min-height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
               <span>作業項目</span><span class="dg-number">残り作業件数</span><span class="dg-progress">進捗</span><span class="dg-number">入力中</span><span>操作</span>
             </div>

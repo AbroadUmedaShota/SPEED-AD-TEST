@@ -57,7 +57,7 @@
               <button onclick="pSearch('operatorsList')" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">検索</button>
               <button onclick="pClearSearch('operatorsList')" style="background:none;border:none;font-size:12.5px;color:var(--a-fg-muted);cursor:pointer;text-decoration:underline;font-family:inherit">条件をクリア</button>
             </div>
-            <div id="operatorsList" data-sortable data-filter-keys="any,group,lv,status,lang" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
+            <div id="operatorsList" data-a-region="list" data-sortable data-filter-keys="any,group,lv,status,lang" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
               <div style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
                 <span title="既定の並び順" style="color:var(--a-fg-muted)">ID ▲</span><span>氏名</span><span>メールアドレス</span><span>所属グループ</span><span>権限</span><span>対応可能言語</span><span>ステータス</span><span class="c-opt">作成日時</span><span class="c-opt">最終ログイン</span>
               </div>
@@ -102,7 +102,7 @@
               </div>
               <div id="operatorsList-empty" style="display:none;padding:26px 18px;text-align:center;font-size:13px;color:var(--a-fg-faint)">条件に一致する行がありません。条件を変えるか「条件をクリア」で全件に戻せます。</div>
             </div>
-            <div style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--a-fg-muted);flex-wrap:wrap;row-gap:8px">
+            <div data-a-ctl="operatorsList" style="margin-top:14px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--a-fg-muted);flex-wrap:wrap;row-gap:8px">
               <span style="font-variant-numeric:tabular-nums">全 <span id="operatorsList-total">13</span> 名中 <span id="operatorsList-range">1〜13</span> 名を表示</span>
               <div style="display:flex;align-items:center;gap:16px">
                 <label style="display:flex;align-items:center;gap:6px">表示件数 <select aria-label="表示件数" onchange="pPageSize('operatorsList', parseInt(this.value, 10))" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"><option selected>50</option><option>100</option><option>150</option></select></label>

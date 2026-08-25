@@ -213,7 +213,7 @@
                  ============================================================ -->
             <div data-max-lv="1">
               <div class="dash-sec">あなたの作業</div>
-              <div class="dash-cards">
+              <div id="dashCardsWork" data-a-region="summary" class="dash-cards">
                 <div class="dash-card" tabindex="0" role="link" onclick="location.href='data-entry/index.html'">
                   <div class="dash-card-label">着手できる<br>名刺件数</div>
                   <div class="dash-card-num">1,284<span class="dash-card-unit">件</span></div>
@@ -243,7 +243,7 @@
                  ============================================================ -->
             <div data-min-lv="2">
               <div class="dash-sec">案件パイプライン <span class="dash-sec-note">受注から納品までの各段階の件数(単位: 件〈アンケート〉)</span></div>
-              <div class="dash-cards">
+              <div id="dashCardsPipeline" data-a-region="summary" class="dash-cards">
                 <!-- 会期前(7日以内に開始)。件数はアンケート管理の会期前ステータス行数と同数にする
                      (同数原則。2026-08-18 の全体レビューで 3件表示と実データ1件の食い違いを検出し修正)。
                      Lv2は survey-management.html にアクセスできないため遷移なしカードにする(※要確認: Lv2への表示可否) -->
