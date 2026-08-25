@@ -49,6 +49,49 @@ const LISTS = [
   { name: '監査ログ', path: '/03_admin/audit-log.html', id: 'auditList', sortCol: 0, numeric: false },
 ];
 
+/**
+ * 一覧・集計領域の取得状態(01_admin_common_ui.md §4.4)を持つ画面。
+ * proto-ui.js の pRegionState/pPageState が URL クエリ `?state=` を読んで
+ * [data-a-region] の各領域を loading/reloading/error/error-keep/partial に切り替える。
+ * list/summary は該当領域の id（無ければ省略）。1画面に両方持つ場合もある。
+ * partial: true は state=partial（集計のみ失敗）が意味を持つ画面（reconciliation/data-entry の2つ。
+ * 実績管理はタブ構成のため対象外という設計判断）。
+ */
+const REGIONS = [
+  { name: 'ユーザー管理', path: '/03_admin/user-management.html', list: 'usersList' },
+  { name: 'アンケート管理', path: '/03_admin/survey-management.html', list: 'surveysList' },
+  { name: '請求管理', path: '/03_admin/billing-management.html', list: 'billingList' },
+  { name: '請求書管理', path: '/03_admin/invoice-management.html', list: 'invoiceList' },
+  { name: 'クーポン管理', path: '/03_admin/coupon-management.html', list: 'couponList' },
+  {
+    name: '照合結果一覧', path: '/03_admin/reconciliation/index.html',
+    list: 'reconList', summary: 'reconSummary', partial: true,
+  },
+  { name: 'オペレーター管理', path: '/03_admin/operator-management.html', list: 'operatorsList' },
+  // perfList はオペレーター別タブ側にあるため、一覧の検査はタブを開いた状態で行う（LISTS と同じ理由）
+  { name: 'オペレーター実績確認(オペレーター別タブ)', path: '/03_admin/performance-management.html?tab=operators', list: 'perfList' },
+  { name: '監査ログ', path: '/03_admin/audit-log.html', list: 'auditList' },
+  {
+    name: 'データ入力対象一覧', path: '/03_admin/data-entry/index.html',
+    list: 'groupList', summary: 'deSummary', partial: true,
+    note: 'groupList はページャ・絞り込み・data-a-ctl を持たない（data-g 行の静的一覧）',
+  },
+  {
+    name: 'ダッシュボード(案件パイプライン)', path: '/03_admin/index.html', summary: 'dashCardsPipeline',
+    note: 'Lv2以上で表示。既定シナリオ(Lv4)では可視',
+  },
+  {
+    name: 'ダッシュボード(あなたの作業)', path: '/03_admin/index.html', summary: 'dashCardsWork',
+    visibleByDefault: false,
+    note: 'Lv1限定領域。既定シナリオ(Lv4)ではラッパーごと display:none のため、'
+      + '可視判定はできず data-a-state 属性の有無のみ確認する',
+  },
+  // perfGroups はグループ別集計タブ（既定表示）側にあるため、タブ切替クエリなしで検査する
+  { name: 'オペレーター実績確認(グループ別タブ)', path: '/03_admin/performance-management.html', summary: 'perfGroups' },
+  { name: 'グループ実績詳細', path: '/03_admin/performance-group-detail.html', summary: 'pgSummary' },
+  { name: 'オペレーター実績詳細', path: '/03_admin/performance-operator-detail.html', summary: 'poSummary' },
+];
+
 /** 画面を開き、描画とシェル注入の完了まで待つ */
 async function openScreen(page, path) {
   const errors = [];
@@ -75,4 +118,4 @@ async function openScreen(page, path) {
   return errors;
 }
 
-module.exports = { SCREENS, LISTS, openScreen };
+module.exports = { SCREENS, LISTS, REGIONS, openScreen };

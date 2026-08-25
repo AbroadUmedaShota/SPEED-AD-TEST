@@ -44,13 +44,28 @@ npx playwright test --project=local tests/e2e/admin-mock
 
 | ファイル | 見るもの |
 | --- | --- |
-| `_screens.js` | 到達16画面と9一覧の定義。画面を足したらここに追記する |
+| `_screens.js` | 到達16画面と9一覧、状態切替を持つ領域(`REGIONS`)の定義。画面を足したらここに追記する |
 | `shell.spec.js` | 全画面の土台（JSエラー・横はみ出し・hidden・シェル注入・`pLevel()`） |
 | `lists.spec.js` | ページング・並び替え・絞り込み |
+| `region-state.spec.js` | 一覧・集計領域の取得状態（`?state=`、下記参照） |
 | `survey-detail.spec.js` | 会期ごとの編集ゲート（要注意操作） |
 | `user-detail.spec.js` | アカウント状態の出し分け・招待・未保存の確認 |
 | `billing.spec.js` | 1行=1アンケート・グループ契約の判別 |
 | `consistency.spec.js` | 表記と操作性の一貫性（レビュー指摘を機械化したもの） |
+
+### 領域の取得状態（`?state=`）の確認
+
+一覧・集計領域（`[data-a-region]`）は URL クエリ `?state=` で読み込み中・失敗などの表示を強制できる（01_admin_common_ui.md §4.4）。レビュー時に手で確認する場合は対象画面へ以下を付けて開く:
+
+| クエリ | 表示 |
+| --- | --- |
+| `?state=loading` | 初回読込中（骨格表示、絞り込み・ページャは操作不可） |
+| `?state=reloading` | 再読込中（表示は維持したまま帯で知らせる） |
+| `?state=error` | 取得失敗（本体を隠し、領域内に再試行を1個出す） |
+| `?state=error-keep` | 取得失敗・表示維持（帯で知らせるだけで本体は隠さない） |
+| `?state=partial` | 集計のみ失敗（reconciliation/index・data-entry/index の2画面だけ意味を持つ） |
+
+機械的な検査は `region-state.spec.js` が `_screens.js` の `REGIONS` を data-driven で回す。画面に新しい `[data-a-region]` を追加したら `REGIONS` にも追記する。
 
 ### `consistency.spec.js` の `test.fail()` について
 
