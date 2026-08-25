@@ -200,3 +200,59 @@ test.describe('名刺入力画面', () => {
     expect(await page.locator('#main-content').textContent()).toContain('Lv4 MasterAdmin');
   });
 });
+
+/**
+ * 残りの作業可能件数は対象言語で集計する（19_admin_data_input_list.md §4.3、
+ * 20_admin_data_input_form.md §4.1）。
+ *
+ * 入力画面の残り件数が対象言語を無視して固定辞書（全言語合計）だけを見ていたため、
+ * 「対象言語: 日本語」のバッジと件数が同一画面内で矛盾していた不具合の回帰テスト。
+ */
+test.describe('入力画面の残り件数は一覧と同じ対象言語で集計する', () => {
+  test('言語依存グループでlang指定時は言語別の残数を表示する（例: ③日本語=2,184-880=1,304件）', async ({ page }) => {
+    await openScreen(page, `${FORM}?g=3&lang=ja`);
+    expect(await page.locator('#remainCount').innerText()).toBe('1,304');
+  });
+
+  test('一覧の残り作業件数と入力画面の残りの作業可能件数が対象言語で一致する', async ({ page }) => {
+    await openScreen(page, LIST);
+    await page.selectOption('#langSelect', 'zh-Hans');
+    const listRemain = await page.locator('#groupList .dg-row[data-g="3"] .dg-remaining').innerText();
+
+    await page.click('#groupList .dg-row[data-g="3"] .dg-action button');
+    await expect(page).toHaveURL(/g=3&lang=zh-Hans/);
+    const formRemain = await page.locator('#remainCount').innerText();
+    expect(`${formRemain}件`, '一覧と入力画面で残り件数が食い違う').toBe(listRemain);
+  });
+
+  test('言語非依存グループ（①⑤⑥）はlangを問わず全言語合計のまま', async ({ page }) => {
+    await openScreen(page, `${FORM}?g=1&lang=en`);
+    expect(await page.locator('#remainCount').innerText()).toBe('547');
+  });
+
+  test('全グループ入力（?g=all）の残数も対象言語で絞られる', async ({ page }) => {
+    await openAs(page, `${FORM}?g=all&lang=en`, 'lv4');
+    expect(await page.locator('#remainCount').innerText()).toBe('191');
+  });
+});
+
+/**
+ * 名刺画像のズーム・回転ショートカット（20_admin_data_input_form.md §4.2）。
+ *
+ * ショートカット一覧モーダル（form.html）は「＋／−」「R」を案内するが、実装は proto-ui.js の
+ * pInitCardZoom（form.html自身のkeydownハンドラではなく共有ランタイム側）にある。
+ * 表記どおりに動くことを固定する回帰テスト。
+ */
+test.describe('名刺画像のズーム・回転ショートカット（§4.2）', () => {
+  test('入力欄にフォーカスが無いときは+/-/Rがそのまま効く', async ({ page }) => {
+    await openScreen(page, `${FORM}?g=3`);
+    await expect(page.locator('#zoomLabel')).toHaveText(/×2\.0/);
+    await page.keyboard.press('+');
+    await expect(page.locator('#zoomLabel')).toHaveText(/×2\.5/);
+
+    const rotBefore = Number(await page.locator('#imgFront').evaluate((el) => el.dataset.rot || '0'));
+    await page.keyboard.press('r');
+    const rotAfter = Number(await page.locator('#imgFront').evaluate((el) => el.dataset.rot || '0'));
+    expect(rotAfter, 'Rキーで回転していない').toBe((rotBefore + 90) % 360);
+  });
+});

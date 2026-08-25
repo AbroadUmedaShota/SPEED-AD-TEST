@@ -146,7 +146,7 @@
         <div id="calAsgRows" style="margin-top:6px"></div>
       </div>
       <div id="calAsgOther" style="font-size:11.5px;color:var(--a-fg-muted2);line-height:1.7"></div>
-      <div style="font-size:11.5px;color:var(--a-fg-muted2);line-height:1.7">確定すると担当会社のオペレーター管理者(Lv2)へ割当通知(メール)が送信されます。誰を出すかは各社で決めます。人数は会期の全日を通しての人数です。募集状態は充足に応じて自動で切り替わります(不足=追加募集中・充足=募集完了)。</div>
+      <div style="font-size:11.5px;color:var(--a-fg-muted2);line-height:1.7">確定すると担当会社のオペレーター管理者(Lv2)へ割当通知(メール)が送信されます。誰を出すかは各社で決めます。人数は会期の全日ではなく、作業期間を通した1日あたりの人数です。募集状態は充足に応じて自動で切り替わります(不足=追加募集中・充足=募集完了)。</div>
     </div>
     <div style="display:flex;justify-content:flex-end;gap:10px;padding:0 22px 18px">
       <button onclick="pClose('mAssign')" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">キャンセル</button>
@@ -281,7 +281,7 @@ window.calTemplateDl = function () {
 // 画面は2タブ構成。営業日タブは休業日設定と会期の俯瞰、アサインタブは作業期間と人員の過不足を扱う。
 // 会期と作業期間を1枚に重ねると1週あたり最大10本の帯が積まれて読めなくなるため、目的ごとに分けている。
 // 休業日・振替営業日の背景色はタブをまたいで常に出す(切り替わるのは帯と集計だけ)。
-// アサインは案件(アンケート)単位で、担当は会期の全日を通す。日ごとの過不足は集計で導く。
+// アサインは案件(アンケート)単位で、担当は会期の全日ではなく作業期間を通した1日あたりの人数で持つ。日ごとの過不足は集計で導く。
 // 画面内の操作(選択・アサイン・営業日設定・増員依頼)はページ内の状態にのみ反映され、再読み込みで初期化される
 (function () {
     'use strict';
@@ -321,7 +321,7 @@ window.calTemplateDl = function () {
     var MY_GROUP = 'アブロード本体';  // Lv2シナリオの所属。proto-level.js の lv2.group と揃える
 
     // 案件単位のアサイン。会社ごとの投入人数で持つ。誰を出すかは各社が社内で決める運用のため
-    // 個人名までは扱わない。担当は会期の全日を通しての割当
+    // 個人名までは扱わない。担当は会期の全日ではなく作業期間を通した1日あたりの人数で割り当てる
     var S = {
         tab: 'calendar',    // calendar(営業日) / assign(アサイン)
         ym: '2026-07', sel: TODAY, selSv: null,
@@ -1311,8 +1311,8 @@ window.calTemplateDl = function () {
         var links = v.recon
             // データ入力対象一覧は項目グループ単位の全体キューで、案件では絞り込めない。
             // 照合結果一覧は sid を絞り込みへ適用した状態で開く
-            ? '<a href="data-entry/index.html" title="データ入力対象一覧へ移動します（全体キューのためアンケートでは絞り込めません）" style="font-size:11px">名刺入力</a>'
-                + ' · <a href="reconciliation/index.html?sid=' + sid + '" title="' + sid + ' で絞り込んだ照合結果一覧を開きます" style="font-size:11px">照合 →</a>'
+            ? '<a href="data-entry/index.html" title="データ入力対象一覧へ移動します（全体キューのためアンケートでは絞り込めません）" style="font-size:11px">データ入力対象一覧</a>'
+                + ' · <a href="reconciliation/index.html?sid=' + sid + '" title="' + sid + ' で絞り込んだ照合結果一覧を開きます" style="font-size:11px">照合結果一覧</a>'
             : '';
         var rs = recruitState(sid);
         var btns = '';
@@ -1372,8 +1372,8 @@ window.calTemplateDl = function () {
         var links = v.recon
             // データ入力対象一覧は項目グループ単位の全体キューで、案件では絞り込めない。
             // 照合結果一覧は sid を絞り込みへ適用した状態で開く
-            ? '<a href="data-entry/index.html" title="データ入力対象一覧へ移動します（全体キューのためアンケートでは絞り込めません）" style="font-size:11px">名刺入力</a>'
-                + ' · <a href="reconciliation/index.html?sid=' + sid + '" title="' + sid + ' で絞り込んだ照合結果一覧を開きます" style="font-size:11px">照合 →</a>'
+            ? '<a href="data-entry/index.html" title="データ入力対象一覧へ移動します（全体キューのためアンケートでは絞り込めません）" style="font-size:11px">データ入力対象一覧</a>'
+                + ' · <a href="reconciliation/index.html?sid=' + sid + '" title="' + sid + ' で絞り込んだ照合結果一覧を開きます" style="font-size:11px">照合結果一覧</a>'
             : '';
         return '<div style="border:1px solid ' + (sid === S.selSv ? 'var(--a-accent)' : 'var(--a-border-soft)') + ';border-radius:6px;padding:9px 11px;'
             + (sid === S.selSv ? 'box-shadow:0 0 0 1px var(--a-accent);' : '') + '">'
@@ -1639,7 +1639,7 @@ window.calTemplateDl = function () {
             '<div style="color:var(--a-fg-strong);font-weight:700">' + sid + ' ' + esc(v.title) + '</div>'
             + '<div>会期 ' + v.s.replace(/-/g, '/') + '〜' + v.e.replace(/-/g, '/') + ' ・ ' + esc(planLabel(sid))
             + ' ・ 納期 ' + dueDate(sid).replace(/-/g, '/') + '</div>'
-            + '<div>作業 ' + (w.length ? md(w[0]) + '〜' + md(w[w.length - 1]) + '（' + w.length + '営業日）' : '—') + '</div>'
+            + '<div>作業 ' + (w.length ? w[0].replace(/-/g, '/') + '〜' + w[w.length - 1].replace(/-/g, '/') + '（' + w.length + '営業日）' : '—') + '</div>'
             + '<div>必要 <strong style="font-variant-numeric:tabular-nums">' + load.toLocaleString('ja-JP') + '枚/日</strong>'
             + ' ／ 供給 <strong style="font-variant-numeric:tabular-nums">' + sup.toLocaleString('ja-JP') + '枚/日</strong>(' + filled(sid) + '人)'
             + ' ／ <span style="color:var(--a-danger);font-weight:700">不足 ' + lack.toLocaleString('ja-JP') + '枚/日</span></div>';
@@ -1729,7 +1729,7 @@ window.calTemplateDl = function () {
         var t = typ(S.sel), d = toDate(S.sel);
         var name = (t.t === 'hol' ? '休業日' : '振替営業日') + (t.memo ? '「' + t.memo + '」' : '');
         document.getElementById('calDelText').textContent =
-            md(S.sel) + '(' + WD[d.getDay()] + ')の個別設定(' + name + ')を削除します。以後この日は定休日・祝日の設定に従います。';
+            S.sel.replace(/-/g, '/') + '(' + WD[d.getDay()] + ')の個別設定(' + name + ')を削除します。以後この日は定休日・祝日の設定に従います。';
         window.pOpen('mConfirmDelHoliday');
     };
     window.calDelDo = function () {

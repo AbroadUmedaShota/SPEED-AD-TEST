@@ -83,3 +83,38 @@ test.describe('営業日タブの会期件数（§4.4.1）', () => {
     expect(await page.locator(bands).count(), '営業日タブに作業期間の帯が出ている').toBe(0);
   });
 });
+
+/**
+ * アサインモーダルの人数説明（18_admin_calendar.md §4.5）。
+ *
+ * 「人数は会期の全日ではなく、作業期間を通した1日あたりの人数とする」が正。計算ロジック
+ * (otherLoad/supplyOf/dailyLoad)はもともと作業期間ベースで、説明文だけが逆のことを言っていた。
+ */
+test.describe('アサインモーダルの人数説明（§4.5）', () => {
+  test('人数は会期の全日ではなく作業期間を通した1日あたりの人数と説明する', async ({ page }) => {
+    await openScreen(page, `${PATH}?tab=assign`);
+    await page.evaluate(() => window.calAssignOpen('SV-10262'));
+    await expect(page.locator('#mAssign')).toBeVisible();
+    const note = await page.locator('#mAssign').innerText();
+    expect(note, 'モーダルの人数説明が仕様と逆のまま').toContain('作業期間を通した1日あたりの人数');
+    expect(note, '「会期の全日」の誤説明が残っている').not.toContain('会期の全日を通しての人数');
+  });
+});
+
+/**
+ * 日付表記の統一（01_admin_common_ui.md §9）。
+ *
+ * カレンダーセル・案件カードはスペース制約があるため M/D の簡略表示を維持する一方、
+ * 増員依頼モーダルのように余裕がある箇所は YYYY/MM/DD に揃える。
+ */
+test.describe('増員モーダルの日付表記（§9）', () => {
+  test('会期・納期・作業のいずれもYYYY/MM/DDで表示する', async ({ page }) => {
+    await openScreen(page, `${PATH}?tab=assign`);
+    // SV-10259は総動員でも不足しており、増員モーダルを開ける
+    await page.evaluate(() => window.calRecruitOpen('SV-10259'));
+    await expect(page.locator('#mRecruit')).toBeVisible();
+    const stats = await page.locator('#calRecStats').innerText();
+    expect(stats, '会期・納期の表記が崩れている').toMatch(/会期 \d{4}\/\d{2}\/\d{2}/);
+    expect(stats, '作業期間がM\\/D簡略のまま残っている').toMatch(/作業 \d{4}\/\d{2}\/\d{2}/);
+  });
+});

@@ -231,7 +231,7 @@
         var rc = document.getElementById('remainCount');
         if (rc) {
             var n = Math.max(0, parseInt(rc.textContent.replace(/,/g, ''), 10) - 1);
-            rc.textContent = n.toLocaleString('en-US');
+            rc.textContent = n.toLocaleString('ja-JP');
             if (n === 0) { disableWork(); }
         }
         if (lock) { lock.reset(); }
@@ -319,7 +319,21 @@
         8: { label: 'グループ⑧ フリー入力', fields: [
             { id: 'f1', label: 'フリー入力', ph: '', ocr: [null, 'STG TEST CARD - DUMMY DATA'], multiline: true }] }
     };
-    var GROUP_REMAIN = { 1: 547, 2: 298, 3: 1914, 4: 114, 5: 1078, 6: 182, 7: 0, 8: 86 };
+    // 対象言語ごとの残り件数。data-entry/index.html の TOTAL_FREE・BY_LANG・AVAIL と同じ数字体系
+    // (19号 §4.3 により残り作業件数は対象言語で集計するため、一覧側と同じ内訳をここでも持つ。
+    // 一覧の集計値を変える場合はこちらも合わせて更新すること)
+    // 言語非依存グループ(①⑤⑥)の[総件数, 入力済み]。対象言語で絞らない
+    var TOTAL_FREE = { 1: [2480, 1933], 5: [1540, 462], 6: [2072, 1890] };
+    // 言語依存グループの言語別[総件数, 入力済み]
+    var BY_LANG = {
+        2: { ja: [1302, 1105], en: [279, 232], 'zh-Hans': [149, 121], 'zh-Hant': [93, 77], ko: [37, 27] },
+        3: { ja: [2184, 880], en: [468, 168], 'zh-Hans': [250, 92], 'zh-Hant': [156, 48], ko: [62, 18] },
+        4: { ja: [648, 573], en: [139, 121], 'zh-Hans': [74, 63], 'zh-Hant': [46, 40], ko: [19, 15] },
+        7: { ja: [0, 0], en: [0, 0], 'zh-Hans': [0, 0], 'zh-Hant': [0, 0], ko: [0, 0] },
+        8: { ja: [479, 421], en: [103, 89], 'zh-Hans': [55, 47], 'zh-Hant': [34, 30], ko: [13, 11] }
+    };
+    // 対象言語ごとの全体キューの作業可能件数(全グループ入力=?g=all が参照する)
+    var AVAIL = { ja: 892, en: 191, 'zh-Hans': 102, 'zh-Hant': 64, ko: 35 };
 
     // 郵便番号から住所1の先頭部分を引く辞書(モックのため代表的な番号のみ)
     var ZIP_DIC = {
@@ -345,6 +359,34 @@
     var langParam = new URLSearchParams(location.search).get('lang') || 'auto';
     if (langParam !== 'auto' && !LANG_LABELS[langParam]) { langParam = 'auto'; }
     var langFree = !isAll && !!LANG_FREE[groupNo];
+
+    /** アカウントの対応可能言語。「自動」が指す範囲(19号 §4.2、index.html と同じ定義) */
+    function accountLangs() {
+        var a = window.pAccountLangs ? window.pAccountLangs() : null;
+        return (a && a.length) ? a : Object.keys(LANG_LABELS);
+    }
+    // 対象言語で集計した作業グループの残り件数(index.html §4.3 と同じロジック。
+    // 言語非依存グループは対象言語で絞らない)
+    function groupRemain(g) {
+        if (LANG_FREE[g]) {
+            var tf = TOTAL_FREE[g];
+            return tf[0] - tf[1];
+        }
+        var langs = langParam === 'auto' ? accountLangs() : [langParam];
+        var total = 0, done = 0;
+        langs.forEach(function (code) {
+            var v = BY_LANG[g][code];
+            if (v) { total += v[0]; done += v[1]; }
+        });
+        return total - done;
+    }
+    // 全グループ入力(?g=all)が参照する全体キューの作業可能件数(index.html の availCount と同じ集計)
+    function availRemain() {
+        var langs = langParam === 'auto' ? accountLangs() : [langParam];
+        var t = 0;
+        langs.forEach(function (code) { t += (AVAIL[code] || 0); });
+        return t;
+    }
 
     if (isAll && window.pLevel() < 4) {
         document.getElementById('main-content').innerHTML =
@@ -496,8 +538,8 @@
     applyCard();  // ヘッダー・画像をCARDS[0]で初期化(HTML側リテラルとの二重管理を避ける)
     renderFields();
     (function () {
-        var remain = isAll ? 1284 : GROUP_REMAIN[groupNo];
-        document.getElementById('remainCount').textContent = remain.toLocaleString('en-US');
+        var remain = isAll ? availRemain() : groupRemain(groupNo);
+        document.getElementById('remainCount').textContent = remain.toLocaleString('ja-JP');
         if (remain === 0) { disableWork(); }
     })();
     lock = window.pInitWorkLock({ badgeId: 'lockBadge', seconds: 180 });
