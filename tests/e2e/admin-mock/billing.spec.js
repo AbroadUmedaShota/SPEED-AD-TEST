@@ -116,15 +116,17 @@ test('アンケートのIDとタイトルで絞り込める（§4.3）', async (
  *
  * 15_admin_billing.md の金額規約: 明細合計=小計、税=floor(小計×10%)、小計+税=合計。
  * お礼メール送信費用は名刺データ化費用の無料枠(100通)控除のため、通数は必ずデータ化件数以下になる。
- * 2026-08-25 に SV-10233 以外の15件を総回答数(total)からデータ化対象数(effective)ベースへ
- * 再計算した際の壊れやすい不変条件のため、全16件を機械検証する。
+ * 2026-08-25 に総回答数(total)からデータ化対象数(effective)ベースへ再計算した際の
+ * 壊れやすい不変条件のため、全件を機械検証する。
+ * SV-10233(ACC-1035分・INV-2026-07-005)はデータ化中に確定請求書が発行済みという状態遷移
+ * 違反が見つかり、同日に請求書を未発行へ差し戻した(15件)。
  */
-test.describe('請求の金額不変条件（15件+SV-10233・全16件）', () => {
+test.describe('請求の金額不変条件（全15件）', () => {
   test('明細合計=小計・税=floor(小計×10%)・小計+税=合計・お礼メール件数≤データ化件数', async ({ request, baseURL }) => {
     const res = await request.get(`${baseURL}/data/core/invoices.json`);
     expect(res.ok(), 'invoices.json が取得できない').toBeTruthy();
     const invoices = await res.json();
-    expect(invoices.length, 'invoices.json の件数が16件でない').toBe(16);
+    expect(invoices.length, 'invoices.json の件数が15件でない').toBe(15);
 
     for (const inv of invoices) {
       const itemSum = inv.items.reduce((s, it) => s + it.amount, 0);
@@ -159,6 +161,52 @@ test.describe('請求の金額不変条件（15件+SV-10233・全16件）', () =
       expect(b.accountNumber, `${inv.invoiceId}: accountNumber がダミー値でない`).toBe('1234567');
       // 請求書発行元の名義は実在の自社名として維持する
       expect(b.accountHolder).toBe('アブロードアウトソーシング株式会社');
+    }
+  });
+});
+
+/**
+ * 状態遷移の回帰確認（ストップ時レビュー検出: SV-10233 がデータ化中のまま確定請求書
+ * INV-2026-07-005 を発行していた）。15_admin_billing.md §4.7「データ化中は支払期日
+ * 未確定・期間指定の対象に含めない」に沿って、データ化中の行は data-f-date を持たず、
+ * 支払期日の期間フィルタでも常に除外されることを見る。
+ */
+test.describe('データ化中の行は支払期日の期間フィルタ対象外', () => {
+  test('データ化中の全行が data-f-date を持たない', async ({ page }) => {
+    await openScreen(page, '/03_admin/billing-management.html');
+    const rows = await page.evaluate(() => [...document.getElementById('billingList').children]
+      .filter((r) => r.hasAttribute('data-pg'))
+      .map((r) => ({
+        sid: r.getAttribute('data-f-sid'),
+        status: r.getAttribute('data-f-status'),
+        hasDate: r.hasAttribute('data-f-date'),
+      })));
+
+    const inProgress = rows.filter((r) => r.status === 'データ化中');
+    expect(inProgress.length, 'データ化中の行が1件も無い').toBeGreaterThan(0);
+    for (const r of inProgress) {
+      expect(r.hasDate, `${r.sid}: データ化中なのに支払期日(data-f-date)を持っている`).toBe(false);
+    }
+  });
+
+  test('支払期日を広い期間で絞り込んでも、データ化中の行は出てこない', async ({ page }) => {
+    await openScreen(page, '/03_admin/billing-management.html');
+    const inProgressSids = await page.evaluate(() => [...document.getElementById('billingList').children]
+      .filter((r) => r.hasAttribute('data-pg') && r.getAttribute('data-f-status') === 'データ化中')
+      .map((r) => r.getAttribute('data-f-sid')));
+    expect(inProgressSids.length, 'データ化中の行が1件も無い').toBeGreaterThan(0);
+
+    // 全行の支払期日を確実に含む広い期間(2020〜2030)で絞り込む
+    await page.fill('[data-filter-for="billingList"] [data-f-key="from"]', '2020-01-01');
+    await page.fill('[data-filter-for="billingList"] [data-f-key="to"]', '2030-12-31');
+    await page.click('[data-filter-for="billingList"] button:has-text("検索")');
+
+    const visibleSids = await page.evaluate(() => [...document.getElementById('billingList').children]
+      .filter((r) => r.hasAttribute('data-pg') && getComputedStyle(r).display !== 'none')
+      .map((r) => r.getAttribute('data-f-sid')));
+
+    for (const sid of inProgressSids) {
+      expect(visibleSids, `${sid}: データ化中なのに期間フィルタの結果に残っている`).not.toContain(sid);
     }
   });
 });

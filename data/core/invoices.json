@@ -803,61 +803,6 @@
     ]
   },
   {
-    "invoiceId": "INV-2026-07-005",
-    "accountId": "ACC-1035",
-    "plan": {
-      "code": "STANDARD",
-      "displayName": "Standard",
-      "billingType": "monthly"
-    },
-    "addOns": [],
-    "issueDate": "2026-08-01",
-    "dueDate": "2026-08-23",
-    "billingPeriod": {
-      "from": "2026-07-01",
-      "to": "2026-07-31"
-    },
-    "subtotalTaxable": 24686,
-    "subtotalNonTaxable": 0,
-    "tax": 2468,
-    "totalAmount": 27154,
-    "status": "unpaid",
-    "bankInfo": {
-      "bankName": "サンプル銀行",
-      "bankCode": "0000",
-      "branchName": "本店",
-      "branchCode": "001",
-      "accountType": "普通",
-      "accountNumber": "1234567",
-      "accountHolder": "アブロードアウトソーシング株式会社"
-    },
-    "notes": "名刺データ化費用とお礼メール送信費用を含みます。",
-    "items": [
-      {
-        "lineId": "INV-2026-07-005-ADDON-1",
-        "category": "ADD_ON",
-        "itemName": "名刺データ化費用",
-        "description": "SV-10233 / 通常 プラン",
-        "quantity": 486,
-        "unit": "枚",
-        "unitPrice": 50,
-        "amount": 24300,
-        "taxable": true
-      },
-      {
-        "lineId": "INV-2026-07-005-ADDON-2",
-        "category": "ADD_ON",
-        "itemName": "お礼メール送信費用",
-        "description": "SV-10233 / 送信 486 通・無料枠 100 通控除",
-        "quantity": 386,
-        "unit": "通",
-        "unitPrice": 1,
-        "amount": 386,
-        "taxable": true
-      }
-    ]
-  },
-  {
     "invoiceId": "INV-2026-07-006",
     "accountId": "ACC-1049",
     "plan": {
