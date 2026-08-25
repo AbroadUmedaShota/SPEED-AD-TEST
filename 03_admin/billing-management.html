@@ -51,14 +51,45 @@
                 <h1 style="margin:0;font-size:20px;font-weight:700">請求管理</h1>
                 <span style="font-size:12px;color:var(--a-fg-muted2)">既定の並び順: 支払期日の昇順</span>
               </div>
-              <div data-filter-for="billingList" style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                <input aria-label="アンケート" data-f-key="survey" placeholder="アンケートID・タイトル" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:230px;font-family:inherit"><input aria-label="ユーザーID" data-f-key="uid" placeholder="ユーザーID" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:130px;font-family:inherit">
-                <input aria-label="会社名" data-f-key="company" placeholder="会社名" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:180px;font-family:inherit">
-                <!-- 支払期日の期間指定は行の data-f-date(ISO)との文字列比較(proto-ui の from/to)。
-                     支払期日が未確定の行(データ化中)は期間指定時に対象外になる -->
-                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--a-fg-muted)">支払期日 <input aria-label="支払期日(開始)" data-f-key="from" type="date" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:12.5px;font-family:inherit;color:var(--a-fg-strong)"> 〜 <input aria-label="支払期日(終了)" data-f-key="to" type="date" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:12.5px;font-family:inherit;color:var(--a-fg-strong)"></label>
-                <button onclick="pSearch('billingList')" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">検索</button>
-                <button onclick="pClearSearch('billingList')" style="background:none;border:none;font-size:12.5px;color:var(--a-fg-muted);cursor:pointer;text-decoration:underline;font-family:inherit">条件をクリア</button>
+              <!-- 絞り込みカード(admin-style.css の a-filter-*)。SPEEDレビューの Filter Options と同じ体裁。
+                   アンケート・会社名・支払期日の期間指定という日常の絞り込み動線と、
+                   ユーザーIDの一意特定照合を1列に並べる。
+                   支払期日の期間指定は行の data-f-date(ISO)との文字列比較(proto-ui の from/to)。
+                   支払期日が未確定の行(データ化中)は期間指定時に対象外になる -->
+              <div data-filter-for="billingList" class="a-filter-card">
+                <div class="a-filter-head">
+                  <span class="a-filter-eyebrow">Filter Options</span>
+                  <span class="a-filter-rule"></span>
+                  <button type="button" class="a-filter-reset" onclick="pClearSearch('billingList')">条件をクリア</button>
+                  <button type="button" class="a-filter-submit" onclick="pSearch('billingList')">検索</button>
+                </div>
+                  <div class="a-filter-fields">
+                    <div class="a-filter-field is-wide">
+                      <input aria-label="アンケート" data-f-key="survey" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">アンケート</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="a-filter-field">
+                      <input aria-label="会社名" data-f-key="company" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">会社名</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="a-filter-field">
+                      <input aria-label="支払期日(開始)" data-f-key="from" type="date" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">支払期日(開始)</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="a-filter-field">
+                      <input aria-label="支払期日(終了)" data-f-key="to" type="date" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">支払期日(終了)</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="a-filter-field">
+                      <input aria-label="ユーザーID" data-f-key="uid" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">ユーザーID</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                  </div>
               </div>
               <div id="billingList" data-a-region="list" data-sortable data-filter-keys="survey,uid,company,name,coupon,from,to" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
                 <div style="display:grid;grid-template-columns:minmax(160px,200fr) minmax(106px,108fr) minmax(88px,50fr) minmax(92px,42fr) minmax(114px,72fr) minmax(76px,40fr) minmax(84px,44fr) minmax(80px,42fr) 200px;column-gap:6px;align-items:center;padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
@@ -154,7 +185,6 @@
                   <label style="display:flex;align-items:center;gap:6px">表示件数 <select aria-label="表示件数" onchange="pPageSize('billingList', parseInt(this.value, 10))" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:5px 8px;font-size:12.5px;font-family:inherit"><option selected>50</option><option>100</option><option>150</option></select></label>
                   <div id="billingList-pager" data-current="1" style="display:flex;gap:4px;font-variant-numeric:tabular-nums"><button onclick="pPageStep('billingList',-1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">‹</button><button data-page="1" data-range="1〜19" onclick="pPage('billingList',1)" style="border:1px solid var(--a-accent);background:var(--a-accent-bg);color:var(--a-on-accent);border-radius:6px;padding:5px 10px;font-weight:700;cursor:pointer;font-family:inherit">1</button><button onclick="pPageStep('billingList',1)" style="border:1px solid var(--a-border-strong);background:var(--a-surface);color:var(--a-fg);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit">›</button></div>
                 </div>
-              </div>
               </div>
               <div style="margin-top:12px;font-size:11.5px;color:var(--a-fg-faint)">作業ステータスがデータ化中の行は、請求金額・実件数が確定前の見込み値のため淡色で表示します。データ化単価は納期区分別(お試し0/通常50/特急100/超特急150/オンデマンド200円・ユーザー画面正本)。お試しはデータ化費用が0円です(お礼メール送信費用は請求対象)。</div>
             </div>

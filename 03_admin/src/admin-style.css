@@ -616,10 +616,8 @@ main button:not([disabled]):hover, .proto-modal button:not([disabled]):hover { f
    外殻は従来の絞り込みバーと同じく data-filter-for="{listId}" を持ち、
    一覧の読込中は proto-ui.js が外殻へ inert を付けて操作を止める。
 
-   簡易 / 詳細のタブは表示の整理であって条件の区切りではない。pSearch は
-   バー配下の [data-f-key] を可視・不可視を問わず全部読むため、隠れている
-   タブの条件も同時に効く。見えない条件の存在は絞り込みバッジ(#{listId}-chip)と
-   タブの印(data-filled)の2箇所で画面に残す。
+   全項目を1列に並べたフラットな構成で、簡易/詳細の区分は持たない。適用中の
+   条件は絞り込みバッジ(#{listId}-chip)で画面に残す。
    ============================================================ */
 
 .a-filter-card {
@@ -631,7 +629,7 @@ main button:not([disabled]):hover, .proto-modal button:not([disabled]):hover { f
     box-shadow: 0 1px 2px rgba(12, 18, 30, .05);
 }
 
-/* ヘッダー1行(見出し+タブ+注記+操作)。常時展開で開閉UIは持たない */
+/* ヘッダー1行(見出し+操作)。常時展開で開閉UIは持たない */
 .a-filter-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px; }
 
 .a-filter-eyebrow {
@@ -644,69 +642,6 @@ main button:not([disabled]):hover, .proto-modal button:not([disabled]):hover { f
 }
 
 .a-filter-rule { flex: 1; height: 1px; background: var(--a-border); }
-
-/* 簡易 / 詳細のセグメントタブ。手本は全幅だが、ヘッダー行へ同居させるので内容幅 */
-.a-filter-tabs {
-    display: inline-flex;
-    gap: 2px;
-    padding: 2px;
-    background: var(--a-surface-3);
-    border-radius: 8px;
-}
-
-.a-filter-tab {
-    position: relative;
-    min-width: 76px;
-    padding: 4px 14px;
-    border: none;
-    border-radius: 6px;
-    background: none;
-    font-family: inherit;
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--a-fg-muted);
-    cursor: pointer;
-    transition: background-color .15s ease, color .15s ease;
-}
-
-.a-filter-tab:hover { color: var(--a-fg-strong); }
-
-.a-filter-tab[aria-selected="true"] {
-    background: var(--a-surface);
-    color: var(--a-accent);
-    box-shadow: 0 1px 2px rgba(12, 18, 30, .12);
-}
-
-/* 選択中の下線(手本 .search-tab-btn::after と同寸)。
-   手本はこれに加えて border-bottom も足すが、線が二重に出てラベルが 3px ずれるため入れない */
-.a-filter-tab::after {
-    content: '';
-    position: absolute;
-    left: 18%;
-    right: 18%;
-    bottom: 3px;
-    height: 3px;
-    border-radius: 999px;
-    background: var(--a-accent);
-    opacity: 0;
-    transform: scaleX(.7);
-    transition: opacity .2s ease, transform .2s ease;
-}
-
-.a-filter-tab[aria-selected="true"]::after { opacity: 1; transform: scaleX(1); }
-
-/* そのタブに条件が入っている印。開いていないタブの条件も検索に効くため、
-   数値や文言を増やさずに存在だけを残す */
-.a-filter-tab[data-filled="1"]::before {
-    content: '';
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--a-accent);
-}
 
 /* 入力欄の並び。上へ浮くラベルが隣の行に触れないよう、行間を列間より広く取る */
 .a-filter-fields {
@@ -789,14 +724,8 @@ select.a-filter-input { padding-right: 34px; }
 
 .a-filter-field:focus-within .a-filter-ico { color: var(--a-accent); }
 
-/* ヘッダー行の注記と操作。手本は下部の全幅リセット1つだが、縦を増やさないため
+/* ヘッダー行の操作。手本は下部の全幅リセット1つだが、縦を増やさないため
    ヘッダーへ同居させ、検索 を主・クリアを副に置く */
-.a-filter-note {
-    font-size: 11.5px;
-    color: var(--a-fg-muted2);
-    white-space: nowrap;
-}
-
 .a-filter-reset {
     background: var(--a-info-bg);
     color: var(--a-accent);
@@ -822,14 +751,7 @@ select.a-filter-input { padding-right: 34px; }
     box-shadow: 0 1px 2px rgba(12, 18, 30, .12);
 }
 
-/* 一覧の列間引きと同じ幅で注記を隠し、ヘッダー行の折り返しを防ぐ */
-@media (max-width: 1459px) {
-    .a-filter-note { display: none; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .a-filter-tab,
-    .a-filter-tab::after,
     .a-filter-input,
     .a-filter-label { transition: none; }
 }

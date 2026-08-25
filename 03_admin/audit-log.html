@@ -35,14 +35,47 @@
               <h1 style="margin:0;font-size:20px;font-weight:700">監査ログ</h1>
               <button onclick="pAuditOpenCsv()" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">CSV出力</button>
             </div>
-            <div data-filter-for="auditList" style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--a-fg-muted)">期間 <input data-f-key="from" type="date" value="2026-07-24" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:12.5px;font-family:inherit;color:var(--a-fg-strong)"> 〜 <input data-f-key="to" type="date" value="2026-07-31" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:12.5px;font-family:inherit;color:var(--a-fg-strong)"></label>
-              <input aria-label="操作者" data-f-key="actor" placeholder="操作者(ID・氏名)" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:160px;font-family:inherit">
-              <select aria-label="操作種別" data-f-key="type" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">操作種別: すべて</option><option>招待の実行・再送・キャンセル</option><option>アカウント状態変更</option><option>権限レベルの変更</option><option>パスワード操作</option><option>データ持ち出し</option><option>代行変更</option><option>回答・アンケートの削除</option><option>公開後の設問変更</option><option>アンケートの強制停止</option><option>完了データの手動アップロード</option><option>グループの作成</option><option>営業日設定の変更</option><option>クーポンの作成・編集・事後適用</option><option>プレミアム契約状態の変更</option><option>ログイン・ログアウト</option></select>
-              <input aria-label="対象" data-f-key="target" placeholder="対象(ユーザーID・アンケートID等)" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:260px;font-family:inherit">
-              <select aria-label="対象グループ" data-f-key="group" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">対象グループ: すべて</option><option>アブロード本体</option><option>オフィスワークス株式会社</option><option>データパートナーズ株式会社</option><option>(株)テックブリッジ</option><option>(株)マーケットビジョン</option></select>
-              <button onclick="pSearch('auditList')" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">検索</button>
-              <button onclick="pClearSearch('auditList')" style="background:none;border:none;font-size:12.5px;color:var(--a-fg-muted);cursor:pointer;text-decoration:underline;font-family:inherit">条件をクリア</button>
+            <!-- 絞り込みカード(admin-style.css の a-filter-*)。user-management.html の絞り込みカードと同じ構成。
+                 操作者・操作種別・対象グループ(日常の当たり付け)と、対象・期間(一意特定の照合)を1列に並べる -->
+            <div data-filter-for="auditList" class="a-filter-card">
+              <div class="a-filter-head">
+                <span class="a-filter-eyebrow">Filter Options</span>
+                <span class="a-filter-rule"></span>
+                <button type="button" class="a-filter-reset" onclick="pClearSearch('auditList')">条件をクリア</button>
+                <button type="button" class="a-filter-submit" onclick="pSearch('auditList')">検索</button>
+              </div>
+                <div class="a-filter-fields">
+                  <div class="a-filter-field">
+                    <input aria-label="操作者" data-f-key="actor" placeholder=" " class="a-filter-input">
+                    <span class="a-filter-label" aria-hidden="true">操作者(ID・氏名)</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                  </div>
+                  <div class="a-filter-field is-wide">
+                    <select aria-label="操作種別" data-f-key="type" class="a-filter-input"><option value="">操作種別: すべて</option><option>招待の実行・再送・キャンセル</option><option>アカウント状態変更</option><option>権限レベルの変更</option><option>パスワード操作</option><option>データ持ち出し</option><option>代行変更</option><option>回答・アンケートの削除</option><option>公開後の設問変更</option><option>アンケートの強制停止</option><option>完了データの手動アップロード</option><option>グループの作成</option><option>営業日設定の変更</option><option>クーポンの作成・編集・事後適用</option><option>プレミアム契約状態の変更</option><option>ログイン・ログアウト</option></select>
+                    <span class="a-filter-label" aria-hidden="true">操作種別</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <select aria-label="対象グループ" data-f-key="group" class="a-filter-input"><option value="">対象グループ: すべて</option><option>アブロード本体</option><option>オフィスワークス株式会社</option><option>データパートナーズ株式会社</option><option>(株)テックブリッジ</option><option>(株)マーケットビジョン</option></select>
+                    <span class="a-filter-label" aria-hidden="true">対象グループ</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="a-filter-field is-wide">
+                    <input aria-label="対象" data-f-key="target" placeholder=" " class="a-filter-input">
+                    <span class="a-filter-label" aria-hidden="true">対象(ユーザーID・アンケートID等)</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <input aria-label="期間(開始日)" data-f-key="from" type="date" placeholder=" " class="a-filter-input">
+                    <span class="a-filter-label" aria-hidden="true">期間(開始日)</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <input aria-label="期間(終了日)" data-f-key="to" type="date" placeholder=" " class="a-filter-input">
+                    <span class="a-filter-label" aria-hidden="true">期間(終了日)</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                  </div>
+                </div>
             </div>
             <div id="auditList" data-a-region="list" data-sortable data-phone-scroll data-filter-keys="actor,type,target,group,from,to" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
               <div style="display:grid;grid-template-columns:minmax(136px,136fr) minmax(200px,200fr) minmax(56px,56fr) minmax(150px,150fr) minmax(190px,190fr) minmax(165px,165fr) minmax(150px,150fr) minmax(64px,64fr);align-items:center;padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
@@ -138,6 +171,7 @@
 <script type="module" src="src/admin.js"></script>
 <script src="src/proto-ui.js"></script>
 <script src="src/proto-level.js"></script>
+
 <script>
 // CSV出力ボタン: モーダルを開く前に、現在の絞り込み結果の件数(一覧の -total)を
 // CSVモーダルの件数表示へ反映する。絞り込まずに開くと13のような古い件数のまま固定されていた

@@ -36,23 +36,16 @@
               <button style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" onclick="pOpen('mInviteUser')">＋ ユーザーを招待</button>
             </div>
             <!-- 絞り込みカード(admin-style.css の a-filter-*)。SPEEDレビューの Filter Options と同じ体裁。
-                 簡易 / 詳細は表示の整理で、検索は両方の条件をまとめて効かせる(proto-ui.js の pSearch は
-                 カード配下の [data-f-key] を可視・不可視を問わず読む)。項目の割り振りは、
-                 会社名・氏名・状態=日常の当たり付け、ユーザーID・メール=一意特定の照合。
+                 会社名・氏名・状態=日常の当たり付け、ユーザーID・メール=一意特定の照合を1列に並べる。
                  後者はヘッダーの横断検索から直行できるため二次側へ置く -->
             <div data-filter-for="usersList" class="a-filter-card">
               <div class="a-filter-head">
                 <span class="a-filter-eyebrow">Filter Options</span>
-                <div class="a-filter-tabs" role="tablist" aria-label="絞り込み項目の表示切替">
-                  <button type="button" id="usersFilterTabSimple" class="a-filter-tab" data-filter-tab="simple" role="tab" aria-selected="true" tabindex="0" aria-controls="usersFilterSimple" aria-label="簡易検索">簡易</button>
-                  <button type="button" id="usersFilterTabDetail" class="a-filter-tab" data-filter-tab="detail" role="tab" aria-selected="false" tabindex="-1" aria-controls="usersFilterDetail" aria-label="詳細検索">詳細</button>
-                </div>
                 <span class="a-filter-rule"></span>
-                <span class="a-filter-note">簡易・詳細の両方に入れた条件をまとめて検索します。</span>
                 <button type="button" class="a-filter-reset" onclick="pClearSearch('usersList')">条件をクリア</button>
                 <button type="button" class="a-filter-submit" onclick="pSearch('usersList')">検索</button>
               </div>
-                <div id="usersFilterSimple" class="a-filter-fields" data-filter-panel="simple" role="tabpanel" aria-labelledby="usersFilterTabSimple">
+                <div class="a-filter-fields">
                   <div class="a-filter-field is-wide">
                     <input aria-label="会社名" data-f-key="company" placeholder=" " class="a-filter-input">
                     <span class="a-filter-label" aria-hidden="true">会社名</span>
@@ -68,8 +61,6 @@
                     <span class="a-filter-label" aria-hidden="true">アカウント状態</span>
                     <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
                   </div>
-                </div>
-                <div id="usersFilterDetail" class="a-filter-fields" data-filter-panel="detail" role="tabpanel" aria-labelledby="usersFilterTabDetail" hidden>
                   <div class="a-filter-field">
                     <input aria-label="ユーザーID" data-f-key="uid" placeholder=" " class="a-filter-input">
                     <span class="a-filter-label" aria-hidden="true">ユーザーID</span>
@@ -279,8 +270,6 @@
 <script type="module" src="src/admin.js"></script>
 <script src="src/proto-ui.js"></script>
 <script src="src/proto-level.js"></script>
-<!-- 絞り込みカードの表示制御。URL引き継ぎ(pApplyUrlFilter)の後に初期化するため proto-ui.js より後で読む -->
-<script src="src/filter-card.js"></script>
 
 <script>
 // 押した行を確認モーダルへ引き継ぎ、実行で一覧へ反映する(モックのため再読込で戻る)

@@ -62,16 +62,45 @@
                 <h1 style="margin:0;font-size:20px;font-weight:700">アンケート管理</h1>
                 <button style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" onclick="pOpen('mSurvey')">＋ アンケートを作成</button>
               </div>
-              <div data-filter-for="surveysList" style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                <input aria-label="アンケートID" data-f-key="sid" placeholder="アンケートID" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:140px;font-family:inherit">
-                <input aria-label="ユーザーID" data-f-key="uid" placeholder="ユーザーID" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:130px;font-family:inherit">
-                <input aria-label="会社名" data-f-key="company" placeholder="会社名" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:170px;font-family:inherit">
-                <input aria-label="氏名" data-f-key="name" placeholder="氏名" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:130px;font-family:inherit">
-                <select aria-label="作業ステータス" data-f-key="status" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">作業ステータス: すべて</option><option>会期前</option><option>会期中</option><option>データ化中</option><option>データ化完了</option></select>
-                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--a-fg)"><input data-f-key="today" type="checkbox">本日会期のみ</label>
-                <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--a-fg)"><input data-f-key="isnew" type="checkbox">新着(前日比増)のみ</label>
-                <button onclick="pSearch('surveysList')" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">検索</button>
-                <button onclick="pClearSearch('surveysList')" style="background:none;border:none;font-size:12.5px;color:var(--a-fg-muted);cursor:pointer;text-decoration:underline;font-family:inherit">条件をクリア</button>
+              <!-- 絞り込みカード(admin-style.css の a-filter-*)。SPEEDレビューの Filter Options と同じ体裁。
+                   会社名・氏名・作業ステータス・本日会期/新着の当たり付けと、
+                   アンケートID・ユーザーIDの一意特定照合を1列に並べる -->
+              <div data-filter-for="surveysList" class="a-filter-card">
+                <div class="a-filter-head">
+                  <span class="a-filter-eyebrow">Filter Options</span>
+                  <span class="a-filter-rule"></span>
+                  <button type="button" class="a-filter-reset" onclick="pClearSearch('surveysList')">条件をクリア</button>
+                  <button type="button" class="a-filter-submit" onclick="pSearch('surveysList')">検索</button>
+                </div>
+                  <div class="a-filter-fields">
+                    <div class="a-filter-field is-wide">
+                      <input aria-label="会社名" data-f-key="company" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">会社名</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="a-filter-field">
+                      <input aria-label="氏名" data-f-key="name" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">氏名</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="a-filter-field">
+                      <select aria-label="作業ステータス" data-f-key="status" class="a-filter-input"><option value="">作業ステータス: すべて</option><option>会期前</option><option>会期中</option><option>データ化中</option><option>データ化完了</option></select>
+                      <span class="a-filter-label" aria-hidden="true">作業ステータス</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                    </div>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--a-fg)"><input data-f-key="today" type="checkbox">本日会期のみ</label>
+                    <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--a-fg)"><input data-f-key="isnew" type="checkbox">新着(前日比増)のみ</label>
+                    <div class="a-filter-field">
+                      <input aria-label="アンケートID" data-f-key="sid" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">アンケートID</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                    <div class="a-filter-field">
+                      <input aria-label="ユーザーID" data-f-key="uid" placeholder=" " class="a-filter-input">
+                      <span class="a-filter-label" aria-hidden="true">ユーザーID</span>
+                      <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                    </div>
+                  </div>
               </div>
               <!-- 納期日列の値は他画面と一致させる(同数原則): 会期中はダッシュボードの
                    「会期中・終了間際のアンケート」、データ化中は照合結果一覧(reconciliation/index.html)の

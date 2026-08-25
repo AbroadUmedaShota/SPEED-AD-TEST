@@ -35,11 +35,27 @@
               <h1 style="margin:0;font-size:20px;font-weight:700">請求書管理</h1>
               <span style="font-size:12px;color:var(--a-fg-muted2)">1行 = 1通(アカウント × 発行月)・既定の並び順: 発行月の降順</span>
             </div>
-            <div data-filter-for="invoiceList" style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <input aria-label="会社名" data-f-key="company" placeholder="会社名(部分一致)" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:200px;font-family:inherit">
-              <select aria-label="発行月" data-f-key="month" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">発行月: すべて</option><option>2026/07</option><option>2026/06</option><option>2026/05</option></select>
-              <button onclick="pSearch('invoiceList')" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">検索</button>
-              <button onclick="pClearSearch('invoiceList')" style="background:none;border:none;font-size:12.5px;color:var(--a-fg-muted);cursor:pointer;text-decoration:underline;font-family:inherit">条件をクリア</button>
+            <!-- 絞り込みカード(admin-style.css の a-filter-*)。SPEEDレビューの Filter Options と同じ体裁。
+                 項目が2つのみのためタブは設けず単一パネル -->
+            <div data-filter-for="invoiceList" class="a-filter-card">
+              <div class="a-filter-head">
+                <span class="a-filter-eyebrow">Filter Options</span>
+                <span class="a-filter-rule"></span>
+                <button type="button" class="a-filter-reset" onclick="pClearSearch('invoiceList')">条件をクリア</button>
+                <button type="button" class="a-filter-submit" onclick="pSearch('invoiceList')">検索</button>
+              </div>
+              <div class="a-filter-fields">
+                <div class="a-filter-field is-wide">
+                  <input aria-label="会社名" data-f-key="company" placeholder=" " class="a-filter-input">
+                  <span class="a-filter-label" aria-hidden="true">会社名(部分一致)</span>
+                  <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                </div>
+                <div class="a-filter-field">
+                  <select aria-label="発行月" data-f-key="month" class="a-filter-input"><option value="">発行月: すべて</option><option>2026/07</option><option>2026/06</option><option>2026/05</option></select>
+                  <span class="a-filter-label" aria-hidden="true">発行月</span>
+                  <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
             </div>
             <div id="invoiceList" data-a-region="list" data-sortable data-filter-keys="uid,company,month,invoice" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
                 <div style="display:grid;grid-template-columns:minmax(96px,56fr) minmax(176px,180fr) minmax(124px,60fr) minmax(136px,66fr) minmax(146px,70fr) minmax(126px,60fr) 136px;align-items:center;padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)"><span title="既定の並び順" style="color:var(--a-fg-muted)">発行月 ▼</span><span>会社名</span><span style="text-align:right">プレミアム利用料</span><span style="text-align:right">名刺データ化費用</span><span style="text-align:right">お礼メール送信費用</span><span style="text-align:right">請求合計(税込)</span><span></span></div>

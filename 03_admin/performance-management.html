@@ -56,14 +56,37 @@
               <span style="font-size:12px;color:var(--a-fg-muted2);margin-left:14px;margin-right:auto">集計最終更新 <span style="font-variant-numeric:tabular-nums">2026/07/31 09:45</span>(最大5分の遅延)</span>
               <button onclick="pOpen('mPerfCsv')" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">CSV出力</button>
             </div>
-            <div data-filter-for="perfList" style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--a-fg-muted)">対象期間
-                <select id="perfFrom" aria-label="対象期間(開始月)" onchange="perfSetRange('from')" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="2026-05">2026/05</option><option value="2026-06">2026/06</option><option value="2026-07" selected>2026/07(当月)</option></select>
-                〜
-                <select id="perfTo" aria-label="対象期間(終了月)" onchange="perfSetRange('to')" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="2026-05">2026/05</option><option value="2026-06">2026/06</option><option value="2026-07" selected>2026/07(当月)</option></select>
-              </label>
-              <select aria-label="所属グループ" data-f-key="group" data-min-lv="3" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">所属グループ: すべて</option><option>アブロード本体</option><option>オフィスワークス株式会社</option><option>データパートナーズ株式会社</option></select>
-              <button onclick="perfSearch()" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">表示</button>
+            <!-- 絞り込みカード(admin-style.css の a-filter-*)。SPEEDレビューの Filter Options と同じ体裁。
+                 対象期間(開始月・終了月)は選択するとすぐに perfSetRange 経由で反映され、「表示」は不要。
+                 所属グループ(Lv3以上のみ・data-min-lv="3")は「表示」を押すと perfSearch(pSearch(perfList) +
+                 renderGroups)でオペレーター別集計・グループ別集計の両方に反映する。Lv2はrenderGroups側で
+                 pAccountGroup()により自グループへ強制するため、この項目自体はLv2では意味を持たない。
+                 「条件をクリア」は所属グループの絞り込みのみ戻し、対象期間はレポートの表示範囲であって
+                 絞り込み条件ではないため変えない -->
+            <div data-filter-for="perfList" class="a-filter-card">
+              <div class="a-filter-head">
+                <span class="a-filter-eyebrow">Filter Options</span>
+                <span class="a-filter-rule"></span>
+                <button type="button" class="a-filter-reset" onclick="perfClearSearch()">条件をクリア</button>
+                <button type="button" class="a-filter-submit" onclick="perfSearch()">表示</button>
+              </div>
+                <div class="a-filter-fields">
+                  <div class="a-filter-field">
+                    <select id="perfFrom" aria-label="対象期間(開始月)" onchange="perfSetRange('from')" class="a-filter-input"><option value="2026-05">2026/05</option><option value="2026-06">2026/06</option><option value="2026-07" selected>2026/07(当月)</option></select>
+                    <span class="a-filter-label" aria-hidden="true">対象期間(開始月)</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <select id="perfTo" aria-label="対象期間(終了月)" onchange="perfSetRange('to')" class="a-filter-input"><option value="2026-05">2026/05</option><option value="2026-06">2026/06</option><option value="2026-07" selected>2026/07(当月)</option></select>
+                    <span class="a-filter-label" aria-hidden="true">対象期間(終了月)</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="a-filter-field is-wide" data-min-lv="3">
+                    <select aria-label="所属グループ" data-f-key="group" class="a-filter-input"><option value="">所属グループ: すべて</option><option>アブロード本体</option><option>オフィスワークス株式会社</option><option>データパートナーズ株式会社</option></select>
+                    <span class="a-filter-label" aria-hidden="true">所属グループ</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
             </div>
             <div role="tablist" aria-label="集計の切り替え" style="margin-top:18px;display:flex;gap:2px;border-bottom:2px solid var(--a-border)">
               <button id="tabGroups" role="tab" aria-selected="true" onclick="perfTab('groups')" style="background:none;border:none;border-bottom:2px solid var(--a-accent);margin-bottom:-2px;padding:10px 18px;font-size:13.5px;font-weight:700;color:var(--a-accent);cursor:pointer;font-family:inherit">グループ別集計</button>
@@ -135,6 +158,7 @@
 <script type="module" src="src/admin.js"></script>
 <script src="src/proto-ui.js"></script>
 <script src="src/proto-level.js"></script>
+
 <script src="src/perf-data.js"></script>
 
 
@@ -222,6 +246,13 @@
 
     window.perfSearch = function () {
         window.pSearch('perfList');
+        renderGroups();
+    };
+    // 「条件をクリア」: 所属グループの絞り込みだけを外す(対象期間はレポートの表示範囲であって
+    // 絞り込み条件ではないため、pClearSearch の対象外=変えない)。グループ別集計も
+    // renderGroups で引き直さないと、外した後もグループ別集計側に古い絞り込みが残って食い違う
+    window.perfClearSearch = function () {
+        window.pClearSearch('perfList');
         renderGroups();
     };
     // 開始>終了になったら、動かした側へもう片方を追従させる(範囲が反転したまま集計しない)
