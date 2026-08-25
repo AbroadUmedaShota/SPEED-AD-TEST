@@ -1,0 +1,37 @@
+[
+  {
+    "target": "dev",
+    "flow": "skip-backside",
+    "errors": [],
+    "screenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\dev-desktop-bizcard-final-confirm.png",
+    "text": "a Q.01必須 expand_less photo_camera 名刺を撮影 送信する 名刺が手元に無い方 最終確認 × check check 3 以下の内容で保存します。 表面 裏面 裏面なし 戻る アップロード完了 Request Timeline Queries 3 Models 2 2 #1 questionnaire_answer?id=564 (15:02:02) #2 questions (ajax) (15:02:03) 15.49ms 2MB 10.x GET survey/{id}/questions",
+    "visibleButtons": [
+      "photo_camera 名刺を撮影",
+      "送信する",
+      "名刺が手元に無い方",
+      "×",
+      "戻る",
+      "アップロード完了"
+    ]
+  },
+  {
+    "target": "mock",
+    "flow": "skip-backside",
+    "errors": [],
+    "screenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\mock-desktop-bizcard-final-confirm.png",
+    "text": "アンケート Q.01 ご所属の業界 expand_less 製造業 IT・情報通信 金融・保険 小売・流通 その他 Q.02 興味のあるソリューション (複数回答) expand_less クラウド移行 AI活用 セキュリティ強化 コスト削減 DX推進 Q.03 担当者名 expand_less Q.04 具体的なお悩み・ご要望 expand_less Q.05 来場人数 expand_less Q.06 次回商談希望日 expand_less Q.07 連絡希望時間帯 expand_less Q.08 製品満足度詳細 expand_less 非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート Q.09 承諾の署名 expand_less edit layers_clear undo redo delete edit_off ペンモードがオフです Q.10 現場の状況写真 expand_less photo_camera survey.tapToCapture Q.11 評価マトリクス(MA) expand_less 技術 営業 企画 注力分野 Q.12 総合満足度 expand_less 1 2 3 4 5 非常に不満 非常に満足 Q.13 担当者の対応評価 expand_less 満足 普通 不満 言葉遣い 提案力 スピード 専門知識 Q.14 導入検討における課題 (複数回答) expand_less 予算 人材 時間 特になし 本社 支社A 支社B Q.15 ※入力完了後、送信ボタンを押してください expand_less ※入力完了後、送信ボタンを押してください Q.16 知人・同僚へのご推薦度 expand_less どちらでもない 1 2 3 4 5 6 7 8 9 10 まったく推奨しない 強く推奨する photo_camera 名刺を撮影 送信する 名刺が手元に無い方 最終確認 × check check 3 以下の内容で保存します。 表面 裏面 裏面なし 戻る 保存して回答に戻る",
+    "visibleButtons": [
+      "edit",
+      "layers_clear",
+      "undo",
+      "redo",
+      "delete",
+      "photo_camera 名刺を撮影",
+      "送信する",
+      "名刺が手元に無い方",
+      "×",
+      "戻る",
+      "保存して回答に戻る"
+    ]
+  }
+]

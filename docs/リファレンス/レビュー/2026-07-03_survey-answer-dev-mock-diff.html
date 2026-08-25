@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>回答画面改修向け dev / モック視覚比較</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --surface-blue: #eef6ff;
+      --border: #d8e0ea;
+      --text: #111827;
+      --muted: #5f6b7a;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --danger: #b91c1c;
+      --warn: #b45309;
+      --ok: #047857;
+      --shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Yu Gothic", "Meiryo", system-ui, sans-serif;
+      line-height: 1.75;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    code {
+      background: #eef2f7;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    .page {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    .hero,
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    section {
+      padding: 24px;
+      margin-top: 20px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 30px;
+      line-height: 1.35;
+    }
+
+    h2 {
+      margin-bottom: 16px;
+      font-size: 23px;
+      line-height: 1.35;
+    }
+
+    h3 {
+      margin: 22px 0 12px;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    h4 {
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    p {
+      margin-bottom: 12px;
+    }
+
+    .lead {
+      max-width: 920px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .summary-card,
+    .fact-card,
+    .priority-card,
+    .flow-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-soft);
+      padding: 14px;
+    }
+
+    .summary-card strong,
+    .fact-card strong,
+    .priority-card strong,
+    .flow-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .summary-card span,
+    .fact-card span,
+    .priority-card span,
+    .flow-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .label {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-right: 6px;
+      color: #ffffff;
+      background: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .label.dev {
+      background: #334155;
+    }
+
+    .label.mock {
+      background: #2563eb;
+    }
+
+    .label.warn {
+      background: var(--warn);
+    }
+
+    .label.ok {
+      background: var(--ok);
+    }
+
+    .label.exclude {
+      background: #64748b;
+    }
+
+    .meta-grid,
+    .scope-grid,
+    .priority-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .meta-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .scope-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fact-card ul,
+    .priority-card ul,
+    .note-list {
+      margin: 8px 0 0;
+      padding-left: 1.2em;
+    }
+
+    .fact-card li,
+    .priority-card li,
+    .note-list li {
+      margin-bottom: 6px;
+    }
+
+    .alert {
+      border-left: 4px solid var(--warn);
+      border-radius: 6px;
+      background: #fff7ed;
+      color: #7c2d12;
+      padding: 12px 14px;
+      margin-top: 14px;
+    }
+
+    .visual-block {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+      margin-top: 22px;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      align-items: start;
+    }
+
+    .shot {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--surface-soft);
+    }
+
+    .shot figcaption {
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 10px;
+    }
+
+    .image-trigger {
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: zoom-in;
+      text-align: left;
+    }
+
+    .shot img,
+    .image-modal img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .callout {
+      min-height: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-blue);
+      padding: 14px;
+    }
+
+    .callout ol {
+      margin: 0;
+      padding-left: 1.5em;
+    }
+
+    .callout li {
+      margin-bottom: 8px;
+    }
+
+    .callout li:last-child {
+      margin-bottom: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1040px;
+      border-collapse: collapse;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef2ff;
+      color: #1e293b;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .decision {
+      display: inline-block;
+      min-width: 7.5em;
+      border-radius: 999px;
+      padding: 3px 9px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .decision.dev {
+      background: #334155;
+    }
+
+    .decision.mock {
+      background: #2563eb;
+    }
+
+    .decision.check {
+      background: var(--warn);
+    }
+
+    .decision.exclude {
+      background: #64748b;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0 18px;
+    }
+
+    .flow-card {
+      position: relative;
+      padding-top: 38px;
+    }
+
+    .flow-card::before {
+      content: attr(data-step);
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .priority-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .priority-card.p0 {
+      border-top: 4px solid var(--danger);
+    }
+
+    .priority-card.p1 {
+      border-top: 4px solid var(--warn);
+    }
+
+    .priority-card.p2 {
+      border-top: 4px solid var(--accent);
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(15, 23, 42, 0.76);
+    }
+
+    .image-modal.is-open {
+      display: flex;
+    }
+
+    .image-modal__dialog {
+      position: relative;
+      width: min(1120px, 96vw);
+      max-height: 92vh;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+      overflow: hidden;
+    }
+
+    .image-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .image-modal__title {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .image-modal__close {
+      display: inline-grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .image-modal__body {
+      max-height: calc(92vh - 62px);
+      overflow: auto;
+      background: var(--surface-soft);
+      padding: 16px;
+    }
+
+    .image-modal__body img {
+      max-width: 100%;
+      width: auto;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      .summary-grid,
+      .meta-grid,
+      .scope-grid,
+      .compare-grid,
+      .flow-grid,
+      .priority-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .image-modal {
+        padding: 12px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      .page {
+        max-width: none;
+        padding: 0;
+      }
+
+      .hero,
+      section {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>回答画面改修向け dev / モック視覚比較</h1>
+      <p class="lead">この資料は、回答画面改修時に「どちらへ寄せるべきか」「どこが比較不能か」を判断するための視覚比較資料。調査ログではなく、改修方針を決める読み手向けに整理している。</p>
+      <h2>結論サマリー: 今回の比較で分かったこと</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <strong>1. dev側は多設問IDへ差し替え済み</strong>
+          <span><code>dev id=392</code> を使用。11問構成で、自由記述・単一/複数選択・数値・日付時刻・手書き・名刺導線を確認できる。</span>
+        </div>
+        <div class="summary-card">
+          <strong>2. モックは目標状態の候補</strong>
+          <span>モックは16問・多入力タイプを確認できるが、実装済み仕様とは限らない。devと完全同一データではないため、設問数や文言差だけで仕様差とは断定しない。</span>
+        </div>
+        <div class="summary-card">
+          <strong>3. 共通で判断できる範囲</strong>
+          <span>表示枠、自由記述、選択肢系、名刺撮影/手入力、スマホ表示は左右比較できる。送信時挙動はdev側ボタン無効のため追加確認が必要。</span>
+        </div>
+        <div class="summary-card">
+          <strong>4. 名刺撮影は優先判断が必要</strong>
+          <span>入口とストレージ選択はほぼ揃う。カメラ分岐、OCR表示、最終ボタン文言は追加判断が必要。</span>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>比較前提と比較不能範囲</h2>
+      <div class="meta-grid">
+        <div class="fact-card">
+          <strong>比較対象URL</strong>
+          <span>dev: <code>https://dev.speed-ad.com/questionnaire_answer?id=392</code></span><br>
+          <span>mock: <code>https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008</code></span>
+        </div>
+        <div class="fact-card">
+          <strong>確認条件</strong>
+          <span>確認日: 2026-07-03 初回確認 / 2026-07-05 dev id=392 再取得</span><br>
+          <span>ブラウザ: Playwright Chromium headless</span><br>
+          <span>viewport: desktop 1365 x 900 / mobile 390 x 844</span>
+        </div>
+      </div>
+      <div class="scope-grid">
+        <div class="fact-card">
+          <strong><span class="label dev">dev</span>確認できた範囲</strong>
+          <ul>
+            <li>回答画面到達、タイトルカード、説明カード、Q.01〜Q.11の多設問表示</li>
+            <li>自由記述、単一選択、複数選択、数値、ドロップダウン、マトリクス、日付/時間、手書き</li>
+            <li>名刺撮影入口、ストレージ選択、カメラ撮影、内容確認、裏面スキップ、最終確認</li>
+            <li>名刺手入力モーダルの項目構成</li>
+            <li>通常画像添付設問は未確認</li>
+            <li>送信ボタンは無効状態のため、同IDで未入力送信エラーは未確認</li>
+          </ul>
+        </div>
+        <div class="fact-card">
+          <strong><span class="label mock">mock</span>確認できた範囲</strong>
+          <ul>
+            <li>16問構成、単一/複数/数値/日付/時刻/手書き/画像/マトリクスの表示</li>
+            <li>名刺不足時の不足情報モーダル</li>
+            <li>名刺撮影入口、ストレージ選択、内容確認、裏面スキップ、最終確認</li>
+            <li>名刺手入力モーダルの項目構成</li>
+          </ul>
+        </div>
+      </div>
+      <div class="alert">
+        比較不能範囲: dev id=392 とモック sv_0001_26008 は、どちらも多設問だが完全同一データではない。設問数、設問文、選択肢数、通常画像添付の有無、送信可否に由来する見た目差は仕様差として扱わない。通常画像添付と送信成功までの挙動は追加確認が必要。
+      </div>
+    </section>
+
+    <section>
+      <h2>視覚比較</h2>
+
+      <div class="visual-block">
+        <h3>desktop初期表示</h3>
+        <div class="compare-grid">
+          <figure class="shot">
+            <figcaption><span class="label dev">dev</span>初期表示 desktop</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop.png" data-title="dev 初期表示 desktop"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop.png" alt="dev desktop initial"></button>
+          </figure>
+          <figure class="shot">
+            <figcaption><span class="label mock">mock</span>初期表示 desktop</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-desktop.png" data-title="mock 初期表示 desktop"><img src="./2026-07-03_survey-answer-comparison-assets/mock-desktop.png" alt="mock desktop initial"></button>
+          </figure>
+        </div>
+        <div class="callout">
+          <h4>見るべき差分</h4>
+          <ol>
+            <li>① devは11問、mockは16問。どちらも多設問だが、設問数と設問文は一致していない。</li>
+            <li>② タイトルカード、説明/設問カード、中央寄せの基本トーンは近い。レイアウトの大枠は共通化しやすい。</li>
+            <li>③ dev下部のLaravel Debugbarは環境差として比較から除外する。</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="visual-block">
+        <h3>mobile初期表示</h3>
+        <div class="compare-grid">
+          <figure class="shot">
+            <figcaption><span class="label dev">dev</span>初期表示 mobile</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-mobile.png" data-title="dev 初期表示 mobile"><img src="./2026-07-03_survey-answer-comparison-assets/dev-mobile.png" alt="dev mobile initial"></button>
+          </figure>
+          <figure class="shot">
+            <figcaption><span class="label mock">mock</span>初期表示 mobile</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-mobile.png" data-title="mock 初期表示 mobile"><img src="./2026-07-03_survey-answer-comparison-assets/mock-mobile.png" alt="mock mobile initial"></button>
+          </figure>
+        </div>
+        <div class="callout">
+          <h4>見るべき差分</h4>
+          <ol>
+            <li>① どちらもカード幅は画面に追従する。モーダル幅と下部導線の視認性を重視する。</li>
+            <li>② どちらも多設問の縦積み表示を確認できる。設問数差によるスクロール量は仕様差として扱わない。</li>
+            <li>③ devのDebugbarが下部を占有するため、スマホ本番相当表示は別確認が必要。</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="visual-block">
+        <h3>送信可否 / 未入力時</h3>
+        <div class="compare-grid">
+          <figure class="shot">
+            <figcaption><span class="label dev">dev</span>送信ボタン無効状態</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-after-submit.png" data-title="dev 送信ボタン無効状態"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-after-submit.png" alt="dev submit disabled"></button>
+          </figure>
+          <figure class="shot">
+            <figcaption><span class="label mock">mock</span>名刺/基本情報不足モーダル</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-after-submit.png" data-title="mock 名刺/基本情報不足モーダル"><img src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-after-submit.png" alt="mock validation"></button>
+          </figure>
+        </div>
+        <div class="callout">
+          <h4>見るべき差分</h4>
+          <ol>
+            <li>① dev id=392 は送信ボタンが無効で、同一IDでは未入力送信エラーまで進めない。</li>
+            <li>② mockは名刺/基本情報不足をモーダルでまとめて表示する。</li>
+            <li>③ 送信時挙動は同条件比較できていないため、別の有効なdev多設問IDまたは送信可能状態で追加確認する。</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="visual-block">
+        <h3>名刺撮影入口</h3>
+        <div class="compare-grid">
+          <figure class="shot">
+            <figcaption><span class="label dev">dev</span>名刺撮影入口</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-capture.png" data-title="dev 名刺撮影入口"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-capture.png" alt="dev bizcard capture"></button>
+          </figure>
+          <figure class="shot">
+            <figcaption><span class="label mock">mock</span>名刺撮影入口</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-capture.png" data-title="mock 名刺撮影入口"><img src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-capture.png" alt="mock bizcard capture"></button>
+          </figure>
+        </div>
+        <div class="callout">
+          <h4>見るべき差分</h4>
+          <ol>
+            <li>① 入口はどちらも3ステップ表示、ストレージ/カメラの2択でほぼ一致。</li>
+            <li>② 背景の長尺設問有無は比較条件差であり、モーダル自体の差ではない。</li>
+            <li>③ この入口はdev基準で細部を合わせやすい。</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="visual-block">
+        <h3>名刺手入力</h3>
+        <div class="compare-grid">
+          <figure class="shot">
+            <figcaption><span class="label dev">dev</span>名刺手入力</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-no-bizcard.png" data-title="dev 名刺手入力"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-no-bizcard.png" alt="dev no bizcard"></button>
+          </figure>
+          <figure class="shot">
+            <figcaption><span class="label mock">mock</span>名刺手入力</figcaption>
+            <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-no-bizcard.png" data-title="mock 名刺手入力"><img src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-no-bizcard.png" alt="mock no bizcard"></button>
+          </figure>
+        </div>
+        <div class="callout">
+          <h4>見るべき差分</h4>
+          <ol>
+            <li>① 項目構成は一致している。</li>
+            <li>② 必須項目、保存後状態、送信時チェック順序は未確認。</li>
+            <li>③ 項目構成はdev/mock共通として扱い、必須ルールだけ追加確認する。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>名刺撮影モーダル詳細</h2>
+      <div class="flow-grid">
+        <div class="flow-card" data-step="1">
+          <strong>選択方法</strong>
+          <span>dev/mockともストレージ選択・カメラ撮影の2択を表示。</span>
+        </div>
+        <div class="flow-card" data-step="2">
+          <strong>ストレージ選択</strong>
+          <span>dev/mockとも画像選択後に内容確認へ到達。</span>
+        </div>
+        <div class="flow-card" data-step="3">
+          <strong>カメラ撮影</strong>
+          <span>devは撮影画面へ到達。mockは自動確認では入口から進まず。</span>
+        </div>
+        <div class="flow-card" data-step="4">
+          <strong>内容確認</strong>
+          <span>表面プレビュー、撮り直す、裏面スキップ、裏面追加を表示。</span>
+        </div>
+        <div class="flow-card" data-step="5">
+          <strong>最終確認</strong>
+          <span>表面/裏面の確認後に保存。完了ボタン文言に差分あり。</span>
+        </div>
+      </div>
+
+      <h3>ストレージ選択後の内容確認</h3>
+      <div class="compare-grid">
+        <figure class="shot">
+          <figcaption><span class="label dev">dev</span>ストレージ選択後</figcaption>
+          <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-storage-after-file.png" data-title="dev ストレージ選択後"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-storage-after-file.png" alt="dev storage after file"></button>
+        </figure>
+        <figure class="shot">
+          <figcaption><span class="label mock">mock</span>ストレージ選択後</figcaption>
+          <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-storage-after-file.png" data-title="mock ストレージ選択後"><img src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-storage-after-file.png" alt="mock storage after file"></button>
+        </figure>
+      </div>
+      <div class="callout">
+        <h4>見るべき差分</h4>
+        <ol>
+          <li>① どちらもStep 2の内容確認に到達する。</li>
+          <li>② mockには <code>OCR言語: 日本語 (ダミー)</code> が表示される。外部向けUIに残すか要判断。</li>
+          <li>③ 裏面スキップ/追加の導線は共通。</li>
+        </ol>
+      </div>
+
+      <h3>カメラ撮影分岐</h3>
+      <div class="compare-grid">
+        <figure class="shot">
+          <figcaption><span class="label dev">dev</span>カメラ撮影画面</figcaption>
+          <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-camera-select.png" data-title="dev カメラ撮影画面"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-camera-select.png" alt="dev camera select"></button>
+        </figure>
+        <figure class="shot">
+          <figcaption><span class="label mock">mock</span>カメラ選択後</figcaption>
+          <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-camera-select.png" data-title="mock カメラ選択後"><img src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-camera-select.png" alt="mock camera select"></button>
+        </figure>
+      </div>
+      <div class="callout">
+        <h4>見るべき差分</h4>
+        <ol>
+          <li>① devはカメラ撮影画面に進み、キャンセル/撮影するを表示。</li>
+          <li>② mockは自動確認ではStep 1から進まなかった。</li>
+          <li>③ これは実装差と断定せず、実機ブラウザで手動確認する。</li>
+        </ol>
+      </div>
+
+      <h3>撮影後 / 最終確認</h3>
+      <div class="compare-grid">
+        <figure class="shot">
+          <figcaption><span class="label dev">dev</span>カメラ撮影後</figcaption>
+          <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-camera-after-shot.png" data-title="dev カメラ撮影後"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-camera-after-shot.png" alt="dev camera after shot"></button>
+        </figure>
+        <figure class="shot">
+          <figcaption><span class="label dev">dev</span>最終確認</figcaption>
+          <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-final-confirm.png" data-title="dev 最終確認"><img src="./2026-07-03_survey-answer-comparison-assets/dev-desktop-bizcard-final-confirm.png" alt="dev final confirm"></button>
+        </figure>
+        <figure class="shot">
+          <figcaption><span class="label mock">mock</span>最終確認</figcaption>
+          <button type="button" class="image-trigger" data-src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-final-confirm.png" data-title="mock 最終確認"><img src="./2026-07-03_survey-answer-comparison-assets/mock-desktop-bizcard-final-confirm.png" alt="mock final confirm"></button>
+        </figure>
+      </div>
+      <div class="callout">
+        <h4>見るべき差分</h4>
+        <ol>
+          <li>① 最終確認の構造は近い。表面/裏面なしの見せ方も近い。</li>
+          <li>② devの完了ボタンは「アップロード完了」、mockは「保存して回答に戻る」。</li>
+          <li>③ 回答画面へ戻る動作を説明するなら、mock文言の方が分かりやすい候補。</li>
+        </ol>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ステップ</th>
+              <th>dev側</th>
+              <th>モック側</th>
+              <th>判断メモ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>選択方法</td>
+              <td>到達済み。ストレージ/カメラの2択。</td>
+              <td>到達済み。構成はdevと近い。</td>
+              <td>dev基準で細部調整しやすい。</td>
+            </tr>
+            <tr>
+              <td>ストレージ選択</td>
+              <td>画像選択後、内容確認へ到達。</td>
+              <td>画像選択後、内容確認へ到達。</td>
+              <td>共通仕様として採用可能。</td>
+            </tr>
+            <tr>
+              <td>カメラ撮影</td>
+              <td>撮影画面、撮影後内容確認まで到達。</td>
+              <td>自動確認ではStep 1から進まず。</td>
+              <td>手動実機確認が必要。実装差とは断定しない。</td>
+            </tr>
+            <tr>
+              <td>裏面スキップ</td>
+              <td>最終確認へ到達。</td>
+              <td>最終確認へ到達。</td>
+              <td>到達性は一致。</td>
+            </tr>
+            <tr>
+              <td>最終確認</td>
+              <td>完了ボタンは「アップロード完了」。</td>
+              <td>完了ボタンは「保存して回答に戻る」。</td>
+              <td>戻り先が回答画面ならmock文言が分かりやすい候補。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>差分判断表</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>分類</th>
+              <th>差分</th>
+              <th>dev側</th>
+              <th>モック側</th>
+              <th>採用判断</th>
+              <th>理由</th>
+              <th>追加確認</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>環境表示</td>
+              <td>Laravel Debugbar</td>
+              <td>画面下部に表示。</td>
+              <td>表示なし。</td>
+              <td><span class="decision exclude">環境差として除外</span></td>
+              <td>開発環境固有の表示で、回答画面UI仕様ではない。</td>
+              <td>本番相当で非表示になる前提を確認。</td>
+            </tr>
+            <tr>
+              <td>設問タイプ</td>
+              <td>多入力タイプの比較条件</td>
+              <td>Q.01〜Q.11で自由記述、単一/複数選択、数値、ドロップダウン、マトリクス、日付/時間、手書きを確認。</td>
+              <td>16問で多入力タイプを確認可能。</td>
+              <td><span class="decision check">要追加確認</span></td>
+              <td>以前より条件は近づいたが、設問数・設問文・通常画像添付の有無は一致しない。</td>
+              <td>通常画像添付を含むdev側アンケートID、またはid=392への画像添付設問有無確認。</td>
+            </tr>
+            <tr>
+              <td>必須エラー</td>
+              <td>設問未入力時の表示</td>
+              <td>id=392では送信ボタンが無効で、未入力送信エラーまで進めない。別IDでは設問直下エラーを参考確認済みだが、同条件比較ではない。</td>
+              <td>同条件の設問必須エラーは未確認。</td>
+              <td><span class="decision check">要追加確認</span></td>
+              <td>同じ多設問条件で未入力送信ができていないため、採用判断は保留する。</td>
+              <td>送信可能なdev多設問ID、または送信許可を得た状態での未入力送信確認。</td>
+            </tr>
+            <tr>
+              <td>名刺不足モーダル</td>
+              <td>名刺/基本情報不足時の表示</td>
+              <td>id=392では送信ボタンが無効で、同条件の不足モーダルは未確認。</td>
+              <td>不足項目をモーダルで列挙。</td>
+              <td><span class="decision check">要追加確認</span></td>
+              <td>名刺登録が必要な理由と不足項目が分かりやすい。設問エラーとは役割を分ける。</td>
+              <td>設問エラーと名刺不足が同時にある場合の優先順位。</td>
+            </tr>
+            <tr>
+              <td>送信導線</td>
+              <td>名刺撮影・送信・手元にない導線</td>
+              <td>多設問末尾に導線があり、送信ボタンは無効状態。</td>
+              <td>長尺フォーム末尾に表示。</td>
+              <td><span class="decision check">要追加確認</span></td>
+              <td>長尺時の末尾配置は近いが、dev側の送信無効理由と有効化条件が未確定。</td>
+              <td>送信ボタン有効条件、名刺入力後の有効化、固定フッター要否。</td>
+            </tr>
+            <tr>
+              <td>名刺撮影モーダル</td>
+              <td>入口とステップ構成</td>
+              <td>3ステップ、ストレージ/カメラ選択。</td>
+              <td>3ステップ、ストレージ/カメラ選択。</td>
+              <td><span class="decision dev">dev基準</span></td>
+              <td>入口と基本構成は近く、実装済みのdevを基準に細部を合わせやすい。</td>
+              <td>mock側カメラ分岐は実機で確認。</td>
+            </tr>
+            <tr>
+              <td>名刺撮影モーダル</td>
+              <td>最終ボタン文言</td>
+              <td>アップロード完了。</td>
+              <td>保存して回答に戻る。</td>
+              <td><span class="decision mock">モック基準</span></td>
+              <td>回答画面へ戻る動作を説明するなら、mock文言の方が次の状態を理解しやすい。</td>
+              <td>押下後の実際の戻り先と保存完了表示。</td>
+            </tr>
+            <tr>
+              <td>手入力項目</td>
+              <td>名刺が手元にない場合の入力欄</td>
+              <td>姓、名、メール、会社名、部署名、役職名、電話番号、郵便番号、住所、建物名。</td>
+              <td>同じ項目構成。</td>
+              <td><span class="decision dev">dev基準</span></td>
+              <td>項目構成は一致。実装済み構成としてdevを基準にできる。</td>
+              <td>必須項目、保存後表示、送信時チェック。</td>
+            </tr>
+            <tr>
+              <td>画像添付文言</td>
+              <td>通常画像添付の表示文言</td>
+              <td>id=392では通常画像添付設問は未確認。</td>
+              <td><code>survey.tapToCapture</code> が表示される。</td>
+              <td><span class="decision check">要追加確認</span></td>
+              <td>モック側だけの確認であり、未翻訳キーらしき表示は修正候補だがdev実装確認が必要。</td>
+              <td>dev側の通常画像添付設問ID。</td>
+            </tr>
+            <tr>
+              <td>スマホ表示</td>
+              <td>モーダル/下部導線の見え方</td>
+              <td>表示は確認済み。ただしDebugbarが下部を占有。</td>
+              <td>長尺設問と不足モーダルを確認済み。</td>
+              <td><span class="decision check">要追加確認</span></td>
+              <td>本番相当のスマホ表示、実機カメラ権限、下部導線を確認してから決める。</td>
+              <td>実機スマホ確認。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>改修優先度</h2>
+      <div class="priority-grid">
+        <div class="priority-card p0">
+          <strong>P0: 仕様判断なしに実装するとブレるもの</strong>
+          <ul>
+            <li>設問必須エラーと名刺不足モーダルの表示優先順位</li>
+            <li>dev id=392で送信ボタンが無効になる理由と、有効化条件</li>
+            <li>送信導線を固定フッターにするか末尾配置にするか</li>
+          </ul>
+        </div>
+        <div class="priority-card p1">
+          <strong>P1: UI統一や文言修正で改善できるもの</strong>
+          <ul>
+            <li>名刺撮影モーダルの文言、余白、ステップ表示の統一</li>
+            <li>最終確認ボタン文言の統一</li>
+            <li><code>survey.tapToCapture</code> や <code>OCR言語: 日本語 (ダミー)</code> の表示要否整理</li>
+          </ul>
+        </div>
+        <div class="priority-card p2">
+          <strong>P2: 追加ID/実機確認後でよいもの</strong>
+          <ul>
+            <li>通常画像添付、手書き、日付、時刻、マトリクス系の詳細差分</li>
+            <li>mock側カメラ分岐の実機ブラウザ確認</li>
+            <li>Firefox、Edge、Safariでの見え方</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>次に必要な確認</h2>
+      <ul class="note-list">
+        <li>dev側はid=392で多設問比較に近づけたが、通常画像添付と送信可能状態を確認できるアンケートIDが必要。</li>
+        <li>実機スマホで名刺撮影、カメラ権限、通常画像添付を確認する。</li>
+        <li>名刺手入力の保存後状態、名刺撮影の保存後状態、送信成功まで確認する場合はユーザー許可が必要。</li>
+        <li>送信成功まで実行するかどうか、実データに影響する可能性があるため事前に対象環境と許可範囲を決める。</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="image-modal" id="imageModal" aria-hidden="true">
+    <div class="image-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="imageModalTitle">
+      <div class="image-modal__header">
+        <p class="image-modal__title" id="imageModalTitle">画像プレビュー</p>
+        <button type="button" class="image-modal__close" aria-label="閉じる" data-modal-close>&times;</button>
+      </div>
+      <div class="image-modal__body">
+        <img id="imageModalImage" src="" alt="">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('imageModalImage');
+      const modalTitle = document.getElementById('imageModalTitle');
+      const closeButton = modal.querySelector('[data-modal-close]');
+      let lastFocused = null;
+
+      const openModal = (trigger) => {
+        lastFocused = trigger;
+        modalImage.src = trigger.dataset.src;
+        modalImage.alt = trigger.querySelector('img')?.alt || '';
+        modalTitle.textContent = trigger.dataset.title || '画像プレビュー';
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        closeButton.focus();
+      };
+
+      const closeModal = () => {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        modalImage.src = '';
+        if (lastFocused) {
+          lastFocused.focus();
+        }
+      };
+
+      document.querySelectorAll('.image-trigger').forEach((trigger) => {
+        trigger.addEventListener('click', () => openModal(trigger));
+      });
+
+      closeButton.addEventListener('click', closeModal);
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+          closeModal();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

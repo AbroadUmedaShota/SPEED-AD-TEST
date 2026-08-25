@@ -1,0 +1,5888 @@
+[
+  {
+    "target": {
+      "key": "dev",
+      "label": "dev側",
+      "url": "https://dev.speed-ad.com/questionnaire_answer?id=564"
+    },
+    "viewport": {
+      "key": "desktop",
+      "width": 1365,
+      "height": 900,
+      "isMobile": false
+    },
+    "responseStatus": 200,
+    "responseUrl": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+    "screenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\dev-desktop.png",
+    "fullScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\dev-desktop-full.png",
+    "validationScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\dev-desktop-after-submit.png",
+    "state": {
+      "title": "SpeedAd - a",
+      "location": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+      "bodyTextStart": "a Q.01必須 expand_less photo_camera 名刺を撮影 送信する 名刺が手元に無い方 Request Timeline Queries 3 Models 2 2 #1 questionnaire_answer?id=564 (19:33:51) #2 questions (ajax) (19:34:05) 14.89ms 2MB 10.x GET survey/{id}/questions",
+      "headings": [
+        "a",
+        "入力内容の確認",
+        "名刺を撮影",
+        "ストレージから選択",
+        "カメラで撮影",
+        "内容の確認",
+        "最終確認"
+      ],
+      "buttons": [
+        {
+          "tag": "button",
+          "text": "photo_camera 名刺を撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "送信する",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "名刺が手元に無い方",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "修正する",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "保存",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "撮り直す",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "裏面をスキップ",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "裏面を追加する",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "戻る",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "アップロード完了",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "Reset settings",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "Search",
+          "type": "submit",
+          "disabled": false
+        }
+      ],
+      "fields": [
+        {
+          "tag": "textarea",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": true,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "a Q.01必須 expand_less photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "a Q.01必須 expand_less photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "datasets-switcher",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "2 #1 questionnaire_answer?id=564 (19:33:51) #2 questions (ajax) (19:34:05) 14.89ms 2MB 10.x GET survey/{id}/questions"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Auto (System preference)LightDark"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Bottom LeftBottom RightTop LeftTop Right"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Hide empty tabs until they have data"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Automatically show new incoming Ajax requests"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "search",
+          "placeholder": "Search",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "search",
+          "placeholder": "Search",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Autoshow"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "method",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "search",
+          "placeholder": "Search",
+          "label": "",
+          "required": false,
+          "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "method",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "uri",
+          "placeholder": "URI",
+          "label": "",
+          "required": false,
+          "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "ip",
+          "placeholder": "IP",
+          "label": "",
+          "required": false,
+          "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+        }
+      ],
+      "images": [
+        {
+          "alt": "名刺 表面",
+          "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "alt": "名刺 表面",
+          "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+          "w": 0,
+          "h": 0
+        }
+      ],
+      "requiredTextCount": 1,
+      "errorText": [],
+      "links": [
+        {
+          "text": "Request",
+          "href": ""
+        },
+        {
+          "text": "Messages",
+          "href": ""
+        },
+        {
+          "text": "Timeline",
+          "href": ""
+        },
+        {
+          "text": "Exceptions",
+          "href": ""
+        },
+        {
+          "text": "Views0",
+          "href": ""
+        },
+        {
+          "text": "Queries 3",
+          "href": ""
+        },
+        {
+          "text": "Models 2",
+          "href": ""
+        },
+        {
+          "text": "Mails",
+          "href": ""
+        },
+        {
+          "text": "Gate",
+          "href": ""
+        },
+        {
+          "text": "Settings",
+          "href": ""
+        },
+        {
+          "text": "2",
+          "href": ""
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+        },
+        {
+          "text": "app/Http/Controllers/SurveyAnswerController.php:88-168",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "◀",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "◀",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=90"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=102"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurvey.php&line=1"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurveyDetail.php&line=1"
+        },
+        {
+          "text": "Clear",
+          "href": ""
+        },
+        {
+          "text": "Show all",
+          "href": ""
+        },
+        {
+          "text": "2",
+          "href": ""
+        },
+        {
+          "text": "3",
+          "href": ""
+        },
+        {
+          "text": "2",
+          "href": ""
+        },
+        {
+          "text": "Load more",
+          "href": ""
+        },
+        {
+          "text": "Show only current URL",
+          "href": ""
+        },
+        {
+          "text": "Show all",
+          "href": ""
+        },
+        {
+          "text": "Delete all",
+          "href": ""
+        }
+      ],
+      "documentHeight": 900,
+      "viewportHeight": 900
+    },
+    "validation": {
+      "attempted": true,
+      "candidate": {
+        "tag": "button",
+        "text": "送信する",
+        "type": "button",
+        "disabled": false
+      },
+      "after": {
+        "title": "SpeedAd - a",
+        "location": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+        "bodyTextStart": "a Q.01必須 expand_less 回答が未入力です photo_camera 名刺を撮影 送信する 名刺が手元に無い方 Request Timeline Queries 3 Models 2 2 #1 questionnaire_answer?id=564 (19:33:51) #2 questions (ajax) (19:34:05) 14.89ms 2MB 10.x GET survey/{id}/questions",
+        "headings": [
+          "a",
+          "入力内容の確認",
+          "名刺を撮影",
+          "ストレージから選択",
+          "カメラで撮影",
+          "内容の確認",
+          "最終確認"
+        ],
+        "buttons": [
+          {
+            "tag": "button",
+            "text": "photo_camera 名刺を撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "送信する",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "名刺が手元に無い方",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "修正する",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "保存",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "撮り直す",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "裏面をスキップ",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "裏面を追加する",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "戻る",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "アップロード完了",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "Reset settings",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "Search",
+            "type": "submit",
+            "disabled": false
+          }
+        ],
+        "fields": [
+          {
+            "tag": "textarea",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": true,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "file",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "a Q.01必須 expand_less 回答が未入力です photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+          },
+          {
+            "tag": "input",
+            "type": "file",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "a Q.01必須 expand_less 回答が未入力です photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "datasets-switcher",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "2 #1 questionnaire_answer?id=564 (19:33:51) #2 questions (ajax) (19:34:05) 14.89ms 2MB 10.x GET survey/{id}/questions"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Auto (System preference)LightDark"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Bottom LeftBottom RightTop LeftTop Right"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Hide empty tabs until they have data"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Automatically show new incoming Ajax requests"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "search",
+            "placeholder": "Search",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "search",
+            "placeholder": "Search",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Autoshow"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "method",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "search",
+            "placeholder": "Search",
+            "label": "",
+            "required": false,
+            "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "method",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "uri",
+            "placeholder": "URI",
+            "label": "",
+            "required": false,
+            "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "ip",
+            "placeholder": "IP",
+            "label": "",
+            "required": false,
+            "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+          }
+        ],
+        "images": [
+          {
+            "alt": "名刺 表面",
+            "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+            "w": 0,
+            "h": 0
+          },
+          {
+            "alt": "名刺 表面",
+            "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+            "w": 0,
+            "h": 0
+          }
+        ],
+        "requiredTextCount": 1,
+        "errorText": [
+          "回答が未入力です"
+        ],
+        "links": [
+          {
+            "text": "Request",
+            "href": ""
+          },
+          {
+            "text": "Messages",
+            "href": ""
+          },
+          {
+            "text": "Timeline",
+            "href": ""
+          },
+          {
+            "text": "Exceptions",
+            "href": ""
+          },
+          {
+            "text": "Views0",
+            "href": ""
+          },
+          {
+            "text": "Queries 3",
+            "href": ""
+          },
+          {
+            "text": "Models 2",
+            "href": ""
+          },
+          {
+            "text": "Mails",
+            "href": ""
+          },
+          {
+            "text": "Gate",
+            "href": ""
+          },
+          {
+            "text": "Settings",
+            "href": ""
+          },
+          {
+            "text": "2",
+            "href": ""
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+          },
+          {
+            "text": "app/Http/Controllers/SurveyAnswerController.php:88-168",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "◀",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "◀",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=90"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=102"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurvey.php&line=1"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurveyDetail.php&line=1"
+          },
+          {
+            "text": "Clear",
+            "href": ""
+          },
+          {
+            "text": "Show all",
+            "href": ""
+          },
+          {
+            "text": "2",
+            "href": ""
+          },
+          {
+            "text": "3",
+            "href": ""
+          },
+          {
+            "text": "2",
+            "href": ""
+          },
+          {
+            "text": "Load more",
+            "href": ""
+          },
+          {
+            "text": "Show only current URL",
+            "href": ""
+          },
+          {
+            "text": "Show all",
+            "href": ""
+          },
+          {
+            "text": "Delete all",
+            "href": ""
+          }
+        ],
+        "documentHeight": 900,
+        "viewportHeight": 900
+      }
+    },
+    "consoleErrors": [],
+    "failedRequests": []
+  },
+  {
+    "target": {
+      "key": "mock",
+      "label": "モック側",
+      "url": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008"
+    },
+    "viewport": {
+      "key": "desktop",
+      "width": 1365,
+      "height": 900,
+      "isMobile": false
+    },
+    "responseStatus": 200,
+    "responseUrl": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+    "screenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\mock-desktop.png",
+    "fullScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\mock-desktop-full.png",
+    "validationScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\mock-desktop-after-submit.png",
+    "state": {
+      "title": "SpeedAd - アンケート回答",
+      "location": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+      "bodyTextStart": "アンケート Q.01 ご所属の業界 expand_less 製造業 IT・情報通信 金融・保険 小売・流通 その他 Q.02 興味のあるソリューション (複数回答) expand_less クラウド移行 AI活用 セキュリティ強化 コスト削減 DX推進 Q.03 担当者名 expand_less Q.04 具体的なお悩み・ご要望 expand_less Q.05 来場人数 expand_less Q.06 次回商談希望日 expand_less Q.07 連絡希望時間帯 expand_less Q.08 製品満足度詳細 expand_less 非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート Q.09 承諾の署名 expand_less edit layers_clear undo redo delete edit_off ペンモードがオフです Q.10 現場の状況写真 expand_less photo_camera survey.tapToCapture Q.11 評価マトリクス(MA) expand_less 技術 営業 企画 注力分野 Q.12 総合満足度 expand_less 1 2 3 4 5 非常に不満 非常に満足 Q.13 担当者の対応評価 expand_less 満足 普通 不満 言葉遣い 提案力 スピード 専門知識 Q.14 導入検討における課題 (複数回答) expand_less 予算 人材 時間 特になし 本社 支社A 支社B Q.15 ※入力完了後、送信ボタンを押してください expand_less ※入力完了後、送信ボタンを押してください Q.16 知人・同僚へのご推薦度 expand_less どちらでもない 1 2 3 4 5 6 7 8 9 10 まったく推奨しない 強く推奨する photo_camera 名刺を撮影 送信する 名刺が手元に無い方",
+      "headings": [
+        "アンケート"
+      ],
+      "buttons": [
+        {
+          "tag": "button",
+          "text": "edit",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "layers_clear",
+          "type": "button",
+          "disabled": true
+        },
+        {
+          "tag": "button",
+          "text": "undo",
+          "type": "button",
+          "disabled": true
+        },
+        {
+          "tag": "button",
+          "text": "redo",
+          "type": "button",
+          "disabled": true
+        },
+        {
+          "tag": "button",
+          "text": "delete",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "check_circle 撮影済み名刺 expand_less",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "再撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "削除",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "再撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "削除",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "photo_camera 名刺を撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "送信する",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "名刺が手元に無い方",
+          "type": "button",
+          "disabled": false
+        }
+      ],
+      "fields": [
+        {
+          "tag": "select",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "言語選択",
+          "required": false,
+          "context": "言語選択 Language日本語"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "製造業",
+          "required": false,
+          "context": "製造業"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "IT・情報通信",
+          "required": false,
+          "context": "IT・情報通信"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "金融・保険",
+          "required": false,
+          "context": "金融・保険"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "小売・流通",
+          "required": false,
+          "context": "小売・流通"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "その他",
+          "required": false,
+          "context": "その他"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "クラウド移行",
+          "required": false,
+          "context": "クラウド移行"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "AI活用",
+          "required": false,
+          "context": "AI活用"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "セキュリティ強化",
+          "required": false,
+          "context": "セキュリティ強化"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "コスト削減",
+          "required": false,
+          "context": "コスト削減"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "DX推進",
+          "required": false,
+          "context": "DX推進"
+        },
+        {
+          "tag": "textarea",
+          "type": "",
+          "name": "Q3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "textarea",
+          "type": "",
+          "name": "Q4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "number",
+          "name": "Q5",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "date",
+          "name": "Q6_date",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "time",
+          "name": "Q7_time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "color",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "range",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Q10",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "photo_camera survey.tapToCapture"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q11-r1-a",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "技術 営業 企画 注力分野"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q11-r1-b",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "技術 営業 企画 注力分野"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q11-r1-c",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "技術 営業 企画 注力分野"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "1"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "2"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "3"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "4"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "5"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-budget",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-human_resource",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-none",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-budget",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-human_resource",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-none",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-budget",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-human_resource",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-none",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "1"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "2"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "3"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "4"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "5"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "6"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "7"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "8"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "9"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "10"
+        }
+      ],
+      "images": [
+        {
+          "alt": "名刺 表面",
+          "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "alt": "名刺 裏面",
+          "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+          "w": 0,
+          "h": 0
+        }
+      ],
+      "requiredTextCount": 0,
+      "errorText": [],
+      "links": [],
+      "documentHeight": 4838,
+      "viewportHeight": 900
+    },
+    "validation": {
+      "attempted": true,
+      "candidate": {
+        "tag": "button",
+        "text": "送信する",
+        "type": "button",
+        "disabled": false
+      },
+      "after": {
+        "title": "SpeedAd - アンケート回答",
+        "location": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+        "bodyTextStart": "アンケート Q.01 ご所属の業界 expand_less 製造業 IT・情報通信 金融・保険 小売・流通 その他 Q.02 興味のあるソリューション (複数回答) expand_less クラウド移行 AI活用 セキュリティ強化 コスト削減 DX推進 Q.03 担当者名 expand_less Q.04 具体的なお悩み・ご要望 expand_less Q.05 来場人数 expand_less Q.06 次回商談希望日 expand_less Q.07 連絡希望時間帯 expand_less Q.08 製品満足度詳細 expand_less 非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート Q.09 承諾の署名 expand_less edit layers_clear undo redo delete edit_off ペンモードがオフです Q.10 現場の状況写真 expand_less photo_camera survey.tapToCapture Q.11 評価マトリクス(MA) expand_less 技術 営業 企画 注力分野 Q.12 総合満足度 expand_less 1 2 3 4 5 非常に不満 非常に満足 Q.13 担当者の対応評価 expand_less 満足 普通 不満 言葉遣い 提案力 スピード 専門知識 Q.14 導入検討における課題 (複数回答) expand_less 予算 人材 時間 特になし 本社 支社A 支社B Q.15 ※入力完了後、送信ボタンを押してください expand_less ※入力完了後、送信ボタンを押してください Q.16 知人・同僚へのご推薦度 expand_less どちらでもない 1 2 3 4 5 6 7 8 9 10 まったく推奨しない 強く推奨する photo_camera 名刺を撮影 送信する 名刺が手元に無い方 送信に必要な情報が不足しています × 回答を送信するには、名刺画像の撮影、または 「名刺が手元に無い方」からの基本情報の入力が必要です。 入力が必要な項目 error_outline 氏名 error_outline メールアドレス error_outline 会社名 error_outline 電話番号 いずれかの方法でご登録のうえ、再度送信してください。 閉じる 基本情報を入力する",
+        "headings": [
+          "アンケート",
+          "送信に必要な情報が不足しています"
+        ],
+        "buttons": [
+          {
+            "tag": "button",
+            "text": "edit",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "layers_clear",
+            "type": "button",
+            "disabled": true
+          },
+          {
+            "tag": "button",
+            "text": "undo",
+            "type": "button",
+            "disabled": true
+          },
+          {
+            "tag": "button",
+            "text": "redo",
+            "type": "button",
+            "disabled": true
+          },
+          {
+            "tag": "button",
+            "text": "delete",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "check_circle 撮影済み名刺 expand_less",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "再撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "削除",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "再撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "削除",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "photo_camera 名刺を撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "送信する",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "名刺が手元に無い方",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "閉じる",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "基本情報を入力する",
+            "type": "",
+            "disabled": false
+          }
+        ],
+        "fields": [
+          {
+            "tag": "select",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "言語選択",
+            "required": false,
+            "context": "言語選択 Language日本語"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "製造業",
+            "required": false,
+            "context": "製造業"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "IT・情報通信",
+            "required": false,
+            "context": "IT・情報通信"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "金融・保険",
+            "required": false,
+            "context": "金融・保険"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "小売・流通",
+            "required": false,
+            "context": "小売・流通"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "その他",
+            "required": false,
+            "context": "その他"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "クラウド移行",
+            "required": false,
+            "context": "クラウド移行"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "AI活用",
+            "required": false,
+            "context": "AI活用"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "セキュリティ強化",
+            "required": false,
+            "context": "セキュリティ強化"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "コスト削減",
+            "required": false,
+            "context": "コスト削減"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "DX推進",
+            "required": false,
+            "context": "DX推進"
+          },
+          {
+            "tag": "textarea",
+            "type": "",
+            "name": "Q3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "textarea",
+            "type": "",
+            "name": "Q4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "number",
+            "name": "Q5",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "date",
+            "name": "Q6_date",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "time",
+            "name": "Q7_time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "color",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "range",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "file",
+            "name": "Q10",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "photo_camera survey.tapToCapture"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q11-r1-a",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "技術 営業 企画 注力分野"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q11-r1-b",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "技術 営業 企画 注力分野"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q11-r1-c",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "技術 営業 企画 注力分野"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "1"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "2"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "3"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "4"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "5"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-budget",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-human_resource",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-none",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-budget",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-human_resource",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-none",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-budget",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-human_resource",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-none",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "1"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "2"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "3"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "4"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "5"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "6"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "7"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "8"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "9"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "10"
+          }
+        ],
+        "images": [
+          {
+            "alt": "名刺 表面",
+            "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+            "w": 0,
+            "h": 0
+          },
+          {
+            "alt": "名刺 裏面",
+            "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+            "w": 0,
+            "h": 0
+          }
+        ],
+        "requiredTextCount": 0,
+        "errorText": [],
+        "links": [],
+        "documentHeight": 4838,
+        "viewportHeight": 900
+      }
+    },
+    "consoleErrors": [],
+    "failedRequests": []
+  },
+  {
+    "target": {
+      "key": "dev",
+      "label": "dev側",
+      "url": "https://dev.speed-ad.com/questionnaire_answer?id=564"
+    },
+    "viewport": {
+      "key": "mobile",
+      "width": 390,
+      "height": 844,
+      "isMobile": true
+    },
+    "responseStatus": 200,
+    "responseUrl": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+    "screenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\dev-mobile.png",
+    "fullScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\dev-mobile-full.png",
+    "validationScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\dev-mobile-after-submit.png",
+    "state": {
+      "title": "SpeedAd - a",
+      "location": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+      "bodyTextStart": "a Q.01必須 expand_less photo_camera 名刺を撮影 送信する 名刺が手元に無い方 3 2 2 #1 questionnaire_answer?id=564 (19:34:21) #2 questions (ajax) (19:34:22) 14.66ms 2MB 10.x GET survey/{id}/questions",
+      "headings": [
+        "a",
+        "入力内容の確認",
+        "名刺を撮影",
+        "ストレージから選択",
+        "カメラで撮影",
+        "内容の確認",
+        "最終確認"
+      ],
+      "buttons": [
+        {
+          "tag": "button",
+          "text": "photo_camera 名刺を撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "送信する",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "名刺が手元に無い方",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "修正する",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "保存",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "撮り直す",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "裏面をスキップ",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "裏面を追加する",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "×",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "戻る",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "アップロード完了",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "Reset settings",
+          "type": "",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "Search",
+          "type": "submit",
+          "disabled": false
+        }
+      ],
+      "fields": [
+        {
+          "tag": "textarea",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": true,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "a Q.01必須 expand_less photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "a Q.01必須 expand_less photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "datasets-switcher",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "2 #1 questionnaire_answer?id=564 (19:34:21) #2 questions (ajax) (19:34:22) 14.66ms 2MB 10.x GET survey/{id}/questions"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Auto (System preference)LightDark"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Bottom LeftBottom RightTop LeftTop Right"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Hide empty tabs until they have data"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Automatically show new incoming Ajax requests"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "0 of 0"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "search",
+          "placeholder": "Search",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "search",
+          "placeholder": "Search",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Autoshow"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "method",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "search",
+          "placeholder": "Search",
+          "label": "",
+          "required": false,
+          "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+        },
+        {
+          "tag": "select",
+          "type": "",
+          "name": "method",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "uri",
+          "placeholder": "URI",
+          "label": "",
+          "required": false,
+          "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+        },
+        {
+          "tag": "input",
+          "type": "text",
+          "name": "ip",
+          "placeholder": "IP",
+          "label": "",
+          "required": false,
+          "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+        }
+      ],
+      "images": [
+        {
+          "alt": "名刺 表面",
+          "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "alt": "名刺 表面",
+          "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+          "w": 0,
+          "h": 0
+        }
+      ],
+      "requiredTextCount": 1,
+      "errorText": [],
+      "links": [
+        {
+          "text": "Request",
+          "href": ""
+        },
+        {
+          "text": "Messages",
+          "href": ""
+        },
+        {
+          "text": "Timeline",
+          "href": ""
+        },
+        {
+          "text": "Exceptions",
+          "href": ""
+        },
+        {
+          "text": "Views0",
+          "href": ""
+        },
+        {
+          "text": "3",
+          "href": ""
+        },
+        {
+          "text": "2",
+          "href": ""
+        },
+        {
+          "text": "Mails",
+          "href": ""
+        },
+        {
+          "text": "Gate",
+          "href": ""
+        },
+        {
+          "text": "Settings",
+          "href": ""
+        },
+        {
+          "text": "2",
+          "href": ""
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+        },
+        {
+          "text": "app/Http/Controllers/SurveyAnswerController.php:88-168",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "◀",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "◀",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▼",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "▶",
+          "href": ""
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=90"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=102"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurvey.php&line=1"
+        },
+        {
+          "text": "",
+          "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurveyDetail.php&line=1"
+        },
+        {
+          "text": "Clear",
+          "href": ""
+        },
+        {
+          "text": "Show all",
+          "href": ""
+        },
+        {
+          "text": "2",
+          "href": ""
+        },
+        {
+          "text": "3",
+          "href": ""
+        },
+        {
+          "text": "2",
+          "href": ""
+        },
+        {
+          "text": "Load more",
+          "href": ""
+        },
+        {
+          "text": "Show only current URL",
+          "href": ""
+        },
+        {
+          "text": "Show all",
+          "href": ""
+        },
+        {
+          "text": "Delete all",
+          "href": ""
+        }
+      ],
+      "documentHeight": 844,
+      "viewportHeight": 844
+    },
+    "validation": {
+      "attempted": true,
+      "candidate": {
+        "tag": "button",
+        "text": "送信する",
+        "type": "button",
+        "disabled": false
+      },
+      "after": {
+        "title": "SpeedAd - a",
+        "location": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+        "bodyTextStart": "a Q.01必須 expand_less 回答が未入力です photo_camera 名刺を撮影 送信する 名刺が手元に無い方 3 2 2 #1 questionnaire_answer?id=564 (19:34:21) #2 questions (ajax) (19:34:22) 14.66ms 2MB 10.x GET survey/{id}/questions",
+        "headings": [
+          "a",
+          "入力内容の確認",
+          "名刺を撮影",
+          "ストレージから選択",
+          "カメラで撮影",
+          "内容の確認",
+          "最終確認"
+        ],
+        "buttons": [
+          {
+            "tag": "button",
+            "text": "photo_camera 名刺を撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "送信する",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "名刺が手元に無い方",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "修正する",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "保存",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "撮り直す",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "裏面をスキップ",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "裏面を追加する",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "戻る",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "アップロード完了",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "Reset settings",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "Search",
+            "type": "submit",
+            "disabled": false
+          }
+        ],
+        "fields": [
+          {
+            "tag": "textarea",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": true,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "file",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "a Q.01必須 expand_less 回答が未入力です photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+          },
+          {
+            "tag": "input",
+            "type": "file",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "a Q.01必須 expand_less 回答が未入力です photo_camera 名刺を撮影 送信する 名刺が手元に無い方"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "datasets-switcher",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "2 #1 questionnaire_answer?id=564 (19:34:21) #2 questions (ajax) (19:34:22) 14.66ms 2MB 10.x GET survey/{id}/questions"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Auto (System preference)LightDark"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Bottom LeftBottom RightTop LeftTop Right"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Hide empty tabs until they have data"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Automatically show new incoming Ajax requests"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "0 of 0"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "search",
+            "placeholder": "Search",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "search",
+            "placeholder": "Search",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Autoshow"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "method",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "search",
+            "placeholder": "Search",
+            "label": "",
+            "required": false,
+            "context": "AutoshowClearShow all(method)GETPOSTPUTDELETE"
+          },
+          {
+            "tag": "select",
+            "type": "",
+            "name": "method",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "uri",
+            "placeholder": "URI",
+            "label": "",
+            "required": false,
+            "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+          },
+          {
+            "tag": "input",
+            "type": "text",
+            "name": "ip",
+            "placeholder": "IP",
+            "label": "",
+            "required": false,
+            "context": "Load moreShow only current URLShow allDelete allFilter results(Method)GETPOSTPUTDELETESearch"
+          }
+        ],
+        "images": [
+          {
+            "alt": "名刺 表面",
+            "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+            "w": 0,
+            "h": 0
+          },
+          {
+            "alt": "名刺 表面",
+            "src": "https://dev.speed-ad.com/questionnaire_answer?id=564",
+            "w": 0,
+            "h": 0
+          }
+        ],
+        "requiredTextCount": 1,
+        "errorText": [
+          "回答が未入力です"
+        ],
+        "links": [
+          {
+            "text": "Request",
+            "href": ""
+          },
+          {
+            "text": "Messages",
+            "href": ""
+          },
+          {
+            "text": "Timeline",
+            "href": ""
+          },
+          {
+            "text": "Exceptions",
+            "href": ""
+          },
+          {
+            "text": "Views0",
+            "href": ""
+          },
+          {
+            "text": "3",
+            "href": ""
+          },
+          {
+            "text": "2",
+            "href": ""
+          },
+          {
+            "text": "Mails",
+            "href": ""
+          },
+          {
+            "text": "Gate",
+            "href": ""
+          },
+          {
+            "text": "Settings",
+            "href": ""
+          },
+          {
+            "text": "2",
+            "href": ""
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+          },
+          {
+            "text": "app/Http/Controllers/SurveyAnswerController.php:88-168",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=88"
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "◀",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "◀",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▼",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "▶",
+            "href": ""
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=90"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=102"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FHttp%2FControllers%2FSurveyAnswerController.php&line=114"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurvey.php&line=1"
+          },
+          {
+            "text": "",
+            "href": "phpstorm://open?file=%2Fopt%2Fbitnami%2Fapache%2Fhtdocs%2Fapp%2FModels%2FSurveyDetail.php&line=1"
+          },
+          {
+            "text": "Clear",
+            "href": ""
+          },
+          {
+            "text": "Show all",
+            "href": ""
+          },
+          {
+            "text": "2",
+            "href": ""
+          },
+          {
+            "text": "3",
+            "href": ""
+          },
+          {
+            "text": "2",
+            "href": ""
+          },
+          {
+            "text": "Load more",
+            "href": ""
+          },
+          {
+            "text": "Show only current URL",
+            "href": ""
+          },
+          {
+            "text": "Show all",
+            "href": ""
+          },
+          {
+            "text": "Delete all",
+            "href": ""
+          }
+        ],
+        "documentHeight": 844,
+        "viewportHeight": 844
+      }
+    },
+    "consoleErrors": [],
+    "failedRequests": []
+  },
+  {
+    "target": {
+      "key": "mock",
+      "label": "モック側",
+      "url": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008"
+    },
+    "viewport": {
+      "key": "mobile",
+      "width": 390,
+      "height": 844,
+      "isMobile": true
+    },
+    "responseStatus": 200,
+    "responseUrl": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+    "screenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\mock-mobile.png",
+    "fullScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\mock-mobile-full.png",
+    "validationScreenshot": "C:\\Users\\admin\\.codex\\worktrees\\e2d2\\00_dev_speed_ad_user\\docs\\リファレンス\\レビュー\\2026-07-03_survey-answer-comparison-assets\\mock-mobile-after-submit.png",
+    "state": {
+      "title": "SpeedAd - アンケート回答",
+      "location": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+      "bodyTextStart": "アンケート Q.01 ご所属の業界 expand_less 製造業 IT・情報通信 金融・保険 小売・流通 その他 Q.02 興味のあるソリューション (複数回答) expand_less クラウド移行 AI活用 セキュリティ強化 コスト削減 DX推進 Q.03 担当者名 expand_less Q.04 具体的なお悩み・ご要望 expand_less Q.05 来場人数 expand_less Q.06 次回商談希望日 expand_less Q.07 連絡希望時間帯 expand_less Q.08 製品満足度詳細 expand_less 非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート Q.09 承諾の署名 expand_less edit layers_clear undo redo delete edit_off ペンモードがオフです Q.10 現場の状況写真 expand_less photo_camera survey.tapToCapture Q.11 評価マトリクス(MA) expand_less 技術 営業 企画 注力分野 Q.12 総合満足度 expand_less 1 2 3 4 5 非常に不満 非常に満足 Q.13 担当者の対応評価 expand_less 満足 普通 不満 言葉遣い 提案力 スピード 専門知識 Q.14 導入検討における課題 (複数回答) expand_less 予算 人材 時間 特になし 本社 支社A 支社B Q.15 ※入力完了後、送信ボタンを押してください expand_less ※入力完了後、送信ボタンを押してください Q.16 知人・同僚へのご推薦度 expand_less どちらでもない 1 2 3 4 5 6 7 8 9 10 まったく推奨しない 強く推奨する photo_camera 名刺を撮影 送信する 名刺が手元に無い方",
+      "headings": [
+        "アンケート"
+      ],
+      "buttons": [
+        {
+          "tag": "button",
+          "text": "edit",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "layers_clear",
+          "type": "button",
+          "disabled": true
+        },
+        {
+          "tag": "button",
+          "text": "undo",
+          "type": "button",
+          "disabled": true
+        },
+        {
+          "tag": "button",
+          "text": "redo",
+          "type": "button",
+          "disabled": true
+        },
+        {
+          "tag": "button",
+          "text": "delete",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "check_circle 撮影済み名刺 expand_less",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "再撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "削除",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "再撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "削除",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "photo_camera 名刺を撮影",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "送信する",
+          "type": "button",
+          "disabled": false
+        },
+        {
+          "tag": "button",
+          "text": "名刺が手元に無い方",
+          "type": "button",
+          "disabled": false
+        }
+      ],
+      "fields": [
+        {
+          "tag": "select",
+          "type": "",
+          "name": "",
+          "placeholder": "",
+          "label": "言語選択",
+          "required": false,
+          "context": "言語選択 Language日本語"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "製造業",
+          "required": false,
+          "context": "製造業"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "IT・情報通信",
+          "required": false,
+          "context": "IT・情報通信"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "金融・保険",
+          "required": false,
+          "context": "金融・保険"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "小売・流通",
+          "required": false,
+          "context": "小売・流通"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q1",
+          "placeholder": "",
+          "label": "その他",
+          "required": false,
+          "context": "その他"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "クラウド移行",
+          "required": false,
+          "context": "クラウド移行"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "AI活用",
+          "required": false,
+          "context": "AI活用"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "セキュリティ強化",
+          "required": false,
+          "context": "セキュリティ強化"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "コスト削減",
+          "required": false,
+          "context": "コスト削減"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q2",
+          "placeholder": "",
+          "label": "DX推進",
+          "required": false,
+          "context": "DX推進"
+        },
+        {
+          "tag": "textarea",
+          "type": "",
+          "name": "Q3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "textarea",
+          "type": "",
+          "name": "Q4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "number",
+          "name": "Q5",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "date",
+          "name": "Q6_date",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "time",
+          "name": "Q7_time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q8-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+        },
+        {
+          "tag": "input",
+          "type": "color",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "range",
+          "name": "",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": ""
+        },
+        {
+          "tag": "input",
+          "type": "file",
+          "name": "Q10",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "photo_camera survey.tapToCapture"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q11-r1-a",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "技術 営業 企画 注力分野"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q11-r1-b",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "技術 営業 企画 注力分野"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q11-r1-c",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "技術 営業 企画 注力分野"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "1"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "2"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "3"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "4"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q12",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "5"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r1",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r2",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r3",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q13-r4",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-budget",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-human_resource",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r1-none",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-budget",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-human_resource",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r2-none",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-budget",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-human_resource",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-time",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "checkbox",
+          "name": "Q14-r3-none",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "1"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "2"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "3"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "4"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "5"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "6"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "7"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "8"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "9"
+        },
+        {
+          "tag": "input",
+          "type": "radio",
+          "name": "Q16",
+          "placeholder": "",
+          "label": "",
+          "required": false,
+          "context": "10"
+        }
+      ],
+      "images": [
+        {
+          "alt": "名刺 表面",
+          "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "alt": "名刺 裏面",
+          "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+          "w": 0,
+          "h": 0
+        }
+      ],
+      "requiredTextCount": 0,
+      "errorText": [],
+      "links": [],
+      "documentHeight": 4994,
+      "viewportHeight": 844
+    },
+    "validation": {
+      "attempted": true,
+      "candidate": {
+        "tag": "button",
+        "text": "送信する",
+        "type": "button",
+        "disabled": false
+      },
+      "after": {
+        "title": "SpeedAd - アンケート回答",
+        "location": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+        "bodyTextStart": "アンケート Q.01 ご所属の業界 expand_less 製造業 IT・情報通信 金融・保険 小売・流通 その他 Q.02 興味のあるソリューション (複数回答) expand_less クラウド移行 AI活用 セキュリティ強化 コスト削減 DX推進 Q.03 担当者名 expand_less Q.04 具体的なお悩み・ご要望 expand_less Q.05 来場人数 expand_less Q.06 次回商談希望日 expand_less Q.07 連絡希望時間帯 expand_less Q.08 製品満足度詳細 expand_less 非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート Q.09 承諾の署名 expand_less edit layers_clear undo redo delete edit_off ペンモードがオフです Q.10 現場の状況写真 expand_less photo_camera survey.tapToCapture Q.11 評価マトリクス(MA) expand_less 技術 営業 企画 注力分野 Q.12 総合満足度 expand_less 1 2 3 4 5 非常に不満 非常に満足 Q.13 担当者の対応評価 expand_less 満足 普通 不満 言葉遣い 提案力 スピード 専門知識 Q.14 導入検討における課題 (複数回答) expand_less 予算 人材 時間 特になし 本社 支社A 支社B Q.15 ※入力完了後、送信ボタンを押してください expand_less ※入力完了後、送信ボタンを押してください Q.16 知人・同僚へのご推薦度 expand_less どちらでもない 1 2 3 4 5 6 7 8 9 10 まったく推奨しない 強く推奨する photo_camera 名刺を撮影 送信する 名刺が手元に無い方 送信に必要な情報が不足しています × 回答を送信するには、名刺画像の撮影、または 「名刺が手元に無い方」からの基本情報の入力が必要です。 入力が必要な項目 error_outline 氏名 error_outline メールアドレス error_outline 会社名 error_outline 電話番号 いずれかの方法でご登録のうえ、再度送信してください。 閉じる 基本情報を入力する",
+        "headings": [
+          "アンケート",
+          "送信に必要な情報が不足しています"
+        ],
+        "buttons": [
+          {
+            "tag": "button",
+            "text": "edit",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "layers_clear",
+            "type": "button",
+            "disabled": true
+          },
+          {
+            "tag": "button",
+            "text": "undo",
+            "type": "button",
+            "disabled": true
+          },
+          {
+            "tag": "button",
+            "text": "redo",
+            "type": "button",
+            "disabled": true
+          },
+          {
+            "tag": "button",
+            "text": "delete",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "check_circle 撮影済み名刺 expand_less",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "再撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "削除",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "再撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "削除",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "photo_camera 名刺を撮影",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "送信する",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "名刺が手元に無い方",
+            "type": "button",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "×",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "閉じる",
+            "type": "",
+            "disabled": false
+          },
+          {
+            "tag": "button",
+            "text": "基本情報を入力する",
+            "type": "",
+            "disabled": false
+          }
+        ],
+        "fields": [
+          {
+            "tag": "select",
+            "type": "",
+            "name": "",
+            "placeholder": "",
+            "label": "言語選択",
+            "required": false,
+            "context": "言語選択 Language日本語"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "製造業",
+            "required": false,
+            "context": "製造業"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "IT・情報通信",
+            "required": false,
+            "context": "IT・情報通信"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "金融・保険",
+            "required": false,
+            "context": "金融・保険"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "小売・流通",
+            "required": false,
+            "context": "小売・流通"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q1",
+            "placeholder": "",
+            "label": "その他",
+            "required": false,
+            "context": "その他"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "クラウド移行",
+            "required": false,
+            "context": "クラウド移行"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "AI活用",
+            "required": false,
+            "context": "AI活用"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "セキュリティ強化",
+            "required": false,
+            "context": "セキュリティ強化"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "コスト削減",
+            "required": false,
+            "context": "コスト削減"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q2",
+            "placeholder": "",
+            "label": "DX推進",
+            "required": false,
+            "context": "DX推進"
+          },
+          {
+            "tag": "textarea",
+            "type": "",
+            "name": "Q3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "textarea",
+            "type": "",
+            "name": "Q4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "number",
+            "name": "Q5",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "date",
+            "name": "Q6_date",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "time",
+            "name": "Q7_time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q8-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "非常に良い 良い 普通 悪い 非常に悪い UI/UX 機能 価格 サポート"
+          },
+          {
+            "tag": "input",
+            "type": "color",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "range",
+            "name": "",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": ""
+          },
+          {
+            "tag": "input",
+            "type": "file",
+            "name": "Q10",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "photo_camera survey.tapToCapture"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q11-r1-a",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "技術 営業 企画 注力分野"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q11-r1-b",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "技術 営業 企画 注力分野"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q11-r1-c",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "技術 営業 企画 注力分野"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "1"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "2"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "3"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "4"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q12",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "5"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r1",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r2",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r3",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q13-r4",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "満足 普通 不満 言葉遣い 提案力 スピード 専門知識"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-budget",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-human_resource",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r1-none",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-budget",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-human_resource",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r2-none",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-budget",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-human_resource",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-time",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "checkbox",
+            "name": "Q14-r3-none",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "予算 人材 時間 特になし 本社 支社A 支社B"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "1"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "2"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "3"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "4"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "5"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "6"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "7"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "8"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "9"
+          },
+          {
+            "tag": "input",
+            "type": "radio",
+            "name": "Q16",
+            "placeholder": "",
+            "label": "",
+            "required": false,
+            "context": "10"
+          }
+        ],
+        "images": [
+          {
+            "alt": "名刺 表面",
+            "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+            "w": 0,
+            "h": 0
+          },
+          {
+            "alt": "名刺 裏面",
+            "src": "https://abroadumedashota.github.io/SPPED-AD-TEST/02_dashboard/survey-answer.html?surveyId=sv_0001_26008",
+            "w": 0,
+            "h": 0
+          }
+        ],
+        "requiredTextCount": 0,
+        "errorText": [],
+        "links": [],
+        "documentHeight": 4994,
+        "viewportHeight": 844
+      }
+    },
+    "consoleErrors": [],
+    "failedRequests": []
+  }
+]
