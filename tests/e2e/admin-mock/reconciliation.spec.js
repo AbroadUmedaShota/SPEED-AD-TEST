@@ -51,7 +51,7 @@ test.describe('照合結果一覧', () => {
 
   test('データDLから回答データCSVを選べる（§4.5）', async ({ page }) => {
     await openAs(page, LIST, 'lv4');
-    await page.locator('button:has-text("データDL")').first().click();
+    await page.locator('button:has-text("DL")').first().click();
     const labels = await page.$$eval('#mDl button strong', (els) => els.map((e) => e.textContent.trim()));
     expect(labels).toEqual(['完成データCSV', '全レコードCSV', '回答データCSV', '名刺画像(ZIP)']);
   });
