@@ -204,6 +204,52 @@ test('グループ名が 請求管理 と アンケート詳細 で揃う', asyn
   }
 });
 
+/**
+ * クーポン利用履歴と請求管理の金額突合。
+ *
+ * レビュー指摘: クーポン利用履歴の割引額が「名刺データ化費用のみ×率」で計算されており、
+ * 請求書側の正基準「(名刺データ化費用+お礼メール送信費用)×率」とズレていた。
+ * 2026-08-25 に請求15件を effective(データ化対象) ベースへ再計算した際、
+ * 利用履歴側も新quantityベースへ揃えたため、請求管理の値と一致するかを機械検証する。
+ */
+test.describe('クーポン利用履歴が請求管理の金額と一致する', () => {
+  const CASES = [
+    { cid: 'CP-0021', code: 'SUMMER10', sid: 'SV-10214' },
+    { cid: 'CP-0018', code: 'PREMUP15', sid: 'SV-10188' },
+    { cid: 'CP-0015', code: 'EXPOREF5', sid: 'SV-10221' },
+  ];
+
+  for (const { cid, code, sid } of CASES) {
+    test(`${code}（${sid}）の割引額・適用後金額が請求管理の詳細と一致する`, async ({ page }) => {
+      await openScreen(page, '/03_admin/coupon-management.html');
+      await page.click(`#couponList [data-f-cid="${cid}"] a:has-text("利用履歴")`);
+      await expect(page.locator('#mCouponHistory')).toBeVisible();
+
+      const rowText = (await page.locator('#chRows').innerText()).replace(/\s+/g, ' ').trim();
+      const discMatch = rowText.match(/-([\d,]+)\s*円/);
+      const nums = [...rowText.matchAll(/([\d,]+)\s*円/g)].map((m) => Number(m[1].replace(/,/g, '')));
+      expect(discMatch, `${cid} の利用履歴に割引額が見つからない: ${rowText}`).not.toBeNull();
+      const histDisc = Number(discMatch[1].replace(/,/g, ''));
+      // 最後の「NNN 円」が適用後金額（列順: 割引率% → -割引額 円 → 適用後金額 円）
+      const histFinal = nums[nums.length - 1];
+      await page.keyboard.press('Escape');
+
+      await openScreen(page, '/03_admin/billing-management.html');
+      await page.click(`#billingList [data-f-sid="${sid}"] button:has-text("詳細")`);
+      await expect(page.locator('#mBillDetail')).toBeVisible();
+      const bdDiscText = (await page.locator('[data-slot="bdDisc"]').textContent()) || '';
+      const bdAmountText = (await page.locator('[data-slot="bdAmount"]').textContent()) || '';
+      const billDisc = Number((bdDiscText.match(/([\d,]+)/) || [null, '0'])[1].replace(/,/g, ''));
+      const billAmount = Number((bdAmountText.match(/([\d,]+)/) || [null, '0'])[1].replace(/,/g, ''));
+
+      expect(histDisc, `${sid}: 利用履歴の割引額 ${histDisc} が請求詳細の割引額 ${billDisc} と不一致`)
+        .toBe(billDisc);
+      expect(histFinal, `${sid}: 利用履歴の適用後金額 ${histFinal} が請求詳細の請求金額 ${billAmount} と不一致`)
+        .toBe(billAmount);
+    });
+  }
+});
+
 test.describe('ダッシュボードの案件パイプラインが実データと同数', () => {
   // 2026-08-18 の全体レビューで、会期前カード(3件)とデータ化中カード(6件)が実データ
   // (1件・4件)と食い違っているのを目視で検出した。カード件数を突合するテストが無く
