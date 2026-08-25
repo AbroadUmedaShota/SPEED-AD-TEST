@@ -604,3 +604,232 @@ main button:not([disabled]):hover, .proto-modal button:not([disabled]):hover { f
     /* モーダルはflexの縮小で幅自体は収まる(実測済み)が、画面端に張り付くため余白だけ与える */
     .proto-modal { padding: 0 12px; }
 }
+
+/* ============================================================
+   絞り込みカード(a-filter-*)
+   SPEEDレビュー(02_dashboard/speed-review.html の Filter Options カード)の意匠を
+   管理画面へ移したもの。手本は右サイドパネル(320px)の縦積みだが、一覧に横幅を
+   譲るため、こちらは一覧上部に敷く全幅カードとして置く。
+
+   このファイルが持つのは見た目だけで、絞り込みの仕組み(行の data-f-*、入力の
+   data-f-key、pSearch / pClearSearch / pFilter、URL引き継ぎ)には関与しない。
+   外殻は従来の絞り込みバーと同じく data-filter-for="{listId}" を持ち、
+   一覧の読込中は proto-ui.js が外殻へ inert を付けて操作を止める。
+
+   簡易 / 詳細のタブは表示の整理であって条件の区切りではない。pSearch は
+   バー配下の [data-f-key] を可視・不可視を問わず全部読むため、隠れている
+   タブの条件も同時に効く。見えない条件の存在は絞り込みバッジ(#{listId}-chip)と
+   タブの印(data-filled)の2箇所で画面に残す。
+   ============================================================ */
+
+.a-filter-card {
+    margin-top: 16px;
+    background: var(--a-surface);
+    border: 1px solid var(--a-border);
+    border-radius: 8px;
+    padding: 10px 16px 14px;
+    box-shadow: 0 1px 2px rgba(12, 18, 30, .05);
+}
+
+/* ヘッダー1行(見出し+タブ+注記+操作)。常時展開で開閉UIは持たない */
+.a-filter-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px; }
+
+.a-filter-eyebrow {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--a-accent);
+    white-space: nowrap;
+}
+
+.a-filter-rule { flex: 1; height: 1px; background: var(--a-border); }
+
+/* 簡易 / 詳細のセグメントタブ。手本は全幅だが、ヘッダー行へ同居させるので内容幅 */
+.a-filter-tabs {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    background: var(--a-surface-3);
+    border-radius: 8px;
+}
+
+.a-filter-tab {
+    position: relative;
+    min-width: 76px;
+    padding: 4px 14px;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--a-fg-muted);
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+.a-filter-tab:hover { color: var(--a-fg-strong); }
+
+.a-filter-tab[aria-selected="true"] {
+    background: var(--a-surface);
+    color: var(--a-accent);
+    box-shadow: 0 1px 2px rgba(12, 18, 30, .12);
+}
+
+/* 選択中の下線(手本 .search-tab-btn::after と同寸)。
+   手本はこれに加えて border-bottom も足すが、線が二重に出てラベルが 3px ずれるため入れない */
+.a-filter-tab::after {
+    content: '';
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: 3px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--a-accent);
+    opacity: 0;
+    transform: scaleX(.7);
+    transition: opacity .2s ease, transform .2s ease;
+}
+
+.a-filter-tab[aria-selected="true"]::after { opacity: 1; transform: scaleX(1); }
+
+/* そのタブに条件が入っている印。開いていないタブの条件も検索に効くため、
+   数値や文言を増やさずに存在だけを残す */
+.a-filter-tab[data-filled="1"]::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--a-accent);
+}
+
+/* 入力欄の並び。上へ浮くラベルが隣の行に触れないよう、行間を列間より広く取る */
+.a-filter-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 12px;
+    margin-top: 16px;
+}
+
+.a-filter-field { position: relative; flex: 0 1 208px; min-width: 0; }
+.a-filter-field.is-wide { flex-basis: 268px; }
+
+.a-filter-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 7px 12px 7px 32px;
+    border: 1px solid var(--a-border-strong);
+    border-radius: 6px;
+    background-color: var(--a-surface);
+    color: var(--a-fg-strong);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 20px;
+    box-shadow: 0 1px 2px rgba(12, 18, 30, .05);
+    transition: border-color .2s ease;
+}
+
+/* 選択矢印(preflight の select 側で背景画像として描かれる)に文字が重ならない幅 */
+select.a-filter-input { padding-right: 34px; }
+
+.a-filter-input:focus { border-color: var(--a-accent); }
+
+/* 手本はここで影のリングも足すが、管理画面は :focus-visible の輪郭線で
+   フォーカスを示す作りなので、二重に出さず既存の輪郭線へ任せる */
+
+.a-filter-label {
+    position: absolute;
+    top: 8px;
+    left: 32px;
+    max-width: calc(100% - 46px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0;
+    background: transparent;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--a-fg-muted);
+    pointer-events: none;
+    z-index: 1;
+    transition: top .15s ease-out, left .15s ease-out, font-size .15s ease-out, color .15s ease-out;
+}
+
+/* 入力があるかフォーカス中は枠線の上へ浮かせる。
+   select は :placeholder-shown を持たないので常に浮いた側になる(手本と同じ挙動) */
+.a-filter-input:focus ~ .a-filter-label,
+.a-filter-input:not(:placeholder-shown) ~ .a-filter-label {
+    top: -8px;
+    left: 9px;
+    max-width: calc(100% - 18px);
+    padding: 0 4px;
+    background: var(--a-surface);
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 700;
+    color: var(--a-accent);
+}
+
+.a-filter-ico {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    color: var(--a-fg-muted);
+    pointer-events: none;
+}
+
+.a-filter-field:focus-within .a-filter-ico { color: var(--a-accent); }
+
+/* ヘッダー行の注記と操作。手本は下部の全幅リセット1つだが、縦を増やさないため
+   ヘッダーへ同居させ、検索 を主・クリアを副に置く */
+.a-filter-note {
+    font-size: 11.5px;
+    color: var(--a-fg-muted2);
+    white-space: nowrap;
+}
+
+.a-filter-reset {
+    background: var(--a-info-bg);
+    color: var(--a-accent);
+    border: 1px solid var(--a-info-border);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.a-filter-submit {
+    background: var(--a-accent-bg);
+    color: var(--a-on-accent);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 20px;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(12, 18, 30, .12);
+}
+
+/* 一覧の列間引きと同じ幅で注記を隠し、ヘッダー行の折り返しを防ぐ */
+@media (max-width: 1459px) {
+    .a-filter-note { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .a-filter-tab,
+    .a-filter-tab::after,
+    .a-filter-input,
+    .a-filter-label { transition: none; }
+}
