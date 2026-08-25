@@ -586,6 +586,10 @@ main button:not([disabled]):hover, .proto-modal button:not([disabled]):hover { f
 }
 #p-region-scenario a { color: var(--a-sidebar-accent); font-weight: 700; }
 
+/* セル内の注記マーク。textContent に文字を残すと pSort の数値判定と
+   一覧の値読み取りを壊すため、印は疑似要素で描く */
+.a-note-mark::after { content: '※'; color: var(--a-accent); font-weight: 400; }
+
 /* 横断検索(ヘッダー)。1920px基準では表示し、一覧の列間引きと同じ1459px以下では
    ヘッダーの残り幅が足りないため出さない(768px幅の横スクロール検査で溢れさせない) */
 @media (max-width: 1459px) {
