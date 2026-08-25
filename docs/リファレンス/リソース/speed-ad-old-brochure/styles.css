@@ -5,6 +5,9 @@
   --cyan: #64d8df;
   --line: #bdd4ea;
   --paper: #ffffff;
+  --brand-navy: #102a4c;
+  --brand-gray: #808080;
+  --brand-gold: #efd56f;
   --panel: 100mm;
   --flap: 97mm;
   --sheet-height: 210mm;
@@ -42,6 +45,61 @@ body { min-width: 297mm; }
 .continue-note { margin-top: 4mm; padding: 3mm 4mm; border-radius: 3mm; color: #fff; font-size: 2.8mm; font-weight: 700; background: linear-gradient(115deg, #06387c, #07aaa9); }
 .flow--late .flow-list { gap: 1.5mm; }
 .flow--late .flow-list li { min-height: 27mm; }
+.pattern-b .brand-lockup { display: flex; min-width: 0; align-items: center; color: #000; }
+.pattern-b .brand-emblem { display: block; flex: 0 0 auto; object-fit: contain; }
+.pattern-b .brand-wordmark { font-family: 'SPEED AD Wordmark', serif; font-style: normal; font-weight: 400; line-height: 1; letter-spacing: 0; white-space: nowrap; }
+.pattern-b .brand-lockup--back { gap: 1.8mm; margin: 2mm 0 8mm; }
+.pattern-b .brand-lockup--back .brand-emblem { width: 8mm; height: 8mm; }
+.pattern-b .brand-lockup--back .brand-wordmark { font-size: 5.8mm; }
+.pattern-b .brand-lockup--cover { width: 100%; justify-content: center; gap: 3mm; }
+.pattern-b .brand-lockup--cover .brand-emblem { width: 13mm; height: 13mm; }
+.pattern-b .brand-lockup--cover .brand-wordmark { font-size: 11.5mm; }
+
+.pattern-b .sheet--inside .panel { display: flex; flex-direction: column; padding: 10mm 7mm 7mm; }
+.pattern-b .inside-section-header { position: relative; min-height: 29mm; margin: 0 0 2.2mm; padding-bottom: 2.5mm; }
+.pattern-b .inside-section-header::after { position: absolute; right: 0; bottom: 0; left: 0; height: .5mm; border-radius: .4mm; background: linear-gradient(90deg, var(--brand-gold) 0 16%, var(--brand-navy) 16% 100%); content: ''; }
+.pattern-b .inside-section-header .panel-role { margin: 0 0 1mm; font-size: 2mm; line-height: 1.35; }
+.pattern-b .inside-title-row { display: flex; min-height: 9mm; align-items: center; justify-content: space-between; gap: 2mm; }
+.pattern-b .inside-title-row h2 { margin: 0; color: var(--brand-navy); font-size: 6.8mm; line-height: 1.1; }
+.pattern-b .inside-section-header .lead { margin: .8mm 0 0; font-size: 3.25mm; line-height: 1.4; }
+.pattern-b .flow--combined .flow-list { flex: 1; grid-template-rows: repeat(6, minmax(0, 1fr)); gap: .7mm; min-height: 0; }
+.pattern-b .flow--combined .flow-list li { grid-template-columns: 8.5mm 1fr 7.5mm; gap: 1.8mm; min-height: 19.5mm; padding-bottom: .8mm; }
+.pattern-b .flow--combined .flow-list li > span { width: 8.5mm; height: 8.5mm; font-size: 3.25mm; }
+.pattern-b .flow--combined .flow-list li > svg { width: 7.5mm; height: 7.5mm; }
+.pattern-b .flow--combined .flow-list li:not(:last-child)::after { left: 4.05mm; bottom: -1mm; height: 2mm; }
+.pattern-b .flow--combined .flow-list li p { margin-top: .3mm; font-size: 2.8mm; line-height: 1.4; }
+.pattern-b .flow--combined .flow-list li h3 { font-size: 3.4mm; }
+
+.panel--benefits { padding-inline: 7mm; overflow: hidden; background: linear-gradient(155deg, #f6fcfd 0%, #ffffff 42%, #eef5fb 100%); }
+.panel--benefits h2 { font-size: 6.8mm; }
+.panel--benefits .lead { margin-bottom: 6mm; font-size: 3.3mm; }
+.benefit-stack { position: relative; display: grid; gap: 7mm; }
+.benefit-card { position: relative; padding: 5mm; border: .35mm solid var(--line); border-radius: 5mm; background: #fff; box-shadow: 0 2.5mm 6mm #06367916; overflow: hidden; }
+.benefit-card--free { border-color: #6bcbd0; background: linear-gradient(145deg, #ffffff 0%, #f2fbfc 100%); }
+.benefit-card--free { min-height: 55mm; }
+.benefit-card--paid { min-height: 90mm; color: #fff; border-color: transparent; background: linear-gradient(132deg, #063679 0%, #075c95 53%, #08aaa8 100%); box-shadow: 0 3.5mm 8mm #0636792b; }
+.benefit-card--paid::after { position: absolute; right: -8mm; bottom: 2mm; width: 53mm; height: 41mm; border: 2mm solid #ffffff12; border-radius: 50%; content: ''; }
+.benefit-card--paid::before { position: absolute; right: 6mm; bottom: 6mm; width: 37mm; height: 12mm; border-top: .5mm solid #ffffff38; border-bottom: .5mm solid #ffffff22; transform: skewX(-24deg); content: ''; }
+.benefit-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 3mm; }
+.benefit-plan { margin: 0 0 1.5mm; color: var(--teal); font-size: 2.35mm; font-weight: 800; letter-spacing: .15em; }
+.benefit-card--paid .benefit-plan { color: #9df0eb; }
+.benefit-card h3 { margin: 0; font-size: 4.2mm; line-height: 1.3; }
+.benefit-icon { display: grid; flex: 0 0 auto; place-items: center; width: 14mm; height: 14mm; border-radius: 50%; color: #087e95; background: #dff6f7; }
+.benefit-icon svg { width: 8mm; height: 8mm; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.benefit-card--paid .benefit-icon { color: #fff; background: #ffffff28; }
+.benefit-free-value { display: flex; align-items: baseline; gap: 2mm; margin-top: 2.5mm; }
+.benefit-free-value strong { color: #087e95; font-size: 14mm; font-weight: 900; line-height: .9; letter-spacing: -.06em; }
+.benefit-free-value span { font-size: 3.6mm; font-weight: 800; }
+.benefit-tags { display: flex; gap: 2mm; margin-top: 1.5mm; }
+.benefit-tags span { padding: 1.1mm 2.2mm; border-radius: 3mm; color: #075b8e; font-size: 2.35mm; font-weight: 800; background: #dff5f6; }
+.benefit-paid-value { display: flex; align-items: flex-end; justify-content: space-between; gap: 3mm; margin-top: 4mm; }
+.benefit-paid-value strong { font-size: 9.3mm; font-weight: 900; line-height: .92; letter-spacing: -.06em; }
+.benefit-paid-value span { padding-bottom: .7mm; font-size: 3.5mm; font-weight: 800; line-height: 1.35; }
+.benefit-detail { position: relative; z-index: 1; margin: 3mm 0 0; font-size: 2.65mm; line-height: 1.55; }
+.benefit-note { position: relative; z-index: 1; margin: 6mm 0 0; padding: 3mm; border: .3mm solid #ffffff55; border-radius: 2.5mm; color: #e8fffd; font-size: 2.45mm; font-weight: 700; line-height: 1.5; background: #ffffff12; }
+.pattern-b .panel--benefits { padding-top: 9mm; padding-bottom: 6mm; }
+.pattern-b .panel--benefits .lead { margin-bottom: 3mm; }
+.pattern-b .benefit-stack { gap: 5mm; }
 
 .panel--back { padding-inline: 10mm; }
 .wordmark { margin: 0; font-size: 16mm; font-weight: 900; line-height: 1; letter-spacing: -.045em; background: linear-gradient(100deg, #09aaa9 3%, #035293 56%, #032665 100%); background-clip: text; color: transparent; }
@@ -61,10 +119,12 @@ body { min-width: 297mm; }
 .company-block dl { display: grid; gap: 1mm; margin: 4mm 0 0; padding-top: 3mm; border-top: .35mm solid var(--line); font-size: 3mm; }
 .company-block dl div { display: grid; grid-template-columns: 16mm 1fr; }
 .company-block dt { font-weight: 800; }.company-block dd { margin: 0; }
+.pattern-b .company-website { color: inherit; text-decoration: none; }
 .fine-print { position: absolute; right: 10mm; bottom: 7mm; left: 10mm; margin: 0; padding-top: 3mm; border-top: .35mm solid var(--line); font-size: 2.4mm; }
 
 .panel--cover { padding: 0; isolation: isolate; }
 .cover-copy { position: relative; z-index: 3; padding: 20mm 10mm 0; }
+.pattern-b .cover-copy { padding-inline: 6mm; }
 .tagline { margin: 0 0 5mm; font-size: 4.5mm; font-weight: 700; letter-spacing: .04em; }
 .cover-lead { margin: 5mm 0 0; font-size: 5.1mm; font-weight: 800; line-height: 1.55; }
 .cover-orbit { position: absolute; z-index: -1; border: 11mm solid #28c4c525; border-radius: 50%; transform: rotate(-18deg); }
@@ -77,6 +137,23 @@ body { min-width: 297mm; }
 .browser-card > i { display: block; width: 65%; height: 1.8mm; margin: 1.5mm auto; border-radius: 1mm; background: #d7e8f1; }
 .status-check { position: absolute; top: -6mm; right: -6mm; display: grid; place-items: center; width: 15mm; height: 15mm; border-radius: 50%; color: #fff; background: linear-gradient(135deg, #08b5b1, #037699); }
 .status-check svg { width: 10mm; height: 10mm; }
+.pattern-b .cover-data-flow { width: 76mm; height: 59mm; margin-top: 12mm; transform: none; }
+.pattern-b .cover-data-hub { position: absolute; top: 4mm; right: 1mm; width: 58mm; height: 50mm; padding: 7mm 8mm 5mm; border: 1.7mm solid var(--brand-navy); border-radius: 5mm; background: linear-gradient(145deg, #f0fbfd, #fff); box-shadow: 0 4mm 7mm #0a31502c; transform: rotate(-2deg); }
+.pattern-b .cover-data-hub-dots { position: absolute; top: 3mm; left: 4mm; display: flex; gap: 1.2mm; }
+.pattern-b .cover-data-hub-dots i { width: 1.7mm; height: 1.7mm; border-radius: 50%; background: #9bbbd1; }
+.pattern-b .cover-data-hub > svg { display: block; width: 20mm; height: 20mm; margin: 2mm auto 1mm; color: #078c9c; }
+.pattern-b .cover-data-hub > span { display: block; width: 72%; height: 1.7mm; margin: 1.7mm auto; border-radius: 1mm; background: #d7e8f1; }
+.pattern-b .cover-data-hub > span:nth-of-type(2) { width: 58%; }
+.pattern-b .cover-data-hub > span:nth-of-type(3) { width: 66%; }
+.pattern-b .cover-data-source { position: absolute; z-index: 3; left: 0; display: grid; place-items: center; width: 15mm; height: 15mm; border: .7mm solid #8bd5d8; border-radius: 4mm; color: #087f98; background: #fff; box-shadow: 0 2mm 4mm #0a315022; }
+.pattern-b .cover-data-source svg { width: 9mm; height: 9mm; }
+.pattern-b .cover-data-source--form { top: 6mm; }
+.pattern-b .cover-data-source--card { bottom: 4mm; }
+.pattern-b .cover-data-route { position: absolute; z-index: 2; left: 13mm; width: 12mm; height: .8mm; border-radius: 1mm; background: linear-gradient(90deg, var(--teal), var(--brand-navy)); transform-origin: left center; }
+.pattern-b .cover-data-route::after { position: absolute; top: -1.5mm; right: -1mm; border-width: 1.9mm 0 1.9mm 3mm; border-style: solid; border-color: transparent transparent transparent var(--brand-navy); content: ''; }
+.pattern-b .cover-data-route--form { top: 16mm; transform: rotate(18deg); }
+.pattern-b .cover-data-route--card { bottom: 14mm; transform: rotate(-18deg); }
+.pattern-b .cover-data-flow .status-check { top: -1mm; right: -3mm; }
 .cover-gradient-card { position: absolute; z-index: 3; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(3, 1fr); min-height: 46mm; padding: 6mm 5mm 5mm; color: #fff; background: linear-gradient(118deg, #06347a 0%, #075a93 43%, #08aaa8 100%); }
 .cover-gradient-card > div { padding-inline: 2mm; text-align: center; }
 .cover-gradient-card > div + div { border-left: .3mm solid #ffffff66; }
@@ -94,6 +171,28 @@ body { min-width: 297mm; }
 .scene-gradient { margin-top: 3mm; padding: 4mm 4mm; border-radius: 5mm; color: #fff; background: linear-gradient(126deg, #06347b 0%, #07568f 38%, #08aaa8 100%); }
 .scene-gradient h3 { font-size: 4.2mm; }.scene-gradient p { margin: 2mm 0 3mm; font-size: 2.5mm; }
 .mini-flow { display: flex; align-items: center; justify-content: space-between; gap: 1mm; font-size: 2.1mm; font-weight: 800; }.mini-flow span { text-align: center; }.mini-flow b { opacity: .75; }
+
+.pattern-b .sheet--inside .feature-list,
+.pattern-b .sheet--inside .scene-list { flex: 1; min-height: 0; gap: 1.1mm; }
+.pattern-b .sheet--inside .feature-list { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+.pattern-b .sheet--inside .scene-list { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+.pattern-b .sheet--inside .feature-list li,
+.pattern-b .sheet--inside .scene-list li { grid-template-columns: 12mm 1fr; gap: 2.2mm; min-height: 18mm; padding: 1.2mm 2.2mm; border-color: #c8d7e4; border-radius: 3.5mm; }
+.pattern-b .sheet--inside .feature-list svg,
+.pattern-b .sheet--inside .scene-list svg { width: 10.5mm; height: 10.5mm; padding: 1.7mm; color: #087f98; }
+.pattern-b .sheet--inside .feature-list h3,
+.pattern-b .sheet--inside .scene-list h3 { font-size: 3.55mm; }
+.pattern-b .sheet--inside .feature-list p,
+.pattern-b .sheet--inside .scene-list p { margin-top: .25mm; font-size: 2.8mm; line-height: 1.4; }
+.pattern-b .sheet--inside .scene-list { gap: 1.4mm; }
+.pattern-b .sheet--inside .scene-list li { min-height: 18.7mm; }
+.pattern-b .sheet--inside .problem-box { margin-top: 2mm; padding: 2.3mm 2.8mm; border-left: .7mm solid var(--brand-gold); border-radius: 3.5mm; }
+.pattern-b .sheet--inside .problem-box h3 { margin-bottom: .7mm; font-size: 3.45mm; }
+.pattern-b .sheet--inside .problem-box p { margin: .2mm 0; font-size: 2.6mm; line-height: 1.35; }
+.pattern-b .sheet--inside .scene-gradient { margin-top: 2.3mm; padding: 3.4mm; border-radius: 4mm; }
+.pattern-b .sheet--inside .scene-gradient h3 { font-size: 4mm; }
+.pattern-b .sheet--inside .scene-gradient p { margin: 1.5mm 0 2.2mm; font-size: 2.8mm; line-height: 1.45; }
+.pattern-b .sheet--inside .mini-flow { gap: .8mm; font-size: 2.6mm; }
 
 @media screen and (max-width: 1200px) {
   body { min-width: 0; }

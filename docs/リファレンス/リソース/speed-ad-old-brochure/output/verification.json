@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-07-13T21:39:08.840Z",
+  "generatedAt": "2026-08-25T10:42:30.026Z",
   "expectedTarget": "https://speed-ad.com/",
   "expectedContactEmail": "info@abroad-o.com",
+  "expectedCompanyWebsite": "https://www.abroad-o.com/",
   "qrAssetIsVector": true,
   "qrDecode": {
     "htmlAsset": "https://speed-ad.com/",
@@ -26,6 +27,15 @@
     }
   },
   "panelGeometryPass": true,
+  "brandAssetPass": true,
+  "insideDesignPass": true,
+  "coverDesignPass": true,
+  "companyWebsitePass": true,
+  "publicCopyPass": true,
+  "publicCopy": {
+    "skipped": true,
+    "reason": "Pattern B専用検査"
+  },
   "contactEmail": {
     "html": "info@abroad-o.com",
     "pdfTextIncludesExpected": true
@@ -66,6 +76,27 @@
         "qrAlt": "https://speed-ad.com/ へのQRコード",
         "target": "https://speed-ad.com/",
         "contactEmail": "info@abroad-o.com",
+        "companyWebsite": {},
+        "brand": {
+          "wordmarkFontLoaded": false,
+          "placements": []
+        },
+        "insideDesign": {
+          "headingTops": [],
+          "mainBodyMinMm": 2.5,
+          "supplementalMinMm": 2.05,
+          "bottomWhitespaceMm": [
+            47.8,
+            22.44,
+            30.13
+          ]
+        },
+        "coverDesign": {
+          "lockupCenterOffsetPx": null,
+          "hasDataFlowIllustration": false,
+          "sourceCount": 0,
+          "hasDataHub": false
+        },
         "overflowElements": []
       }
     },
@@ -103,6 +134,27 @@
         "qrAlt": "https://speed-ad.com/ へのQRコード",
         "target": "https://speed-ad.com/",
         "contactEmail": "info@abroad-o.com",
+        "companyWebsite": {},
+        "brand": {
+          "wordmarkFontLoaded": false,
+          "placements": []
+        },
+        "insideDesign": {
+          "headingTops": [],
+          "mainBodyMinMm": 2.5,
+          "supplementalMinMm": 2.05,
+          "bottomWhitespaceMm": [
+            34.42,
+            16.16,
+            21.69
+          ]
+        },
+        "coverDesign": {
+          "lockupCenterOffsetPx": null,
+          "hasDataFlowIllustration": false,
+          "sourceCount": 0,
+          "hasDataHub": false
+        },
         "overflowElements": []
       }
     },
@@ -140,6 +192,27 @@
         "qrAlt": "https://speed-ad.com/ へのQRコード",
         "target": "https://speed-ad.com/",
         "contactEmail": "info@abroad-o.com",
+        "companyWebsite": {},
+        "brand": {
+          "wordmarkFontLoaded": false,
+          "placements": []
+        },
+        "insideDesign": {
+          "headingTops": [],
+          "mainBodyMinMm": 2.5,
+          "supplementalMinMm": 2.05,
+          "bottomWhitespaceMm": [
+            34.42,
+            16.16,
+            21.69
+          ]
+        },
+        "coverDesign": {
+          "lockupCenterOffsetPx": null,
+          "hasDataFlowIllustration": false,
+          "sourceCount": 0,
+          "hasDataHub": false
+        },
         "overflowElements": []
       }
     }

@@ -8,10 +8,13 @@ import { chromium } from 'playwright';
 import sharp from 'sharp';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const outputDir = path.join(root, 'output');
+const variant = process.env.BROCHURE_VARIANT?.trim();
+const entryPath = variant ? `variants/${variant}/index.html` : 'index.html';
+const outputDir = variant ? path.join(root, 'output', variant) : path.join(root, 'output');
 const mime = new Map([
   ['.html', 'text/html; charset=utf-8'], ['.css', 'text/css; charset=utf-8'],
   ['.js', 'text/javascript; charset=utf-8'], ['.svg', 'image/svg+xml'], ['.png', 'image/png'],
+  ['.woff2', 'font/woff2'],
 ]);
 
 await fs.mkdir(outputDir, { recursive: true });
@@ -37,8 +40,9 @@ const port = server.address().port;
 const executablePath = process.env.BROCHURE_BROWSER_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const browser = await chromium.launch({ headless: true, executablePath });
 const page = await browser.newPage({ viewport: { width: 1684, height: 1191 }, deviceScaleFactor: 4 });
-await page.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: 'networkidle' });
+await page.goto(`http://127.0.0.1:${port}/${entryPath}`, { waitUntil: 'networkidle' });
 await page.emulateMedia({ media: 'print' });
+await page.evaluate(async () => { await document.fonts.ready; });
 await page.pdf({
   path: path.join(outputDir, 'SPEED_AD_旧パンフレット_A4巻三つ折り_印刷確認.pdf'),
   width: '297mm', height: '210mm', printBackground: true, preferCSSPageSize: true,
