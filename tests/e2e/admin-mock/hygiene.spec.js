@@ -133,7 +133,7 @@ test.describe('行の操作は押した行を対象にする', () => {
 
       let checked = 0;
       for (const sid of sids.slice(0, 4)) {
-        const btn = page.locator(`#${listId} [data-f-sid="${sid}"] button:has-text("データDL")`);
+        const btn = page.locator(`#${listId} [data-f-sid="${sid}"] button:has-text("DL")`);
         if (!(await btn.count())) { continue; }
         await btn.click();
         const t = (await page.locator('#mDl').textContent()).replace(/\s+/g, ' ');

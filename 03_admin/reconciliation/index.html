@@ -109,24 +109,50 @@ body[data-level="lv2"] #reconList .c-client { display: none; }
               <span style="font-size:12px;color:var(--a-fg-muted2)">集計最終更新 2026/07/31 09:45</span>
             </div>
           </div>
-          <div data-filter-for="reconList" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-            <input aria-label="アンケートID" data-f-key="sid" placeholder="アンケートID(完全/前方一致)" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:200px;font-family:inherit">
-            <input aria-label="ユーザーID" data-f-key="uid" placeholder="ユーザーID(完全/前方一致)" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:200px;font-family:inherit">
-            <input aria-label="会社名" data-f-key="company" data-min-lv="3" placeholder="会社名(部分一致)" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:200px;font-family:inherit">
-            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--a-fg-muted)">作業ステータス
-              <select data-f-key="status" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">すべて</option><option>会期前</option><option>会期中</option><option>データ化中</option><option>データ化完了</option></select>
-            </label>
-            <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--a-fg-muted)">納期区分
-              <select data-f-key="plan" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">すべて</option><option>お試し</option><option>通常</option><option>特急</option><option>超特急</option><option>オンデマンド</option></select>
-            </label>
-            <button onclick="pSearch('reconList')" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">検索</button>
-            <button onclick="pClearSearch('reconList')" style="background:none;border:none;font-size:12.5px;color:var(--a-fg-muted);cursor:pointer;text-decoration:underline;font-family:inherit">条件をクリア</button>
-
-            <span style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap">
-              <span style="width:1px;height:26px;background:var(--a-border)"></span>
-              <input aria-label="アンケートIDを指定して照合" id="reconGoId" placeholder="アンケートIDを指定して照合(例: SV-10236)" title="指定したアンケートの未照合名刺から照合を開始" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:290px;font-family:inherit">
-              <button data-requires="reconGoId" title="入力したアンケートIDの照合画面を開く(アンケートIDが未入力の間は押せません)" onclick="location.href='detail.html?id=' + encodeURIComponent((document.getElementById('reconGoId').value || '').trim())" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">指定して照合開始</button>
-            </span>
+          <!-- 絞り込みカード(admin-style.css の a-filter-*)。SPEEDレビューの Filter Options と同じ体裁。
+               会社名・作業ステータス・納期区分の日常の当たり付けと、
+               アンケートID・ユーザーIDの一意特定照合(ヘッダーの横断検索と役割が重なるため二次側)を1列に並べる。
+               会社名は Lv3 以上にだけ出す(§6)。
+               アンケートIDを指定した直行照合は絞り込み条件ではないため、カードの外の別ブロックに置く
+               (data-filter-for のinert化はカード側の絞り込み条件だけに掛かればよい) -->
+          <div data-filter-for="reconList" class="a-filter-card">
+            <div class="a-filter-head">
+              <span class="a-filter-eyebrow">Filter Options</span>
+              <span class="a-filter-rule"></span>
+              <button type="button" class="a-filter-reset" onclick="pClearSearch('reconList')">条件をクリア</button>
+              <button type="button" class="a-filter-submit" onclick="pSearch('reconList')">検索</button>
+            </div>
+              <div class="a-filter-fields">
+                <div class="a-filter-field is-wide" data-min-lv="3">
+                  <input aria-label="会社名" data-f-key="company" placeholder=" " class="a-filter-input">
+                  <span class="a-filter-label" aria-hidden="true">会社名(部分一致)</span>
+                  <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                </div>
+                <div class="a-filter-field">
+                  <select aria-label="作業ステータス" data-f-key="status" class="a-filter-input"><option value="">すべて</option><option>会期前</option><option>会期中</option><option>データ化中</option><option>データ化完了</option></select>
+                  <span class="a-filter-label" aria-hidden="true">作業ステータス</span>
+                  <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="a-filter-field">
+                  <select aria-label="納期区分" data-f-key="plan" class="a-filter-input"><option value="">すべて</option><option>お試し</option><option>通常</option><option>特急</option><option>超特急</option><option>オンデマンド</option></select>
+                  <span class="a-filter-label" aria-hidden="true">納期区分</span>
+                  <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="a-filter-field">
+                  <input aria-label="アンケートID" data-f-key="sid" placeholder=" " class="a-filter-input">
+                  <span class="a-filter-label" aria-hidden="true">アンケートID</span>
+                  <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                </div>
+                <div class="a-filter-field">
+                  <input aria-label="ユーザーID" data-f-key="uid" placeholder=" " class="a-filter-input">
+                  <span class="a-filter-label" aria-hidden="true">ユーザーID</span>
+                  <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                </div>
+              </div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:nowrap">
+            <input aria-label="アンケートIDを指定して照合" id="reconGoId" placeholder="アンケートIDを指定して照合(例: SV-10236)" title="指定したアンケートの未照合名刺から照合を開始" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:290px;font-family:inherit">
+            <button data-requires="reconGoId" title="入力したアンケートIDの照合画面を開く(アンケートIDが未入力の間は押せません)" onclick="location.href='detail.html?id=' + encodeURIComponent((document.getElementById('reconGoId').value || '').trim())" style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-accent);border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">指定して照合開始</button>
           </div>
           <div id="reconList" data-a-region="list" data-sortable data-filter-keys="sid,uid,company,status,plan" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
             <div class="rc-line" style="padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
@@ -142,7 +168,7 @@ body[data-level="lv2"] #reconList .c-client { display: none; }
               <span class="c-opt" style="text-align:right">2,180</span><span style="text-align:right">46</span><span class="c-opt" style="text-align:right">1,872</span><span class="c-opt" style="text-align:right;font-weight:700">262</span>
               <span style="text-align:right;padding-right:10px">2,134 / 2,180 <span style="color:var(--a-fg-muted);font-size:12px">(98%)</span></span>
               <span style="color:var(--a-danger);font-weight:700;font-size:12.5px">2026/07/30 15:00<br><span style="display:inline-block;margin-top:2px;background:var(--a-danger-bg-solid);color:var(--a-on-accent);border-radius:4px;padding:1px 6px;font-size:11px">納期超過</span></span>
-              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10236'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10236','スマート物流EXPO 来場者アンケート')">データDL ▾</button></span>
+              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10236'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button title="関連データのダウンロード" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10236','スマート物流EXPO 来場者アンケート')">DL ▾</button></span>
             </div>
             <div tabindex="0" role="link" data-pg="1" data-f-sid="SV-10238" data-f-uid="U-1038" data-f-company="(株)テックブリッジ" data-f-status="データ化中" data-f-plan="オンデマンド" class="rc-line proto-row-hover" onclick="location.href='detail.html?id=SV-10238'" style="padding:8px 16px;min-height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;font-variant-numeric:tabular-nums">
               <span style="font-weight:500">SV-10238</span><span title="BtoB EXPO 東京 2026 来場者アンケート" style="padding-right:12px;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45">BtoB EXPO 東京 2026 来場者アンケート</span>
@@ -152,7 +178,7 @@ body[data-level="lv2"] #reconList .c-client { display: none; }
               <span class="c-opt" style="text-align:right">3,420</span><span style="text-align:right">182</span><span class="c-opt" style="text-align:right">2,865</span><span class="c-opt" style="text-align:right;font-weight:700">373</span>
               <span style="text-align:right;padding-right:10px">3,238 / 3,420 <span style="color:var(--a-fg-muted);font-size:12px">(95%)</span></span>
               <span style="font-size:12.5px;font-weight:500">2026/07/31 18:00</span>
-              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10238'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10238','BtoB EXPO 東京 2026 来場者アンケート')">データDL ▾</button></span>
+              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10238'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button title="関連データのダウンロード" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10238','BtoB EXPO 東京 2026 来場者アンケート')">DL ▾</button></span>
             </div>
             <div tabindex="0" role="link" data-pg="1" data-f-sid="SV-10233" data-f-uid="U-1035" data-f-company="地方創生機構" data-f-status="データ化中" data-f-plan="通常" class="rc-line proto-row-hover" onclick="location.href='detail.html?id=SV-10233'" style="padding:8px 16px;min-height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;font-variant-numeric:tabular-nums">
               <span style="font-weight:500">SV-10233</span><span title="地方創生フォーラム 参加者アンケート" style="padding-right:12px;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45">地方創生フォーラム 参加者アンケート</span>
@@ -162,7 +188,7 @@ body[data-level="lv2"] #reconList .c-client { display: none; }
               <span class="c-opt" style="text-align:right">486</span><span style="text-align:right">121</span><span class="c-opt" style="text-align:right">340</span><span class="c-opt" style="text-align:right;font-weight:700">25</span>
               <span style="text-align:right;padding-right:10px">365 / 486 <span style="color:var(--a-fg-muted);font-size:12px">(75%)</span></span>
               <span style="font-size:12.5px;font-weight:500">2026/08/03 12:00</span>
-              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10233'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10233','地方創生フォーラム 参加者アンケート')">データDL ▾</button></span>
+              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10233'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button title="関連データのダウンロード" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10233','地方創生フォーラム 参加者アンケート')">DL ▾</button></span>
             </div>
             <div tabindex="0" role="link" data-pg="1" data-f-sid="SV-10244" data-f-uid="U-1052" data-f-company="(株)マーケットビジョン" data-f-status="データ化中" data-f-plan="超特急" class="rc-line proto-row-hover" onclick="location.href='detail.html?id=SV-10244'" style="padding:8px 16px;min-height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;font-variant-numeric:tabular-nums">
               <span style="font-weight:500">SV-10244</span><span title="マーケティングサミット2026 来場者アンケート" style="padding-right:12px;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45">マーケティングサミット2026 来場者アンケート</span>
@@ -172,7 +198,7 @@ body[data-level="lv2"] #reconList .c-client { display: none; }
               <span class="c-opt" style="text-align:right">1,208</span><span style="text-align:right">954</span><span class="c-opt" style="text-align:right">201</span><span class="c-opt" style="text-align:right;font-weight:700">53</span>
               <span style="text-align:right;padding-right:10px">254 / 1,208 <span style="color:var(--a-fg-muted);font-size:12px">(21%)</span></span>
               <span style="font-size:12.5px;font-weight:500">2026/08/04 18:00</span>
-              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10244'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10244','マーケティングサミット2026 来場者アンケート')">データDL ▾</button></span>
+              <span class="row-act slots-2" style="padding-left:12px"><button onclick="location.href='detail.html?id=SV-10244'" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center">照合開始</button><button title="関連データのダウンロード" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10244','マーケティングサミット2026 来場者アンケート')">DL ▾</button></span>
             </div>
             <div tabindex="0" role="link" data-pg="1" data-f-sid="SV-10250" data-f-uid="U-1050" data-f-company="(株)イベントプラス" data-f-status="データ化完了" data-f-plan="オンデマンド" class="rc-line proto-row-hover" onclick="location.href='detail.html?id=SV-10250'" style="padding:8px 16px;min-height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;font-variant-numeric:tabular-nums">
               <span style="font-weight:500">SV-10250</span><span title="食品・飲料展 出展者アンケート データ化完了" style="padding-right:12px;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45">食品・飲料展 出展者アンケート <span class="status-badge status-active">データ化完了</span></span>
@@ -182,7 +208,7 @@ body[data-level="lv2"] #reconList .c-client { display: none; }
               <span class="c-opt" style="text-align:right">2,040</span><span style="text-align:right;color:var(--a-fg-muted2)">0</span><span class="c-opt" style="text-align:right">1,951</span><span class="c-opt" style="text-align:right">89</span>
               <span style="text-align:right;padding-right:10px">2,040 / 2,040 <span style="color:var(--a-ok);font-size:12px;font-weight:700">(100%)</span></span>
               <span style="font-size:12.5px;font-weight:500">2026/08/05 15:00</span>
-              <span class="row-act slots-2" style="padding-left:12px"><span></span><button style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10250','食品・飲料展 出展者アンケート')">データDL ▾</button></span>
+              <span class="row-act slots-2" style="padding-left:12px"><span></span><button title="関連データのダウンロード" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 6px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;text-align:center" onclick="event.stopPropagation();pDlOpen('SV-10250','食品・飲料展 出展者アンケート')">DL ▾</button></span>
             </div>
             <div data-pg="1" data-f-sid="SV-10262" data-f-uid="U-1049" data-f-company="グロースパートナーズ(株)" data-f-status="会期前" data-f-plan="通常" class="rc-line" style="padding:8px 16px;min-height:52px;font-size:13px;font-variant-numeric:tabular-nums;color:var(--a-fg-muted2)">
               <span style="font-weight:500">SV-10262</span><span title="人事・労務フォーラム 来場者アンケート 会期前" style="padding-right:12px;color:var(--a-fg-strong);min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.45">人事・労務フォーラム 来場者アンケート <span class="status-badge status-inactive">会期前</span></span>
@@ -233,6 +259,7 @@ body[data-level="lv2"] #reconList .c-client { display: none; }
 <script type="module" src="../src/admin.js"></script>
 <script src="../src/proto-ui.js"></script>
 <script src="../src/proto-level.js"></script>
+
 <script>
 // 営業日カレンダーからの遷移(?sid=)。渡されたアンケートIDを絞り込みへ適用した状態で開く。
 // パラメータを無視すると、押した案件と関係のない全件が出て遷移の意味が消える

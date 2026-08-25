@@ -48,14 +48,43 @@
                 <button style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" onclick="pOpen('mInviteOp')">＋ 新規招待</button>
               </div>
             </div>
-            <div data-filter-for="operatorsList" style="margin-top:18px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;padding:14px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <input aria-label="氏名・メールアドレス・オペレーターID" data-f-key="any" placeholder="氏名・メールアドレス・オペレーターID(部分一致)" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 12px;font-size:13px;width:340px;font-family:inherit">
-              <select data-group-select aria-label="所属グループ" data-f-key="group" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">所属グループ: すべて</option><option>アブロード本体</option><option>オフィスワークス株式会社</option><option>データパートナーズ株式会社</option></select>
-              <select aria-label="権限" data-f-key="lv" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">権限: すべて</option><option>Lv1</option><option>Lv2</option><option>Lv3</option><option>Lv4</option></select>
-              <select aria-label="ステータス" data-f-key="status" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">ステータス: すべて</option><option>有効</option><option>無効</option><option>招待中</option></select>
-              <select aria-label="言語" data-f-key="lang" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option value="">言語: すべて</option><option>日本語</option><option>英語</option><option>中国語簡体字</option><option>中国語繁体字</option><option>韓国語</option></select>
-              <button onclick="pSearch('operatorsList')" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">検索</button>
-              <button onclick="pClearSearch('operatorsList')" style="background:none;border:none;font-size:12.5px;color:var(--a-fg-muted);cursor:pointer;text-decoration:underline;font-family:inherit">条件をクリア</button>
+            <!-- 絞り込みカード(admin-style.css の a-filter-*)。user-management.html の絞り込みカードと同じ構成。
+                 氏名・メール・IDの複合検索(any)・所属グループ・ステータス・対応可能言語(日常の当たり付け)と、
+                 権限レベル(自分と対象の上下関係が絡む管理的な絞り込み)を1列に並べる -->
+            <div data-filter-for="operatorsList" class="a-filter-card">
+              <div class="a-filter-head">
+                <span class="a-filter-eyebrow">Filter Options</span>
+                <span class="a-filter-rule"></span>
+                <button type="button" class="a-filter-reset" onclick="pClearSearch('operatorsList')">条件をクリア</button>
+                <button type="button" class="a-filter-submit" onclick="pSearch('operatorsList')">検索</button>
+              </div>
+                <div class="a-filter-fields">
+                  <div class="a-filter-field is-wide">
+                    <input aria-label="氏名・メールアドレス・オペレーターID" data-f-key="any" placeholder=" " class="a-filter-input">
+                    <span class="a-filter-label" aria-hidden="true">氏名・メールアドレス・ID</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.4"/><path d="M10.3 10.3 14 14" stroke-linecap="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <select data-group-select aria-label="所属グループ" data-f-key="group" class="a-filter-input"><option value="">所属グループ: すべて</option><option>アブロード本体</option><option>オフィスワークス株式会社</option><option>データパートナーズ株式会社</option></select>
+                    <span class="a-filter-label" aria-hidden="true">所属グループ</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <select aria-label="ステータス" data-f-key="status" class="a-filter-input"><option value="">ステータス: すべて</option><option>有効</option><option>無効</option><option>招待中</option></select>
+                    <span class="a-filter-label" aria-hidden="true">ステータス</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <select aria-label="言語" data-f-key="lang" class="a-filter-input"><option value="">言語: すべて</option><option>日本語</option><option>英語</option><option>中国語簡体字</option><option>中国語繁体字</option><option>韓国語</option></select>
+                    <span class="a-filter-label" aria-hidden="true">対応可能言語</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                  <div class="a-filter-field">
+                    <select aria-label="権限" data-f-key="lv" class="a-filter-input"><option value="">権限: すべて</option><option>Lv1</option><option>Lv2</option><option>Lv3</option><option>Lv4</option></select>
+                    <span class="a-filter-label" aria-hidden="true">権限レベル</span>
+                    <svg class="a-filter-ico" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 3h12l-4.7 5.5v4.2l-2.6 1.3V8.5z" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
             </div>
             <div id="operatorsList" data-a-region="list" data-sortable data-filter-keys="any,group,lv,status,lang" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
               <div style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
@@ -278,6 +307,7 @@
 <script type="module" src="src/admin.js"></script>
 <script src="src/proto-ui.js"></script>
 <script src="src/proto-level.js"></script>
+
 <script>
 // 招待・グループ作成・設定変更を一覧へ反映する(モックのため再読込で戻る)
 // 招待で付与できるのも自分より下位まで(23_admin_operator_management.md §4.4)
