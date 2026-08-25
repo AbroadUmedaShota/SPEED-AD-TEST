@@ -501,6 +501,91 @@ main button:not([disabled]):hover, .proto-modal button:not([disabled]):hover { f
 .perf-card-num { margin-top: 2px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.25; }
 .perf-card-unit { font-size: 12px; font-weight: 500; color: var(--a-fg-muted); margin-left: 3px; }
 
+/* ============================================================
+   一覧・集計領域の取得状態(01_admin_common_ui.md §4.4)
+   領域(host)に data-a-region="list|summary" を宣言し、proto-ui.js が
+   host の直前の兄弟として状態パネル #{id}-state を差し込む。
+   本体の inline style には触れず、host の data-a-state だけで切り替える。
+   行の display は pPage/pSort/proto-level.js が所有しているため、
+   ここが書き換えると ready へ戻したときに復元できなくなる。
+   ============================================================ */
+
+/* 本体を差し替える状態。行の inline display を上書きする必要があるため !important */
+[data-a-state="loading"],
+[data-a-state="error"] { display: none !important; }
+
+.a-region-state {
+    margin-top: 16px;
+    background: var(--a-surface);
+    border: 1px solid var(--a-border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--a-fg-muted);
+}
+
+/* 本体を差し替える状態は、領域と同じ大きさの面として見せる */
+.a-region-state.is-block { padding: 22px 18px; text-align: center; }
+
+/* 本体を維持する状態は帯として細く見せ、内容を押し下げすぎない */
+.a-region-state.is-bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 14px; text-align: left;
+}
+
+/* 再読込中(情報) */
+.a-region-state.is-info {
+    background: var(--a-info-bg);
+    border-color: var(--a-info-border);
+    color: var(--a-info-fg);
+}
+
+/* 取得失敗(危険)。0件表示は枠なし・淡色文字のため、枠と色で区別が付く(§4.4) */
+.a-region-state.is-error {
+    background: var(--a-danger-bg);
+    border-color: var(--a-danger-border);
+    color: var(--a-danger);
+}
+
+.a-region-state-msg { font-weight: 700; }
+.a-region-state-sub { margin-top: 4px; font-size: 12.5px; opacity: .85; }
+
+/* 再試行は失敗した領域の内側に置く(§4.4)。行内の「停止」ボタンと同じ体裁 */
+.a-region-retry {
+    background: var(--a-surface);
+    color: var(--a-danger);
+    border: 1px solid var(--a-danger-border);
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 12.5px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+}
+.a-region-state.is-block .a-region-retry { margin-top: 14px; }
+.a-region-state.is-bar   .a-region-retry { margin-left: auto; flex: none; }
+
+/* 骨格 */
+.a-skel {
+    border-radius: 4px;
+    background: var(--a-surface-3);
+    animation: a-skel-pulse 1.2s ease-in-out infinite;
+}
+.a-skel-row { height: 40px; margin-top: 10px; }
+.a-skel-cards { display: flex; gap: 12px; margin-top: 14px; }
+.a-skel-card { flex: 1 1 0; height: 78px; }
+@keyframes a-skel-pulse { 0%, 100% { opacity: .5 } 50% { opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .a-skel { animation: none } }
+
+/* 表示状態で開いていることを画面に残す。実装済みの挙動と取り違えられないようにする。
+   ?state= が付いているときだけ現れる */
+#p-region-scenario {
+    position: fixed; left: 16px; bottom: 16px; z-index: 9998;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--a-work-bg); color: var(--a-fg-onwork-soft);
+    border: 1px solid var(--a-work-border); border-radius: 8px;
+    padding: 8px 14px; font-size: 12px;
+    box-shadow: 0 8px 24px rgba(12, 18, 30, .28);
+}
+#p-region-scenario a { color: var(--a-sidebar-accent); font-weight: 700; }
+
 /* 横断検索(ヘッダー)。1920px基準では表示し、一覧の列間引きと同じ1459px以下では
    ヘッダーの残り幅が足りないため出さない(768px幅の横スクロール検査で溢れさせない) */
 @media (max-width: 1459px) {

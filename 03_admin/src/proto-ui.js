@@ -940,6 +940,187 @@
         });
     })();
 
+    // ============================================================
+    // 一覧・集計領域の取得状態(01_admin_common_ui.md §4.4)
+    // 領域(host): data-a-region="list" | "summary"、id 必須。
+    // 本体の inline style は書き換えず、host の data-a-state と CSS だけで
+    // 切り替える。行の display は pPage/pPageSize/pSort/pFilter および
+    // proto-level.js が所有しているため、ここが触ると ready へ戻したときに
+    // 元の表示を復元できなくなる。
+    // モックの表示状態であり、実データ取得は伴わない。
+    // ============================================================
+    var A_TEXT = {
+        list: {
+            loading: '一覧を読み込んでいます…',
+            reloading: '最新の一覧を読み込んでいます…',
+            error: '一覧を取得できませんでした。',
+            keep: '最新の一覧を取得できませんでした。表示中の内容は取得済みの時点のものです。'
+        },
+        summary: {
+            loading: '集計を読み込んでいます…',
+            reloading: '最新の集計を読み込んでいます…',
+            error: '集計を取得できませんでした。',
+            keep: '最新の集計を取得できませんでした。表示中の数値は取得済みの時点のものです。'
+        }
+    };
+
+    function aKind(host) {
+        return host.getAttribute('data-a-region') === 'summary' ? 'summary' : 'list';
+    }
+
+    // パネルは host の直前の兄弟に置く。host の子にすると pSort が
+    // firstElementChild をヘッダー、以降を行として扱う前提を壊す。
+    // 兄弟-before は pRenderChip(絞り込みバッジ)と同じ差し込み方
+    function aPanel(host) {
+        var el = document.getElementById(host.id + '-state');
+        if (el) { return el; }
+        el = document.createElement('div');
+        el.id = host.id + '-state';
+        el.className = 'a-region-state';
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
+        el.hidden = true;
+        host.parentNode.insertBefore(el, host);
+        return el;
+    }
+
+    function aSkeleton(kind) {
+        if (kind === 'summary') {
+            return '<div class="a-skel-cards"><div class="a-skel a-skel-card"></div>'
+                + '<div class="a-skel a-skel-card"></div><div class="a-skel a-skel-card"></div></div>';
+        }
+        var s = '';
+        for (var i = 0; i < 5; i++) { s += '<div class="a-skel a-skel-row"></div>'; }
+        return s;
+    }
+
+    // 初回読込中は検索・絞り込み・並び替え・ページングを受け付けない(§4.4)。
+    // 並び替えは host ごと隠れるため、残る絞り込みバーとページャ行を止める
+    function aCtl(regionId, on) {
+        [document.querySelector('[data-filter-for="' + regionId + '"]'),
+            document.querySelector('[data-a-ctl="' + regionId + '"]')].forEach(function (el) {
+            if (!el) { return; }
+            if (on) { el.removeAttribute('inert'); el.style.opacity = ''; }
+            else { el.setAttribute('inert', ''); el.style.opacity = '0.5'; }
+        });
+    }
+
+    window.pRegionState = function (regionId, state) {
+        var host = document.getElementById(regionId);
+        if (!host) { return; }
+        var kind = aKind(host);
+        var t = A_TEXT[kind];
+        var panel = aPanel(host);
+
+        if (!state || state === 'ready') {
+            host.removeAttribute('data-a-state');
+            host.removeAttribute('aria-busy');
+            panel.hidden = true;
+            panel.style.minHeight = '';
+            aCtl(regionId, true);
+            return;
+        }
+
+        host.setAttribute('data-a-state', state);
+        if (state === 'loading' || state === 'reloading') { host.setAttribute('aria-busy', 'true'); }
+        else { host.removeAttribute('aria-busy'); }
+        aCtl(regionId, state !== 'loading');
+
+        var cls = 'a-region-state', html = '', retry = false;
+        if (state === 'loading') {
+            cls += ' is-block';
+            html = '<div class="a-region-state-msg">' + t.loading + '</div>' + aSkeleton(kind);
+        } else if (state === 'reloading') {
+            cls += ' is-bar is-info';
+            html = '<span class="a-region-state-msg">' + t.reloading + '</span>';
+        } else if (state === 'error') {
+            cls += ' is-block is-error';
+            html = '<div class="a-region-state-msg">' + t.error + '</div>'
+                + '<div class="a-region-state-sub">時間をおいて再試行してください。</div>';
+            retry = true;
+        } else if (state === 'error-keep') {
+            cls += ' is-bar is-error';
+            html = '<span class="a-region-state-msg">' + t.keep + '</span>';
+            retry = true;
+        }
+
+        panel.className = cls;
+        panel.innerHTML = html;
+        // 本体を差し替える状態では元の高さを引き継ぎ、レイアウトの跳ねを抑える
+        var keepH = (state === 'loading' || state === 'error') && host.dataset.aH;
+        panel.style.minHeight = keepH ? (host.dataset.aH + 'px') : '';
+
+        if (retry) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.id = regionId + '-retry';
+            b.className = 'a-region-retry';
+            b.textContent = '再試行';
+            b.addEventListener('click', function () {
+                window.pRegionState(regionId, 'reloading');
+                setTimeout(function () { window.pRegionState(regionId, 'ready'); }, 700);
+            });
+            panel.appendChild(b);
+        }
+        panel.hidden = false;
+    };
+
+    // 「集計のみ失敗」は単一領域の状態ではなく領域種別ごとの組み合わせのため、
+    // シナリオ→領域状態の対応表として持つ
+    var A_SCENARIO = {
+        ready:        { list: 'ready',      summary: 'ready' },
+        loading:      { list: 'loading',    summary: 'loading' },
+        reloading:    { list: 'reloading',  summary: 'reloading' },
+        error:        { list: 'error',      summary: 'error' },
+        'error-keep': { list: 'error-keep', summary: 'error-keep' },
+        partial:      { list: 'ready',      summary: 'error' }
+    };
+    var A_SCENARIO_LABEL = {
+        loading: '初回読込中', reloading: '再読込中', error: '取得失敗',
+        'error-keep': '取得失敗(表示中の内容を維持)', partial: '集計のみ失敗'
+    };
+
+    window.pPageState = function (scenario) {
+        var map = A_SCENARIO[scenario] || A_SCENARIO.ready;
+        document.querySelectorAll('[data-a-region]').forEach(function (host) {
+            if (host.id) { window.pRegionState(host.id, map[aKind(host)]); }
+        });
+        aScenarioChip(A_SCENARIO_LABEL[scenario] || '');
+    };
+
+    // 表示状態で開いていることを画面に残す。実装済みの挙動と取り違えられないようにする
+    function aScenarioChip(label) {
+        var el = document.getElementById('p-region-scenario');
+        if (!label) { if (el) { el.parentNode.removeChild(el); } return; }
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'p-region-scenario';
+            document.body.appendChild(el);
+        }
+        el.innerHTML = '';
+        var s = document.createElement('span');
+        s.textContent = '表示状態: ' + label + '(モック確認用)';
+        var a = document.createElement('a');
+        a.href = location.pathname;
+        a.textContent = '通常表示へ戻す';
+        el.appendChild(s);
+        el.appendChild(a);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // proto-level.js の applyPage(ページガード時の main.innerHTML 差し替え)は
+        // 同じ DOMContentLoaded で後から走る。差し替え後の DOM に対して働くよう遅らせる
+        setTimeout(function () {
+            document.querySelectorAll('[data-a-region]').forEach(function (h) {
+                if (h.id && !h.dataset.aH) {
+                    h.dataset.aH = String(Math.min(h.offsetHeight || 0, 520));
+                }
+            });
+            var s = new URLSearchParams(location.search).get('state');
+            if (s) { window.pPageState(s); }
+        }, 0);
+    });
+
     // 初期化: ページャの初期状態適用と、理由必須ボタン(data-requires)の非活性制御
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('[id$="-pager"]').forEach(function (pager) {
