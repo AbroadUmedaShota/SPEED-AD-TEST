@@ -1,0 +1,98 @@
+{
+  "generatedAt": "2026-08-14T10:46:04.873Z",
+  "product": "ACCEA A4 上質紙70kg 両面カラー + 巻き三つ折り加工",
+  "productUrl": "https://ex.accea.co.jp/pamph/A4_70k_4C4C_o2",
+  "printSpec": {
+    "mediaWidthMm": 303,
+    "mediaHeightMm": 216,
+    "trimWidthMm": 297,
+    "trimHeightMm": 210,
+    "bleedMm": 3,
+    "safeMm": 5,
+    "foldPositionsMm": {
+      "outside": [
+        97,
+        197
+      ],
+      "inside": [
+        100,
+        200
+      ]
+    },
+    "acceaTemplate": {
+      "widthMm": 420,
+      "heightMm": 350,
+      "bleedLeftMm": 58.5,
+      "bleedBottomMm": 67,
+      "trimLeftMm": 61.5,
+      "trimBottomMm": 70
+    }
+  },
+  "cmykProfile": "C:\\Windows\\System32\\spool\\drivers\\color\\JapanColor2001Uncoated.icc",
+  "templateRgbFile": "output\\pattern-b\\print\\SPEED_AD_旧パンフレット_PatternB_A4巻三つ折り_ACCEA台紙_RGB.pdf",
+  "finalCmykFile": "output\\pdf\\SPEED_AD_旧パンフレット_PatternB_A4巻三つ折り_ACCEA入稿用_CMYK.pdf",
+  "submissionLayout": [
+    {
+      "side": "outside",
+      "sheetMm": {
+        "width": 303,
+        "height": 216
+      },
+      "foldPositionsFromTrimMm": [
+        97,
+        197
+      ],
+      "minimumTrimDistanceMm": 5.91,
+      "safeAreaPass": true,
+      "foldClearancePass": true,
+      "violations": []
+    },
+    {
+      "side": "inside",
+      "sheetMm": {
+        "width": 303,
+        "height": 216
+      },
+      "foldPositionsFromTrimMm": [
+        100,
+        200
+      ],
+      "minimumTrimDistanceMm": 7,
+      "safeAreaPass": true,
+      "foldClearancePass": true,
+      "violations": []
+    }
+  ],
+  "proofLayout": [
+    {
+      "side": "outside",
+      "sheetMm": {
+        "width": 303,
+        "height": 216
+      },
+      "foldPositionsFromTrimMm": [
+        97,
+        197
+      ],
+      "minimumTrimDistanceMm": 5.91,
+      "safeAreaPass": true,
+      "foldClearancePass": true,
+      "violations": []
+    },
+    {
+      "side": "inside",
+      "sheetMm": {
+        "width": 303,
+        "height": 216
+      },
+      "foldPositionsFromTrimMm": [
+        100,
+        200
+      ],
+      "minimumTrimDistanceMm": 7,
+      "safeAreaPass": true,
+      "foldClearancePass": true,
+      "violations": []
+    }
+  ]
+}

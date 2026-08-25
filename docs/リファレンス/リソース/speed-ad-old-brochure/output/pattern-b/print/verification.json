@@ -1,0 +1,151 @@
+{
+  "generatedAt": "2026-08-25T10:55:54.632Z",
+  "file": "SPEED_AD_旧パンフレット_PatternB_A4巻三つ折り_ACCEA入稿用_CMYK.pdf",
+  "productUrl": "https://ex.accea.co.jp/pamph/A4_70k_4C4C_o2",
+  "pages": 2,
+  "pdfVersion": "1.4",
+  "encrypted": "no",
+  "form": "none",
+  "javaScript": "no",
+  "boxesMm": {
+    "mediaBox": [
+      0,
+      0,
+      420,
+      350
+    ],
+    "bleedBox": [
+      58.5,
+      67,
+      361.5,
+      283
+    ],
+    "trimBox": [
+      61.5,
+      70,
+      358.5,
+      280
+    ]
+  },
+  "dimensionsPass": true,
+  "embeddedFontsPass": true,
+  "wordmarkFontPass": true,
+  "imageResolutionPass": true,
+  "minimumImagePpi": 300,
+  "imageRows": [
+    {
+      "xPpi": 600,
+      "yPpi": 600
+    },
+    {
+      "xPpi": 300,
+      "yPpi": 300
+    },
+    {
+      "xPpi": 300,
+      "yPpi": 300
+    },
+    {
+      "xPpi": 300,
+      "yPpi": 300
+    },
+    {
+      "xPpi": 300,
+      "yPpi": 300
+    },
+    {
+      "xPpi": 300,
+      "yPpi": 300
+    },
+    {
+      "xPpi": 600,
+      "yPpi": 600
+    },
+    {
+      "xPpi": 600,
+      "yPpi": 600
+    },
+    {
+      "xPpi": 600,
+      "yPpi": 600
+    },
+    {
+      "xPpi": 600,
+      "yPpi": 600
+    },
+    {
+      "xPpi": 600,
+      "yPpi": 600
+    },
+    {
+      "xPpi": 600,
+      "yPpi": 600
+    }
+  ],
+  "cmykPass": true,
+  "rgbImageRows": [],
+  "rgbResourceTokens": [],
+  "cmykResourcePresent": true,
+  "fontLines": [
+    "XQOOAD+YuGothic-Regular              CID TrueType      Identity-H       yes yes yes     64  0",
+    "ABOQXT+SPEEDADWordmark-Regular       CID TrueType      Identity-H       yes yes yes     57  0",
+    "OETSCR+YuGothic-Bold                 CID TrueType      Identity-H       yes yes yes     35  0",
+    "QTDPTY+YuGothic-Bold                 CID TrueType      Identity-H       yes yes yes     31  0",
+    "IXOSWD+YuGothic-Bold                 CID TrueType      Identity-H       yes yes yes      9  0",
+    "TCJPYB+YuGothic-Bold                 CID TrueType      Identity-H       yes yes yes    206  0",
+    "ZIIFQN+YuGothic-Regular              CID TrueType      Identity-H       yes yes yes    140  0",
+    "TGOYRJ+YuGothic-Bold                 CID TrueType      Identity-H       yes yes yes    135  0",
+    "QGWDQB+YuGothic-Bold                 CID TrueType      Identity-H       yes yes yes    127  0"
+  ],
+  "layoutPass": true,
+  "layout": [
+    {
+      "side": "outside",
+      "sheetMm": {
+        "width": 303,
+        "height": 216
+      },
+      "foldPositionsFromTrimMm": [
+        97,
+        197
+      ],
+      "minimumTrimDistanceMm": 5.91,
+      "safeAreaPass": true,
+      "foldClearancePass": true,
+      "violations": []
+    },
+    {
+      "side": "inside",
+      "sheetMm": {
+        "width": 303,
+        "height": 216
+      },
+      "foldPositionsFromTrimMm": [
+        100,
+        200
+      ],
+      "minimumTrimDistanceMm": 7,
+      "safeAreaPass": true,
+      "foldClearancePass": true,
+      "violations": []
+    }
+  ],
+  "render300dpi": {
+    "width": 4961,
+    "height": 4134
+  },
+  "qrDecode": "https://speed-ad.com/",
+  "qrPass": true,
+  "textPass": true,
+  "finalTextExtractionPass": false,
+  "finalTextExtractionNote": "Ghostscript変換後は一部日本語のToUnicode抽出が欠落。印刷表示、フォント埋め込み、RGB正本の文言一致を別検証。",
+  "pageOrderPass": true,
+  "requiredText": [
+    "回答・名刺情報を、次のアクションへ。",
+    "標準10項目",
+    "info@abroad-o.com",
+    "www.abroad-o.com"
+  ],
+  "colorHandling": "Ghostscript + JapanColor2001Uncoated.icc によるCMYK変換。PDF/X準拠表記は行わない。",
+  "pass": true
+}
