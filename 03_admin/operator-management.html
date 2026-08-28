@@ -14,7 +14,7 @@
 /* 幅が足りない画面では補助的な列を隠し、横スクロールを避ける。
    基準は1920px表示。1459px未満で適用する。 */
 @media (max-width: 1459px) {
-  #operatorsList > div { grid-template-columns: minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) !important; }
+  #operatorsList > div { grid-template-columns: minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) !important; }
   #operatorsList .c-opt { display: none !important; }
 }
 </style>
@@ -26,9 +26,8 @@
   #operatorsList > div > :nth-child(1),
   #operatorsList > div > :nth-child(3),
   #operatorsList > div > :nth-child(4),
-  #operatorsList > div > :nth-child(6),
-  #operatorsList > div > :nth-child(8),
-  #operatorsList > div > :nth-child(9) { display: none !important; }
+  #operatorsList > div > :nth-child(7),
+  #operatorsList > div > :nth-child(8) { display: none !important; }
 }
 </style>
 </head>
@@ -49,8 +48,9 @@
               </div>
             </div>
             <!-- 絞り込みカード(admin-style.css の a-filter-*)。user-management.html の絞り込みカードと同じ構成。
-                 氏名・メール・IDの複合検索(any)・所属グループ・ステータス・対応可能言語(日常の当たり付け)と、
-                 権限レベル(自分と対象の上下関係が絡む管理的な絞り込み)を1列に並べる -->
+                 氏名・メール・IDの複合検索(any)・所属グループ・ステータス・対応可能言語・権限レベルを1列に並べる。
+                 対応可能言語は一覧の列からは外したが、名刺振り分けの当たり付けに使うため絞り込み条件としては残す
+                 (行の data-f-lang 属性で照合。2026-08-28 レビュー反映) -->
             <div data-filter-for="operatorsList" class="a-filter-card">
               <div class="a-filter-head">
                 <span class="a-filter-eyebrow">Filter Options</span>
@@ -87,47 +87,47 @@
                 </div>
             </div>
             <div id="operatorsList" data-a-region="list" data-sortable data-filter-keys="any,group,lv,status,lang" style="margin-top:16px;background:var(--a-surface);border:1px solid var(--a-border);border-radius:8px;overflow-x:auto">
-              <div style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
-                <span title="既定の並び順" style="color:var(--a-fg-muted)">ID ▲</span><span>氏名</span><span>メールアドレス</span><span>所属グループ</span><span>権限</span><span>対応可能言語</span><span>ステータス</span><span class="c-opt">作成日時</span><span class="c-opt">最終ログイン</span>
+              <div style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:44px;background:var(--a-surface-2);border-bottom:1px solid var(--a-border);font-size:12px;font-weight:700;color:var(--a-fg-muted)">
+                <span title="既定の並び順" style="color:var(--a-fg-muted)">ID ▲</span><span>氏名</span><span>メールアドレス</span><span>所属グループ</span><span>権限</span><span>ステータス</span><span class="c-opt">作成日時</span><span class="c-opt">最終ログイン</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0012 佐藤 由紀 y.sato@abroad.example.com" data-pg="1" data-f-oid="OP-0012" data-f-name="佐藤 由紀" data-f-mail="y.sato@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv3" data-f-lang="日本語・英語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0012')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0012</span><span>佐藤 由紀</span><span title="y.sato@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">y.sato@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-accent);border:1px solid var(--a-info-border);border-radius:4px;padding:1px 6px">Lv3</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語・英語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/03/14</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 09:12</span>
+              <div tabindex="0" role="button" data-f-any="OP-0012 佐藤 由紀 y.sato@abroad.example.com" data-pg="1" data-f-oid="OP-0012" data-f-name="佐藤 由紀" data-f-mail="y.sato@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv3" data-f-lang="日本語・英語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0012')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0012</span><span>佐藤 由紀</span><span title="y.sato@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">y.sato@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-accent);border:1px solid var(--a-info-border);border-radius:4px;padding:1px 6px">Lv3</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/03/14</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 09:12</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0034 田中 大輔 d.tanaka@officeworks.co.jp" data-pg="1" data-f-oid="OP-0034" data-f-name="田中 大輔" data-f-mail="d.tanaka@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv2" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0034')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0034</span><span>田中 大輔</span><span title="d.tanaka@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">d.tanaka@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv2</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/04/02</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/30 18:45</span>
+              <div tabindex="0" role="button" data-f-any="OP-0034 田中 大輔 d.tanaka@officeworks.co.jp" data-pg="1" data-f-oid="OP-0034" data-f-name="田中 大輔" data-f-mail="d.tanaka@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv2" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0034')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0034</span><span>田中 大輔</span><span title="d.tanaka@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">d.tanaka@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv2</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/04/02</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/30 18:45</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0058 王 麗華 l.wang@officeworks.co.jp" data-pg="1" data-f-oid="OP-0058" data-f-name="王 麗華" data-f-mail="l.wang@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語・中国語簡体字・中国語繁体字" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0058')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0058</span><span>王 麗華</span><span title="l.wang@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">l.wang@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語・中国語簡/繁</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/04/21</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 08:58</span>
+              <div tabindex="0" role="button" data-f-any="OP-0058 王 麗華 l.wang@officeworks.co.jp" data-pg="1" data-f-oid="OP-0058" data-f-name="王 麗華" data-f-mail="l.wang@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語・中国語簡体字・中国語繁体字" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0058')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0058</span><span>王 麗華</span><span title="l.wang@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">l.wang@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/04/21</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 08:58</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0061 鈴木 恵 m.suzuki@datapartners.co.jp" data-pg="1" data-f-oid="OP-0061" data-f-name="鈴木 恵" data-f-mail="m.suzuki@datapartners.co.jp" data-f-group="データパートナーズ株式会社" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="無効" class="proto-row-hover" onclick="pOpenOperator('OP-0061')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0061</span><span>鈴木 恵</span><span title="m.suzuki@datapartners.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">m.suzuki@datapartners.co.jp</span><span>データパートナーズ株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語</span><span><span class="status-badge status-inactive">無効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/05/12</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-faint)">2026/06/12 17:20</span>
+              <div tabindex="0" role="button" data-f-any="OP-0061 鈴木 恵 m.suzuki@datapartners.co.jp" data-pg="1" data-f-oid="OP-0061" data-f-name="鈴木 恵" data-f-mail="m.suzuki@datapartners.co.jp" data-f-group="データパートナーズ株式会社" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="無効" class="proto-row-hover" onclick="pOpenOperator('OP-0061')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0061</span><span>鈴木 恵</span><span title="m.suzuki@datapartners.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">m.suzuki@datapartners.co.jp</span><span>データパートナーズ株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-inactive">無効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/05/12</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-faint)">2026/06/12 17:20</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0069 中村 悠斗 y.nakamura@abroad.example.com" data-pg="1" data-f-oid="OP-0069" data-f-name="中村 悠斗" data-f-mail="y.nakamura@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0069')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0069</span><span>中村 悠斗</span><span title="y.nakamura@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">y.nakamura@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/27</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 09:05</span>
+              <div tabindex="0" role="button" data-f-any="OP-0069 中村 悠斗 y.nakamura@abroad.example.com" data-pg="1" data-f-oid="OP-0069" data-f-name="中村 悠斗" data-f-mail="y.nakamura@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0069')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0069</span><span>中村 悠斗</span><span title="y.nakamura@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">y.nakamura@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/27</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 09:05</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0075 高橋 直樹 n.takahashi@datapartners.co.jp" data-pg="1" data-f-oid="OP-0075" data-f-name="高橋 直樹" data-f-mail="n.takahashi@datapartners.co.jp" data-f-group="データパートナーズ株式会社" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="招待中" class="proto-row-hover" onclick="pOpenOperator('OP-0075')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0075</span><span>高橋 直樹</span><span title="n.takahashi@datapartners.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">n.takahashi@datapartners.co.jp</span><span>データパートナーズ株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語・英語</span><span><span class="status-badge status-info">招待中</span><span title="招待メールの有効期限(72時間)を過ぎています。再送またはキャンセルしてください" style="display:block;font-size:10.5px;color:var(--a-danger);font-weight:700">期限切れ</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/21</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-faint)">—</span>
+              <div tabindex="0" role="button" data-f-any="OP-0075 高橋 直樹 n.takahashi@datapartners.co.jp" data-pg="1" data-f-oid="OP-0075" data-f-name="高橋 直樹" data-f-mail="n.takahashi@datapartners.co.jp" data-f-group="データパートナーズ株式会社" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="招待中" class="proto-row-hover" onclick="pOpenOperator('OP-0075')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0075</span><span>高橋 直樹</span><span title="n.takahashi@datapartners.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">n.takahashi@datapartners.co.jp</span><span>データパートナーズ株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-info">招待中</span><span title="招待メールの有効期限(72時間)を過ぎています。再送またはキャンセルしてください" style="display:block;font-size:10.5px;color:var(--a-danger);font-weight:700">期限切れ</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/21</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-faint)">—</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0077 山本 彩 a.yamamoto@abroad.example.com" data-pg="1" data-f-oid="OP-0077" data-f-name="山本 彩" data-f-mail="a.yamamoto@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv2" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0077')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0077</span><span>山本 彩</span><span title="a.yamamoto@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">a.yamamoto@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv2</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 07:40</span>
+              <div tabindex="0" role="button" data-f-any="OP-0077 山本 彩 a.yamamoto@abroad.example.com" data-pg="1" data-f-oid="OP-0077" data-f-name="山本 彩" data-f-mail="a.yamamoto@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv2" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0077')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0077</span><span>山本 彩</span><span title="a.yamamoto@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">a.yamamoto@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv2</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 07:40</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0081 陳 志明 z.chen@officeworks.co.jp" data-pg="1" data-f-oid="OP-0081" data-f-name="陳 志明" data-f-mail="z.chen@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語・中国語簡体字・中国語繁体字" data-f-status="無効" class="proto-row-hover" onclick="pOpenOperator('OP-0081')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0081</span><span>陳 志明</span><span title="z.chen@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">z.chen@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語・中国語簡/繁</span><span><span class="status-badge status-inactive">無効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/02/10</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28 18:02</span>
+              <div tabindex="0" role="button" data-f-any="OP-0081 陳 志明 z.chen@officeworks.co.jp" data-pg="1" data-f-oid="OP-0081" data-f-name="陳 志明" data-f-mail="z.chen@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語・中国語簡体字・中国語繁体字" data-f-status="無効" class="proto-row-hover" onclick="pOpenOperator('OP-0081')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0081</span><span>陳 志明</span><span title="z.chen@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">z.chen@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-inactive">無効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/02/10</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28 18:02</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0083 小林 美咲 m.kobayashi@abroad.example.com" data-pg="1" data-f-oid="OP-0083" data-f-name="小林 美咲" data-f-mail="m.kobayashi@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0083')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0083</span><span>小林 美咲</span><span title="m.kobayashi@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">m.kobayashi@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語・英語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 08:47</span>
+              <div tabindex="0" role="button" data-f-any="OP-0083 小林 美咲 m.kobayashi@abroad.example.com" data-pg="1" data-f-oid="OP-0083" data-f-name="小林 美咲" data-f-mail="m.kobayashi@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0083')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0083</span><span>小林 美咲</span><span title="m.kobayashi@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">m.kobayashi@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 08:47</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0086 森田 拓海 t.morita@abroad.example.com" data-pg="1" data-f-oid="OP-0086" data-f-name="森田 拓海" data-f-mail="t.morita@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0086')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0086</span><span>森田 拓海</span><span title="t.morita@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">t.morita@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/29</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/30 19:20</span>
+              <div tabindex="0" role="button" data-f-any="OP-0086 森田 拓海 t.morita@abroad.example.com" data-pg="1" data-f-oid="OP-0086" data-f-name="森田 拓海" data-f-mail="t.morita@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0086')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0086</span><span>森田 拓海</span><span title="t.morita@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">t.morita@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/29</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/30 19:20</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0088 佐々木 遥 h.sasaki@officeworks.co.jp" data-pg="2" data-f-oid="OP-0088" data-f-name="佐々木 遥" data-f-mail="h.sasaki@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0088')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0088</span><span>佐々木 遥</span><span title="h.sasaki@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">h.sasaki@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/27</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 09:33</span>
+              <div tabindex="0" role="button" data-f-any="OP-0088 佐々木 遥 h.sasaki@officeworks.co.jp" data-pg="2" data-f-oid="OP-0088" data-f-name="佐々木 遥" data-f-mail="h.sasaki@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0088')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0088</span><span>佐々木 遥</span><span title="h.sasaki@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">h.sasaki@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/27</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 09:33</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0091 吉田 健太 k.yoshida@officeworks.co.jp" data-pg="2" data-f-oid="OP-0091" data-f-name="吉田 健太" data-f-mail="k.yoshida@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0091')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0091</span><span>吉田 健太</span><span title="k.yoshida@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">k.yoshida@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語・英語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 08:15</span>
+              <div tabindex="0" role="button" data-f-any="OP-0091 吉田 健太 k.yoshida@officeworks.co.jp" data-pg="2" data-f-oid="OP-0091" data-f-name="吉田 健太" data-f-mail="k.yoshida@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0091')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0091</span><span>吉田 健太</span><span title="k.yoshida@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">k.yoshida@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 08:15</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0094 林 由香 y.hayashi@officeworks.co.jp" data-pg="2" data-f-oid="OP-0094" data-f-name="林 由香" data-f-mail="y.hayashi@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0094')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(150px,150fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0094</span><span>林 由香</span><span title="y.hayashi@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">y.hayashi@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span style="font-size:12px;color:var(--a-fg-muted)">日本語</span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/29</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/30 17:58</span>
+              <div tabindex="0" role="button" data-f-any="OP-0094 林 由香 y.hayashi@officeworks.co.jp" data-pg="2" data-f-oid="OP-0094" data-f-name="林 由香" data-f-mail="y.hayashi@officeworks.co.jp" data-f-group="オフィスワークス株式会社" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0094')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0094</span><span>林 由香</span><span title="y.hayashi@officeworks.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">y.hayashi@officeworks.co.jp</span><span>オフィスワークス株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/29</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/30 17:58</span>
               </div>
               <div id="operatorsList-empty" style="display:none;padding:26px 18px;text-align:center;font-size:13px;color:var(--a-fg-faint)">条件に一致する行がありません。条件を変えるか「条件をクリア」で全件に戻せます。</div>
             </div>
@@ -154,7 +154,7 @@
       <label style="display:block"><span style="font-size:11.5px;font-weight:700;color:var(--a-fg-muted)">メールアドレス <span style="color:var(--a-danger)">必須</span></span><input aria-label="メールアドレス" placeholder="operator@example.co.jp" style="margin-top:6px;width:100%;box-sizing:border-box;border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 12px;font-size:13px;font-family:inherit"></label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <label style="display:block"><span style="font-size:11.5px;font-weight:700;color:var(--a-fg-muted)">所属グループ</span><select data-group-select aria-label="所属グループ" style="margin-top:6px;width:100%;border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option>アブロード本体</option><option>オフィスワークス株式会社</option><option>データパートナーズ株式会社</option></select></label>
-        <label style="display:block"><span style="font-size:11.5px;font-weight:700;color:var(--a-fg-muted)">権限レベル</span><select data-invite-lv aria-label="権限レベル" style="margin-top:6px;width:100%;border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option>Lv1(Operator)</option><option>Lv2(OperatorAdmin)</option></select></label>
+        <label style="display:block"><span style="font-size:11.5px;font-weight:700;color:var(--a-fg-muted)">権限レベル</span><select data-invite-lv aria-label="権限レベル" style="margin-top:6px;width:100%;border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option>Lv1(Operator)</option><option>Lv2(OperatorAdmin)</option><option>Lv3(Admin)</option><option>Lv4(MasterAdmin)</option></select></label>
       </div>
       <div><span style="font-size:11.5px;font-weight:700;color:var(--a-fg-muted)">対応可能言語</span>
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
@@ -165,7 +165,7 @@
           <span role="button" tabindex="0" aria-pressed="false" onclick="pLangChip(this)" style="border:1px solid var(--a-border-strong);color:var(--a-fg-muted);border-radius:999px;padding:4px 14px;font-size:12px;cursor:pointer">韓国語</span>
         </div>
       </div>
-      <div style="font-size:11.5px;color:var(--a-fg-muted2);line-height:1.7">招待中のアカウントは一覧に「招待中」として表示されます。付与できる権限レベルは、ログイン中のアカウントの1段下までです(招待の実行権の解釈は確定前・23号§11 #4)。</div>
+      <div style="font-size:11.5px;color:var(--a-fg-muted2);line-height:1.7">招待中のアカウントは一覧に「招待中」として表示されます。権限レベルは Lv1〜Lv4 のいずれも付与できます。</div>
     </div>
     <div id="opInvErr" role="alert" hidden style="font-size:12px;color:var(--a-danger);font-weight:700;padding:0 22px 8px"></div>
         <div style="display:flex;justify-content:flex-end;gap:10px;padding:0 22px 18px">
@@ -206,8 +206,9 @@
     <div style="padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:24px">
       <div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border)">アカウント情報</div>
-        <div style="display:grid;grid-template-columns:110px 1fr;gap:8px 12px;padding-top:12px;font-size:13px">
-          <span style="color:var(--a-fg-muted2)">メール</span><span>d.tanaka@officeworks.co.jp</span>
+        <div style="display:grid;grid-template-columns:110px 1fr;gap:8px 12px;padding-top:12px;font-size:13px;align-items:center">
+          <span style="color:var(--a-fg-muted2)">氏名</span><input data-op-field="name" aria-label="氏名" value="田中 大輔" style="width:100%;box-sizing:border-box;border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)">
+          <span style="color:var(--a-fg-muted2)">メール</span><input data-op-field="mail" aria-label="メールアドレス" value="d.tanaka@officeworks.co.jp" style="width:100%;box-sizing:border-box;border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)">
           <span style="color:var(--a-fg-muted2)">登録日時</span><span data-slot="opCreated" style="font-variant-numeric:tabular-nums">2025/11/12 10:30</span>
           <span style="color:var(--a-fg-muted2)">最終ログイン</span><span data-slot="opLastLogin" style="font-variant-numeric:tabular-nums">2026/07/30 18:45</span>
         </div>
@@ -227,8 +228,9 @@
           </div>
           <label style="display:grid;grid-template-columns:110px 1fr;align-items:center;gap:12px;color:var(--a-fg-muted2)">ステータス<select data-op-field="status" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option>有効</option><option>無効</option></select></label>
           <div data-slot="opInvite" hidden style="font-size:11.5px;color:var(--a-fg-muted2);background:var(--a-surface-2);border-radius:6px;padding:8px 12px;line-height:1.7"></div>
+          <div id="opEditErr" role="alert" hidden style="font-size:12px;color:var(--a-danger);font-weight:700"></div>
           <div style="display:flex;justify-content:flex-end;margin-top:4px">
-            <button style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" onclick="pOpen('mConfirmDisableOp')">変更を保存</button>
+            <button style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" onclick="pOpConfirmSave()">変更を保存</button>
           </div>
         </div>
       </div>
@@ -240,12 +242,13 @@
           <button data-min-lv="4" onclick="pOpOpenSetPw()" style="align-self:flex-start;background:var(--a-surface);color:var(--a-warn-deep);border:1px solid var(--a-warn-border);border-radius:6px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">管理者による直接設定</button>
         </div>
         </div>
-        <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">監査ログ<span style="font-weight:400;color:var(--a-fg-faint);margin-left:8px">このアカウントに対する操作</span></div>
-        <div data-slot="opAudit" style="padding-top:12px;display:flex;flex-direction:column;gap:10px;font-size:12px">
-          <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2026/07/29 14:02</span><span>権限レベルを Lv1 → Lv2 に変更<br><span style="color:var(--a-fg-faint)">実行者: master@abroad.example.com</span></span></div>
-          <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2026/07/12 09:18</span><span>パスワード初期化メールを送信<br><span style="color:var(--a-fg-faint)">実行者: y.sato@abroad.example.com</span></span></div>
-          <div style="display:flex;gap:10px"><span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">2025/11/12 10:30</span><span>招待を実行(登録完了 2025/11/13)<br><span style="color:var(--a-fg-faint)">実行者: admin@abroad.example.com</span></span></div>
+        <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">簡易集計<span style="font-weight:400;color:var(--a-fg-faint);margin-left:8px">当月(2026/07)</span></div>
+        <div class="perf-cards">
+          <div class="perf-card"><div class="perf-card-label">作業件数</div><div class="perf-card-num" data-op-perf="w">—</div></div>
+          <div class="perf-card"><div class="perf-card-label">正答率</div><div class="perf-card-num" data-op-perf="r">—</div></div>
+          <div class="perf-card"><div class="perf-card-label">スキップ率</div><div class="perf-card-num" data-op-perf="sr">—</div></div>
         </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--a-fg-faint)">スキップ率 = スキップ回数 ÷ (作業件数 + スキップ回数)。実績のないオペレーターは値を表示しません。</div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">実績</div>
         <div style="padding-top:12px"><a href="#op" data-go="perf" style="font-size:13px">オペレーター実績確認でこのオペレーターの集計を表示 →</a></div>
       </div>
@@ -307,19 +310,12 @@
 <script type="module" src="src/admin.js"></script>
 <script src="src/proto-ui.js"></script>
 <script src="src/proto-level.js"></script>
+<script src="src/perf-data.js"></script>
 
 <script>
 // 招待・グループ作成・設定変更を一覧へ反映する(モックのため再読込で戻る)
-// 招待で付与できるのも自分より下位まで(23_admin_operator_management.md §4.4)
-    document.addEventListener('DOMContentLoaded', function () {
-        var sel = document.querySelector('[data-invite-lv]');
-        if (!sel) { return; }
-        var me = window.pLevel();
-        var L = { 1: 'Lv1(Operator)', 2: 'Lv2(OperatorAdmin)', 3: 'Lv3(Admin)', 4: 'Lv4(MasterAdmin)' };
-        var html = '';
-        for (var n = 1; n <= Math.min(me - 1, 4); n++) { html += '<option>' + L[n] + '</option>'; }
-        sel.innerHTML = html || '<option>Lv1(Operator)</option>';
-    });
+// 権限レベルは本画面にアクセスできる Lv2 以上なら誰でも Lv1〜Lv4 を自由に付与できる
+// (23号 §4.4・2026-08-28 確定)。招待の選択肢は HTML に静的に4択を持つ
 
     // 対応可能言語チップの選択トグル。招待モーダル・詳細モーダルの共用。
     // 名刺の振り分けに使う値のため、選択0件は認めない(最後の1つは外せない)
@@ -350,12 +346,6 @@
     // グループ名(作成時に自由入力)を innerHTML/insertAdjacentHTML へ渡す箇所で使う
     function esc(t) {
         return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-
-    // 一覧の対応可能言語セルは、中国語簡体字・繁体字を両方選ぶと「中国語簡/繁」に詰める
-    // (OP-0058/OP-0081の既存表記に合わせる)。絞り込み用の data-f-lang は完全形のまま持つ
-    function abbrevLangDisplay(t) {
-        return t.replace('中国語簡体字・中国語繁体字', '中国語簡/繁');
     }
 
     window.pOpInviteSend = function () {
@@ -410,7 +400,6 @@
         + '<span>' + esc(group) + '</span>'
         + '<span><span style="font-size:11px;font-weight:700;color:var(--a-accent);border:1px solid var(--a-info-border);'
         + 'border-radius:4px;padding:1px 6px">' + esc(lv) + '</span></span>'
-        + '<span style="font-size:12px;color:var(--a-fg-muted)">' + esc(abbrevLangDisplay(langText)) + '</span>'
         + '<span><span class="status-badge status-info">招待中</span></span>'
         + '<span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">'
         + today + '</span>'
@@ -447,14 +436,54 @@ window.pOpGroupCreate = function () {
     window.pClose('mOpGroup');
 };
 
-// 詳細モーダルの「変更を保存」。所属グループ・権限レベル・対応可能言語・ステータスの
-// 4項目を一覧の行と OPS(識別子置換の元データ)の両方へ反映する(レビュー指摘#4)。
-// 対象IDは innerText の正規表現ではなく、識別子置換を管理する IIFE 側の公開口
-// (window.pOpCurrentId)から取る(レビュー指摘#12)
+// 詳細モーダルの「変更を保存」ボタンから呼ぶ入力チェック。氏名・メールはモーダルで
+// 直接編集できるため(23号 §4.4)、空・形式不正・他アカウントとのメール重複を
+// ここで弾いてから確認モーダル(mConfirmDisableOp)を開く
+window.pOpConfirmSave = function () {
+    var m = document.getElementById('opModal');
+    var err = document.getElementById('opEditErr');
+    var nameInp = m.querySelector('input[data-op-field="name"]');
+    var mailInp = m.querySelector('input[data-op-field="mail"]');
+    // 招待中は氏名・メールが編集対象外(disabled)のため検証しない(23号 §4.7)
+    if (nameInp && mailInp && !nameInp.disabled) {
+        var name = nameInp.value.trim();
+        var mail = mailInp.value.trim();
+        var msg = '';
+        if (!name) { msg = '氏名を入力してください'; }
+        else if (!mail) { msg = 'メールアドレスを入力してください'; }
+        else if (mail.indexOf('@') < 0) { msg = '正しいメールアドレスの形式で入力してください'; }
+        else {
+            // 表記ゆれの重複を見逃さないよう小文字化して比較する(pOpInviteSend と同じ基準)
+            var oid = window.pOpCurrentId ? window.pOpCurrentId() : '';
+            var mailKey = mail.toLowerCase();
+            var dup = Array.prototype.some.call(document.querySelectorAll('#operatorsList [data-f-mail]'), function (r) {
+                return r.getAttribute('data-f-oid') !== oid
+                    && (r.getAttribute('data-f-mail') || '').trim().toLowerCase() === mailKey;
+            });
+            if (dup) { msg = mail + ' は既に他のアカウントで使われています'; }
+        }
+        if (msg) {
+            if (err) { err.textContent = msg; err.hidden = false; }
+            return;
+        }
+    }
+    if (err) { err.hidden = true; }
+    window.pOpen('mConfirmDisableOp');
+};
+
+// 詳細モーダルの「変更を保存」(確認後)。氏名・メール・所属グループ・権限レベル・
+// 対応可能言語・ステータスを一覧の行と OPS(識別子置換の元データ)の両方へ反映する
+// (レビュー指摘#4)。対象IDは innerText の正規表現ではなく、識別子置換を管理する
+// IIFE 側の公開口(window.pOpCurrentId)から取る(レビュー指摘#12)
 window.pOpSave = function () {
     var m = document.getElementById('opModal');
     var oid = window.pOpCurrentId ? window.pOpCurrentId() : '';
     var row = oid ? window.pRow('operatorsList', 'oid', oid) : null;
+    var nameInp = m.querySelector('input[data-op-field="name"]');
+    var mailInp = m.querySelector('input[data-op-field="mail"]');
+    // 招待中は氏名・メールが編集対象外(disabled)のため読み飛ばす(23号 §4.7)
+    var name = (nameInp && !nameInp.disabled) ? nameInp.value.trim() : '';
+    var mail = (mailInp && !mailInp.disabled) ? mailInp.value.trim() : '';
     var stSel = m.querySelector('select[data-op-field="status"]');
     var grSel = m.querySelector('select[data-op-field="group"]');
     var lvSel = m.querySelector('select[data-op-field="lv"]');
@@ -474,6 +503,21 @@ window.pOpSave = function () {
     if (row) {
         var cells = {};
         var attrs = {};
+        if (name) {
+            cells[1] = esc(name);
+            attrs.name = name;
+        }
+        if (mail) {
+            cells[2] = esc(mail);
+            attrs.mail = mail;
+            // メールセルの省略表示用 title は行属性ではなくセル自身に付いているため個別に更新する
+            if (row.children[2]) { row.children[2].setAttribute('title', mail); }
+        }
+        if (name || mail) {
+            // any(複合検索)の索引も作り直す。旧値を残すと旧氏名・旧メールで検索がヒットし続ける
+            attrs.any = oid + ' ' + (name || row.getAttribute('data-f-name') || '')
+                + ' ' + (mail || row.getAttribute('data-f-mail') || '');
+        }
         if (group) {
             cells[3] = esc(group);
             attrs.group = group;
@@ -485,18 +529,17 @@ window.pOpSave = function () {
             cells[4] = '<span style="' + lvStyle + '">' + esc(lv) + '</span>';
             attrs.lv = lv;
         }
-        cells[5] = esc(abbrevLangDisplay(langText));
         attrs.lang = langText;
         if (st) {
             var cls = st === '有効' ? 'status-active' : (st === '無効' ? 'status-inactive' : 'status-info');
-            cells[6] = '<span class="status-badge ' + cls + '">' + st + '</span>';
+            cells[5] = '<span class="status-badge ' + cls + '">' + st + '</span>';
             attrs.status = st;
         }
         window.pRowSet(row, cells, attrs);
         window.pSearch('operatorsList');
     }
     if (oid && window.pOpUpdate) {
-        window.pOpUpdate(oid, { group: group, lv: lvNum, status: st, lang: langText });
+        window.pOpUpdate(oid, { name: name, mail: mail, group: group, lv: lvNum, status: st, lang: langText });
     }
     window.pToast((oid || 'オペレーター').trim() + ' の設定を保存しました');
     window.pClose('mConfirmDisableOp');
@@ -565,36 +608,13 @@ window.pOpSetPw = function () {
 // 一覧の行から開くオペレーター詳細モーダル(モック)。識別情報だけを対象へ差し替える
 (function () {
     var OPS = {"OP-0012":{"name":"佐藤 由紀","mail":"y.sato@abroad.example.com","group":"アブロード本体","lv":"Lv3","status":"有効","lang":"日本語・英語"},"OP-0034":{"name":"田中 大輔","mail":"d.tanaka@officeworks.co.jp","group":"オフィスワークス株式会社","lv":"Lv2","status":"有効","lang":"日本語"},"OP-0058":{"name":"王 麗華","mail":"l.wang@officeworks.co.jp","group":"オフィスワークス株式会社","lv":"Lv1","status":"有効","lang":"日本語・中国語簡体字・中国語繁体字"},"OP-0061":{"name":"鈴木 恵","mail":"m.suzuki@datapartners.co.jp","group":"データパートナーズ株式会社","lv":"Lv1","status":"無効","lang":"日本語"},"OP-0075":{"name":"高橋 直樹","mail":"n.takahashi@datapartners.co.jp","group":"データパートナーズ株式会社","lv":"Lv1","status":"招待中","lang":"日本語・英語"},"OP-0077":{"name":"山本 彩","mail":"a.yamamoto@abroad.example.com","group":"アブロード本体","lv":"Lv2","status":"有効","lang":"日本語"},"OP-0081":{"name":"陳 志明","mail":"z.chen@officeworks.co.jp","group":"オフィスワークス株式会社","lv":"Lv1","status":"無効","lang":"日本語・中国語簡体字・中国語繁体字"},"OP-0069":{"name":"中村 悠斗","mail":"y.nakamura@abroad.example.com","group":"アブロード本体","lv":"Lv1","status":"有効","lang":"日本語"},"OP-0083":{"name":"小林 美咲","mail":"m.kobayashi@abroad.example.com","group":"アブロード本体","lv":"Lv1","status":"有効","lang":"日本語・英語"},"OP-0086":{"name":"森田 拓海","mail":"t.morita@abroad.example.com","group":"アブロード本体","lv":"Lv1","status":"有効","lang":"日本語"},"OP-0088":{"name":"佐々木 遥","mail":"h.sasaki@officeworks.co.jp","group":"オフィスワークス株式会社","lv":"Lv1","status":"有効","lang":"日本語"},"OP-0091":{"name":"吉田 健太","mail":"k.yoshida@officeworks.co.jp","group":"オフィスワークス株式会社","lv":"Lv1","status":"有効","lang":"日本語・英語"},"OP-0094":{"name":"林 由香","mail":"y.hayashi@officeworks.co.jp","group":"オフィスワークス株式会社","lv":"Lv1","status":"有効","lang":"日本語"}};
-    // 個別監査ログ(横断ログ=audit-log.html と同一データを参照する。02号§8.1)。
-    // 横断ログに載っている OP-0034/0061/0081 宛のイベントをここにも複製し、
-    // 個別ログが全オペレーター共通の3件を出していた共用バグを解消する(レビュー指摘#7)。
-    // 対象イベントを持たないオペレーター(OP-0012・0058等)は空配列=履歴なしになる
-    var AUDIT = {
-        'OP-0034': [
-            { dt: '2026/07/29 14:02', text: '権限レベルを Lv1 → Lv2 に変更', actor: 'master@abroad.example.com' },
-            { dt: '2026/07/12 09:18', text: 'パスワード初期化メールを送信', actor: 'y.sato@abroad.example.com' },
-            { dt: '2025/11/12 10:30', text: '招待を実行(登録完了 2025/11/13)', actor: 'admin@abroad.example.com' }
-        ],
-        'OP-0061': [
-            { dt: '2026/07/30 17:44', text: 'パスワードを管理者が直接設定(理由: 本人からの電話依頼(招待メール不達のため))', actor: 'master@abroad.example.com' },
-            { dt: '2026/07/28 09:02', text: '招待を実行 → 失敗(招待メール不達)', actor: 'y.sato@abroad.example.com' }
-        ],
-        'OP-0081': [
-            { dt: '2026/07/30 11:05', text: '招待を実行', actor: 'y.sato@abroad.example.com' }
-        ]
-    };
     var BADGE = { '有効': 'status-active', '無効': 'status-inactive', '招待中': 'status-info' };
     var DEF = 'OP-0034';
     var cur = DEF;
     document.addEventListener('DOMContentLoaded', function () {
         var m = document.getElementById('opModal');
-        if (m) { fillFields(m, OPS[DEF]); }
+        if (m) { fillFields(m, OPS[DEF]); renderPerf(m, DEF); }
     });
-
-    // 表示シナリオ(ログイン中の権限)を取る。判定は proto-level.js に寄せる
-    function myLv() {
-        return window.pLevel();
-    }
 
     var LV_LABEL = { 1: 'Lv1(Operator)', 2: 'Lv2(OperatorAdmin)', 3: 'Lv3(Admin)', 4: 'Lv4(MasterAdmin)' };
     var TODAY = '2026-07-31';
@@ -644,7 +664,7 @@ window.pOpSetPw = function () {
         info.exp = '2026-08-03';
         INVITE[cur] = info;
         var row = window.pRow('operatorsList', 'oid', cur);
-        if (row) { window.pRowSet(row, { 6: '<span class="status-badge status-info">招待中</span>' }); }
+        if (row) { window.pRowSet(row, { 5: '<span class="status-badge status-info">招待中</span>' }); }
         var m = document.getElementById('opModal');
         renderInvite(m, cur, OPS[cur]);
         paintInvitedState(m, cur, OPS[cur]);
@@ -673,27 +693,37 @@ window.pOpSetPw = function () {
         el.style.fontWeight = on ? '700' : '400';
     }
 
-    // 権限レベル・所属グループ・ステータスを対象の値に合わせ、変更できる範囲を効かせる。
-    // 制約は 23_admin_operator_management.md §4.4:
-    //   自分と同等以上の権限レベルのアカウントは変更できない / 自分より上位のレベルは付与できない
+    // 氏名・メール・権限レベル・所属グループ・ステータス・対応可能言語を対象の値に合わせる。
+    // 権限レベルの変更に操作者と対象の上下関係による制約は課さない。本画面にアクセスできる
+    // Lv2 以上は誰にでも Lv1〜Lv4 を付与できる(23号 §4.4・2026-08-28 確定)。
+    // 非活性にするのは招待中の氏名・メール(本登録前のため対象外)とステータス(自動遷移)のみ
     function fillFields(m, d) {
-        var me = myLv();
         var target = parseInt(String(d.lv).replace(/\D/g, ''), 10) || 1;
-        var locked = target >= me;
+        // 招待中→有効は本登録完了で自動遷移する(01共通UI §7.4)。手動での切替は許さない
+        var inviting = d.status === '招待中';
+
+        ['name', 'mail'].forEach(function (k) {
+            var inp = m.querySelector('input[data-op-field="' + k + '"]');
+            if (!inp) { return; }
+            inp.value = d[k] || '';
+            inp.disabled = inviting;
+            inp.style.background = inviting ? 'var(--a-surface-2)' : '';
+            inp.style.color = inviting ? 'var(--a-fg-faint)' : '';
+            inp.title = inviting ? '招待中は本登録前のため、氏名・メールアドレスは変更できません' : '';
+        });
 
         var lvSel = m.querySelector('[data-op-field="lv"]');
         if (lvSel) {
-            var max = Math.min(me - 1, 4);            // 自分より上位は付与できない
             var html = '';
             for (var n = 1; n <= 4; n++) {
-                // 付与できる範囲に加え、対象の現在値は必ず出す(表示が消えないように)
-                if (n <= max || n === target) {
-                    html += '<option value="' + n + '"' + (n === target ? ' selected' : '') + '>'
-                         + LV_LABEL[n] + '</option>';
-                }
+                html += '<option value="' + n + '"' + (n === target ? ' selected' : '') + '>'
+                     + LV_LABEL[n] + '</option>';
             }
             lvSel.innerHTML = html;
             lvSel.value = String(target);
+            lvSel.disabled = false;
+            lvSel.style.background = '';
+            lvSel.style.color = '';
         }
 
         var grSel = m.querySelector('[data-op-field="group"]');
@@ -707,8 +737,6 @@ window.pOpSetPw = function () {
         }
 
         var stSel = m.querySelector('[data-op-field="status"]');
-        // 招待中→有効は本登録完了で自動遷移する(01共通UI §7.4)。手動での切替は許さない
-        var inviting = d.status === '招待中';
         if (stSel) {
             var has = false;
             for (var t = 0; t < stSel.options.length; t++) {
@@ -717,23 +745,16 @@ window.pOpSetPw = function () {
             if (!has) { stSel.add(new Option(d.status, d.status)); }
             stSel.value = d.status;
             stSel.title = inviting ? '招待中は本登録の完了で自動的に「有効」になります。手動では変更できません' : '';
+            stSel.disabled = inviting;
+            stSel.style.background = inviting ? 'var(--a-surface-2)' : '';
+            stSel.style.color = inviting ? 'var(--a-fg-faint)' : '';
         }
-
-        [lvSel, stSel].forEach(function (el) {
-            if (!el) { return; }
-            var off = locked || (el === stSel && inviting);
-            el.disabled = off;
-            el.style.background = off ? 'var(--a-surface-2)' : '';
-            el.style.color = off ? 'var(--a-fg-faint)' : '';
-        });
 
         var note = m.querySelector('[data-slot="opLvNote"]');
         if (note) {
-            note.textContent = locked
-                ? '自分と同等以上の権限レベルのため、権限レベルとステータスは変更できません。'
-                : (inviting
-                    ? '招待中のステータスは本登録の完了で自動的に「有効」になります(手動変更不可)。'
-                    : ('付与できるのは ' + LV_LABEL[1] + ' 〜 ' + LV_LABEL[Math.min(me - 1, 4)] + ' です。'));
+            note.textContent = inviting
+                ? '招待中のステータスは本登録の完了で自動的に「有効」になります(手動変更不可)。'
+                : '';
         }
 
         // 対応可能言語チップを対象の値に合わせる。以前は常に「日本語のみ」の初期表示で
@@ -746,12 +767,15 @@ window.pOpSetPw = function () {
                 setChipState(c, selected.indexOf(name) >= 0);
             });
         }
+
+        // 対象を切り替えたら前回の入力エラー表示は持ち越さない
+        var err = document.getElementById('opEditErr');
+        if (err) { err.hidden = true; }
     }
 
     // 登録日時・最終ログインの素のサンプルを読み込み時に確保する。
-    // pOpenOperator の walk() がテキストを識別子置換するため、開いた後に保存すると
-    // 置換済みの内容を復元してしまう。監査ログは(レビュー指摘#7により)PRISTINE共用をやめ
-    // オペレーターごとの AUDIT マップから都度組み立てるため、ここでは保持しない
+    // walkSwap がテキストを識別子置換するため、開いた後に保存すると
+    // 置換済みの内容を復元してしまう。表示のたびにこの素の値から塗り直す
     var PRISTINE = (function () {
         var m = document.getElementById('opModal');
         if (!m) { return {}; }
@@ -762,46 +786,58 @@ window.pOpSetPw = function () {
         };
     })();
 
-    function auditRow(dt, text, actor) {
-        return '<div style="display:flex;gap:10px">'
-            + '<span style="color:var(--a-fg-faint);font-variant-numeric:tabular-nums;flex:none">' + dt + '</span>'
-            + '<span>' + text + '<br><span style="color:var(--a-fg-faint)">実行者: ' + actor + '</span></span></div>';
-    }
-
     // 招待中はまだ登録もログインもしていないため、登録済みアカウント向けの
-    // サンプル表示(登録日時・最終ログイン・監査ログの履歴)をそのまま出すと矛盾する。
+    // サンプル表示(登録日時・最終ログイン)をそのまま出すと矛盾する。
     // パスワード操作は「有効」のときだけ表示する。無効・招待中はいずれも不可
-    // (23号 §4.7・§4.8。以前は「招待中でなければ表示」で無効にも出てしまっていた=レビュー指摘#3)
+    // (23号 §4.7。以前は「招待中でなければ表示」で無効にも出てしまっていた=レビュー指摘#3)
     function paintInvitedState(m, oid, d) {
         var invited = d.status === '招待中';
         var canPw = d.status === '有効';
         var created = m.querySelector('[data-slot="opCreated"]');
         var login = m.querySelector('[data-slot="opLastLogin"]');
-        var audit = m.querySelector('[data-slot="opAudit"]');
         var pw = m.querySelector('[data-slot="opPw"]');
         if (created) { created.textContent = invited ? '—(本登録前)' : PRISTINE.created; }
         if (login) { login.textContent = invited ? '—' : PRISTINE.login; }
-        if (audit) {
-            if (invited) {
-                // 招待の実行と再送は個別に記録する(23号 §7.5)。追記専用で、新しい操作を上に置く
-                var inv = INVITE[oid] || {};
-                var html = '';
-                (inv.resends || []).slice().reverse().forEach(function (r) {
-                    html += auditRow(r.d.replace(/-/g, '/') + ' ' + r.t, '招待を再送', r.by);
-                });
-                if (inv.sent) { html += auditRow(inv.sent.replace(/-/g, '/') + ' 10:30', '招待を実行', inv.by || 'admin@abroad.example.com'); }
-                audit.innerHTML = html;
-            } else {
-                // 個別ログはオペレーターごとの AUDIT マップから組み立てる(横断ログ=audit-log.html
-                // と同一データ。02号§8.1)。以前は全オペレーター共通の3件を出していた(レビュー指摘#7)
-                var entries = AUDIT[oid] || [];
-                audit.innerHTML = entries.length
-                    ? entries.map(function (e) { return auditRow(e.dt, e.text, e.actor); }).join('')
-                    : '<div style="color:var(--a-fg-faint)">このアカウントに対する操作の記録はありません</div>';
-            }
-        }
         // 属性 hidden はインラインの display:contents に負けるため display で切り替える
         if (pw) { pw.style.display = canPw ? 'contents' : 'none'; }
+    }
+
+    // 簡易集計(当月)。実績確認(performance-management.html)と同じ PerfData を参照して
+    // 数値を必ず一致させる。スキップ率 = スキップ回数 ÷ (作業件数 + スキップ回数)
+    // (モック定義・23号 §4.8 ※要確定)。実績のないオペレーター(招待直後を含む)は「—」。
+    // PerfData.totals は未登録IDで例外を投げるため、必ず PERF の存在を先に確かめる。
+    // walkSwap が「—」の文字を置換で壊しうるため、pOpenOperator では置換後に毎回呼び直す
+    function renderPerf(m, oid) {
+        var P = window.PerfData;
+        var t = (P && P.PERF && P.PERF[oid]) ? P.totals(oid, P.MONTHS[0]) : null;
+        Array.prototype.forEach.call(m.querySelectorAll('[data-op-perf]'), function (el) {
+            var k = el.getAttribute('data-op-perf');
+            if (!t) { el.textContent = '—'; return; }
+            if (k === 'w') { el.textContent = P.num(t.w); }
+            else if (k === 'r') { el.textContent = P.rate(t.o, t.w); }
+            else if (k === 'sr') { el.textContent = (t.w + t.s) ? Math.round(t.s / (t.w + t.s) * 100) + '%' : '—'; }
+        });
+    }
+
+    // モーダル群のテキストノードに含まれる識別情報(ID・氏名・メール・グループ・Lv)を
+    // 旧値→新値で差し替える。select の選択肢は固定の候補一覧なので差し替えの対象外。
+    // 対象の切替(pOpenOperator)と、氏名・メールの保存(pOpUpdate)の両方から使う
+    function walkSwap(swap) {
+        function walk(node) {
+            for (var i = 0; i < node.childNodes.length; i++) {
+                var c = node.childNodes[i];
+                if (c.nodeType === 3) {
+                    var t = c.nodeValue;
+                    swap.forEach(function (p) { if (p[0] && p[0] !== p[1]) { t = t.split(p[0]).join(p[1]); } });
+                    if (t !== c.nodeValue) { c.nodeValue = t; }
+                } else if (c.nodeType === 1 && c.tagName !== 'SELECT') { walk(c); }
+            }
+        }
+        // 詳細モーダルから開く確認モーダルも同じ対象を指すよう一緒に差し替える
+        ['opModal', 'mConfirmDisableOp', 'mConfirmResetPwOp', 'mSetPwOp'].forEach(function (mid) {
+            var el = document.getElementById(mid);
+            if (el) { walk(el); }
+        });
     }
 
     // --- 外部(この IIFE の外にある pOpSave 等)から現在の対象を参照するための公開口 ---
@@ -814,6 +850,15 @@ window.pOpSetPw = function () {
     window.pOpUpdate = function (oid, patch) {
         var d = OPS[oid];
         if (!d || !patch) { return; }
+        // 氏名・メールはモーダルヘッダーや確認モーダルの文中(テキストノード)にも旧値が残る。
+        // OPS を書き換える前に旧値→新値で差し替えておかないと、以後の pOpenOperator の
+        // 置換元(OPS の新値)が DOM 上の旧文字列に一致せず、表示が旧値のまま直せなくなる
+        var swap = [];
+        if (patch.name && patch.name !== d.name) { swap.push([d.name, patch.name]); }
+        if (patch.mail && patch.mail !== d.mail) { swap.push([d.mail, patch.mail]); }
+        if (swap.length) { walkSwap(swap); }
+        if (patch.name) { d.name = patch.name; }
+        if (patch.mail) { d.mail = patch.mail; }
         if (patch.group) { d.group = patch.group; }
         if (patch.lv) { d.lv = 'Lv' + String(patch.lv).replace(/\D/g, ''); }
         if (patch.status) { d.status = patch.status; }
@@ -835,28 +880,14 @@ window.pOpSetPw = function () {
         var m = document.getElementById('opModal');
         var d = OPS[oid] || OPS[DEF];
         var from = OPS[cur] || OPS[DEF];
-        var swap = [[cur, oid], [from.name, d.name], [from.mail, d.mail], [from.group, d.group], [from.lv, d.lv]];
-        function walk(node) {
-            for (var i = 0; i < node.childNodes.length; i++) {
-                var c = node.childNodes[i];
-                if (c.nodeType === 3) {
-                    var t = c.nodeValue;
-                    swap.forEach(function (p) { if (p[0] && p[0] !== p[1]) { t = t.split(p[0]).join(p[1]); } });
-                    if (t !== c.nodeValue) { c.nodeValue = t; }
-                } else if (c.nodeType === 1 && c.tagName !== 'SELECT') { walk(c); }
-                // selectの選択肢は固定の候補一覧なので差し替えの対象外
-            }
-        }
-        // 詳細モーダルから開く確認モーダルも同じ対象を指すよう一緒に差し替える
-        ['opModal', 'mConfirmDisableOp', 'mConfirmResetPwOp', 'mSetPwOp'].forEach(function (mid) {
-            var el = document.getElementById(mid);
-            if (el) { walk(el); }
-        });
+        walkSwap([[cur, oid], [from.name, d.name], [from.mail, d.mail], [from.group, d.group], [from.lv, d.lv]]);
         var b = m.querySelector('[data-slot="opstatus"]');
         if (b) { b.textContent = d.status; b.className = 'status-badge ' + (BADGE[d.status] || 'status-inactive'); }
         fillFields(m, d);
         renderInvite(m, oid, d);
         paintInvitedState(m, oid, d);
+        // 簡易集計はテキスト置換(walkSwap)の後に描き直す。「—」が置換で壊れても上書きで戻る
+        renderPerf(m, oid);
         var go = m.querySelector('[data-go="perf"]');
         if (go) { go.onclick = function () { location.href = 'performance-management.html?oid=' + oid; return false; }; }
         cur = oid;

@@ -80,74 +80,36 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(hit, `会期に時刻が出ている: ${hit.join(' / ')}`).toEqual([]);
   });
 
-  test('招待中のオペレーター詳細に登録済みアカウントの履歴を出さない', async ({ page }) => {
-    // 招待中はまだ登録もログインもしていない。全アカウント共通のサンプル履歴
-    // (登録日時・最終ログイン・登録完了の監査ログ)がそのまま出ていた(2026-08-24 修正)。
-    // パスワード操作も招待中は不可(23号 §4.8)
+  test('招待中のオペレーター詳細に登録済みアカウントの表示を出さない', async ({ page }) => {
+    // 招待中はまだ登録もログインもしていない。登録済みアカウント向けの
+    // サンプル表示(登録日時・最終ログイン)がそのまま出ていた(2026-08-24 修正)。
+    // パスワード操作も招待中は不可(23号 §4.7)
     await openScreen(page, '/03_admin/operator-management.html');
     await page.click('#operatorsList [data-f-oid="OP-0075"]');
     await expect(page.locator('#opModal')).toBeVisible();
     const t = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    expect(t, '登録完了の履歴が出ている').not.toContain('登録完了');
     expect(t, '登録日時が本登録前になっていない').toContain('—(本登録前)');
     expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible(),
       '招待中なのにパスワード操作が出ている').toBe(false);
 
-    // 登録済みアカウントでは従来どおり履歴とパスワード操作が出る。
-    // 復元は素のサンプルからで、識別子置換(walk)後の内容を保存し直していないこと。
-    // 「Lv1 → Lv1」のように権限変更の行が壊れて戻る事故があった(2026-08-24 修正)
+    // 登録済みアカウントでは従来どおり登録日時・最終ログインとパスワード操作が出る。
+    // 復元は素のサンプルからで、識別子置換(walkSwap)後の内容を保存し直していないこと
     await page.keyboard.press('Escape');
     await page.click('#operatorsList [data-f-oid="OP-0034"]');
     const t2 = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    expect(t2).toContain('登録完了');
-    expect(t2, '権限変更の履歴が識別子置換で壊れている').toContain('Lv1 → Lv2 に変更');
+    expect(t2, '登録日時が素のサンプルへ復元されない').toContain('2025/11/12 10:30');
     expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible()).toBe(true);
 
-    // 招待の再送は実行と別の操作として履歴に残り、実行日は上書きされない(23号 §7.5)。
-    // 監査ログは追記専用: 繰り返し再送しても1件に潰れず、成立ごとに1行増える。
-    // 実行者は現在の表示シナリオのアカウント(既定 lv4 = master@abroad.example.com)
+    // 招待の再送は実行と別の記録で、実行日(招待メール送信)は上書きされない(23号 §7.5)。
+    // 2回再送すると招待帯に回数(計2回)が付き、送信日 2026/07/21 は残る
     await page.keyboard.press('Escape');
     await page.click('#operatorsList [data-f-oid="OP-0075"]');
     await page.click('#opModal button:has-text("再送")');
     await page.click('#opModal button:has-text("再送")');
-    const t3 = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    // 再送ボタン自体も「招待を再送」の文字を持つため、件数は監査ログ領域だけで数える
-    const audit3 = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
-    const resends = (audit3.match(/招待を再送/g) || []).length;
-    expect(resends, '2回再送したのに履歴が2件残らない').toBe(2);
-    expect(t3, '再送の実行者が現在シナリオでない').toContain('実行者: master@abroad.example.com');
-    expect(t3, '再送の時刻が同一で重複に見える').toMatch(/09:45[\s\S]*09:46|09:46[\s\S]*09:45/);
-    expect(t3, '再送で実行日が上書きされた').toContain('2026/07/21 10:30 招待を実行');
-  });
-
-  test('再送の実行者はシナリオ定義から取り、共通部品の読込に依存しない', async ({ page }) => {
-    // 実行者をヘッダーの #profileMail(非同期注入)から読むと、読込前の操作が
-    // Lv4 名義に化ける。Lv3 シナリオ + #profileMail 不在の経路で正しい帰属を確かめる
-    await page.addInitScript(() => { localStorage.setItem('adminMockLevel', 'lv3'); });
-    await openScreen(page, '/03_admin/operator-management.html');
-    await page.evaluate(() => {
-      const el = document.getElementById('profileMail');
-      if (el) { el.remove(); }   // 共通部品が未到着の状態を再現する
-    });
-    await page.click('#operatorsList [data-f-oid="OP-0075"]');
-    await page.click('#opModal button:has-text("再送")');
-    const audit = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
-    expect(audit, 'Lv3 の再送が Lv4 名義で記録された').toContain('招待を再送 実行者: admin@abroad.example.com');
-    expect(audit.split('招待を再送')[1], '再送行の実行者が master になっている').not.toContain('master@abroad.example.com');
-  });
-
-  test('別タブでシナリオが変わっても、表示中のタブの実行者は表示と一致する', async ({ page }) => {
-    // localStorage は全タブ共有だが、切替は切り替えたタブしか reload しない。
-    // click 時に localStorage を再読みすると、表示(Lv4)と記録(Lv3)が食い違う。
-    // シナリオは読み込み時に確定する(2026-08-24 修正)
-    await openScreen(page, '/03_admin/operator-management.html');   // 既定 lv4 で表示
-    await page.evaluate(() => { localStorage.setItem('adminMockLevel', 'lv3'); });  // 別タブでの切替を再現
-    await page.click('#operatorsList [data-f-oid="OP-0075"]');
-    await page.click('#opModal button:has-text("再送")');
-    const audit = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
-    expect(audit, '表示は Lv4 のままなのに記録が別シナリオになった')
-      .toContain('招待を再送 実行者: master@abroad.example.com');
-    await page.evaluate(() => { localStorage.setItem('adminMockLevel', 'lv4'); });
+    const inv = (await page.locator('#opModal [data-slot="opInvite"]').innerText()).replace(/\s+/g, ' ');
+    expect(inv, '2回再送したのに回数表示が付かない').toContain('(計2回)');
+    expect(inv, '再送で実行日(招待メール送信)が上書きされた').toContain('招待メール送信 2026/07/21');
+    expect(inv, '再送日が表示されない').toContain('再送 2026/07/31');
   });
 
   test('招待を送信すると新規行が本人の詳細を開く(OPS未登録で既定のOP-0034へ差し替わらない)', async ({ page }) => {
@@ -175,7 +137,9 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     await page.click(`#operatorsList [data-f-oid="${oid}"]`);
     await expect(page.locator('#opModal')).toBeVisible();
     const t = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    expect(t, '招待直後の詳細に入力したメールが出ていない').toContain(mail);
+    // メールは入力欄(2026-08-28 の編集化)のため innerText でなく値で確かめる
+    expect(await page.inputValue('#opModal input[data-op-field="mail"]'),
+      '招待直後の詳細に入力したメールが出ていない').toBe(mail);
     expect(t, '招待直後の詳細に新規行のIDが出ていない').toContain(oid);
     expect(t, '既定のOP-0034(田中 大輔)の氏名が残ったまま開いている').not.toContain('田中 大輔');
     expect(t, '既定のOP-0034のメールが残ったまま開いている').not.toContain('d.tanaka@officeworks.co.jp');
@@ -235,7 +199,10 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
 
     const rowText = (await page.locator('#operatorsList [data-f-oid="OP-0058"]').innerText()).replace(/\s+/g, ' ');
     expect(rowText, '一覧の所属グループが保存後に更新されていない').toContain('データパートナーズ株式会社');
-    expect(rowText, '一覧の対応可能言語に追加した英語が反映されていない').toContain('英語');
+    // 対応可能言語の列は一覧から外した(2026-08-28 レビュー反映)。絞り込み用の
+    // data-f-lang 属性は残るので、保存の反映は属性で確かめる
+    expect(await page.getAttribute('#operatorsList [data-f-oid="OP-0058"]', 'data-f-lang'),
+      '絞り込み用の言語属性に追加した英語が反映されていない').toContain('英語');
 
     // 開き直してもOPS本体が更新されていて保存値が見えるか
     await page.click('#operatorsList [data-f-oid="OP-0058"]');
@@ -246,20 +213,97 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(chipsText, '開き直しても保存した対応可能言語(英語)が選択されていない').toContain('英語 ✓');
   });
 
-  test('個別監査ログの実行者が横断ログ(監査ログ画面)と一致する', async ({ page }) => {
-    // 2026-08-25 修正: 同一イベント(2026/07/29 14:02・OP-0034のLv1→Lv2)の実行者が
-    // 個別ログ=admin@、横断ログ=master@ で食い違っていた(02号§2は同一データの参照を要求)。
-    // 横断ログ側の表記(Lv4強調バッジ)を正として揃えた
+  test('詳細モーダルで氏名・メールを編集でき、一覧と検索索引へ反映される', async ({ page }) => {
+    // 2026-08-28 レビュー反映: アカウント情報(氏名・メール)も詳細モーダルで直接編集できる。
+    // 一覧セル・省略表示の title・絞り込み用の data-f-* と any(複合検索)も追従すること
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('#operatorsList [data-f-oid="OP-0086"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    await page.fill('#opModal input[data-op-field="name"]', '森田 拓真');
+    await page.fill('#opModal input[data-op-field="mail"]', 't.morita2@abroad.example.com');
+    await page.click('#opModal button:has-text("変更を保存")');
+    await expect(page.locator('#mConfirmDisableOp')).toBeVisible();
+    await page.click('#mConfirmDisableOp button:has-text("保存する")');
+    await page.waitForTimeout(300);
+
+    const row = page.locator('#operatorsList [data-f-oid="OP-0086"]');
+    const rowText = (await row.innerText()).replace(/\s+/g, ' ');
+    expect(rowText, '一覧の氏名が更新されない').toContain('森田 拓真');
+    expect(rowText, '一覧のメールが更新されない').toContain('t.morita2@abroad.example.com');
+    expect(await row.getAttribute('data-f-name'), '絞り込み用の氏名属性が旧値のまま').toBe('森田 拓真');
+    expect(await row.getAttribute('data-f-any'), '複合検索の索引に新メールが入らない').toContain('t.morita2@abroad.example.com');
+
+    // 開き直すと入力欄とモーダルヘッダーに新しい値が乗る(OPS本体と識別子置換の両方が更新済み)
+    await page.click('#operatorsList [data-f-oid="OP-0086"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    expect(await page.inputValue('#opModal input[data-op-field="name"]')).toBe('森田 拓真');
+    const head = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
+    expect(head, 'モーダルヘッダーの氏名が旧値のまま').toContain('森田 拓真');
+    expect(head, '旧氏名が残っている').not.toContain('森田 拓海');
+  });
+
+  test('メールを他アカウントの既存メールへ変えると保存できない', async ({ page }) => {
+    // 重複メールは招待時と同じ基準(小文字化・前後空白無視)で弾き、確認モーダルを開かない
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('#operatorsList [data-f-oid="OP-0086"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    await page.fill('#opModal input[data-op-field="mail"]', 'Y.Sato@abroad.example.com'); // OP-0012 と表記ゆれ重複
+    await page.click('#opModal button:has-text("変更を保存")');
+    await page.waitForTimeout(200);
+    expect(await page.locator('#mConfirmDisableOp').isHidden(), '重複メールなのに確認モーダルが開く').toBe(true);
+    const err = page.locator('#opEditErr');
+    expect(await err.isVisible(), '重複エラーが表示されない').toBe(true);
+    expect(await err.innerText()).toContain('既に他のアカウントで使われています');
+  });
+
+  test('権限レベルは画面にアクセスできる誰もが自由に変更できる(Lv2で同格のLv2も変更可)', async ({ page }) => {
+    // 2026-08-28 レビュー反映: 「同格以上は変更不可・自分の1段下まで」の相対制約を撤去。
+    // Lv2 シナリオでも同格(OP-0034=Lv2)の権限セレクトが活性で、Lv1〜Lv4 の4択から選べる
+    await page.addInitScript(() => { localStorage.setItem('adminMockLevel', 'lv2'); });
     await openScreen(page, '/03_admin/operator-management.html');
     await page.click('#operatorsList [data-f-oid="OP-0034"]');
     await expect(page.locator('#opModal')).toBeVisible();
-    const auditText = (await page.locator('#opModal [data-slot="opAudit"]').innerText()).replace(/\s+/g, ' ');
-    expect(auditText, '個別ログの権限変更イベントの実行者が想定と違う')
-      .toContain('Lv1 → Lv2 に変更 実行者: master@abroad.example.com');
+    const lvSel = page.locator('#opModal select[data-op-field="lv"]');
+    expect(await lvSel.isDisabled(), '同格のアカウントで権限セレクトが非活性のまま').toBe(false);
+    expect(await lvSel.locator('option').count(), '権限の選択肢が4択でない').toBe(4);
+    await lvSel.selectOption('4');
+    await page.click('#opModal button:has-text("変更を保存")');
+    await expect(page.locator('#mConfirmDisableOp')).toBeVisible();
+    await page.click('#mConfirmDisableOp button:has-text("保存する")');
+    await page.waitForTimeout(300);
+    expect(await page.getAttribute('#operatorsList [data-f-oid="OP-0034"]', 'data-f-lv'),
+      'Lv2 が Lv4 を付与できない').toBe('Lv4');
+  });
 
-    await openScreen(page, '/03_admin/audit-log.html');
-    const rowText = (await page.locator('#auditList [data-f-target="OP-0034 田中 大輔(Lv1 → Lv2)"]').innerText()).replace(/\s+/g, ' ');
-    expect(rowText, '横断ログの権限変更イベントの実行者が想定と違う').toContain('master@abroad.example.com');
+  test('招待モーダルの権限レベルは Lv1〜Lv4 の4択', async ({ page }) => {
+    // 2026-08-28 レビュー反映: 招待でも付与レベルを制限しない(詳細側の自由化との一貫)
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('button:has-text("＋ 新規招待")');
+    await expect(page.locator('#mInviteOp')).toBeVisible();
+    expect(await page.locator('#mInviteOp select[data-invite-lv] option').count()).toBe(4);
+  });
+
+  test('詳細モーダルの簡易集計が実績確認と同じ値を出す(実績なしは「—」)', async ({ page }) => {
+    // 2026-08-28 レビュー反映: 監査ログ欄の跡地に当月の簡易集計(作業件数・正答率・スキップ率)。
+    // データ源は実績確認と同じ PerfData。OP-0034 の当月は w=2412, o=2290, s=61 →
+    // 作業件数 2,412 / 正答率 95% / スキップ率 61÷(2412+61)=2%
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.click('#operatorsList [data-f-oid="OP-0034"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    expect(await page.locator('#opModal [data-op-perf="w"]').innerText()).toBe('2,412');
+    expect(await page.locator('#opModal [data-op-perf="r"]').innerText()).toBe('95%');
+    expect(await page.locator('#opModal [data-op-perf="sr"]').innerText()).toBe('2%');
+
+    // 実績のないオペレーター(OP-0069)と招待中(OP-0075)は3カードとも「—」で、
+    // PerfData 未登録でも例外を出さないこと
+    for (const oid of ['OP-0069', 'OP-0075']) {
+      await page.keyboard.press('Escape');
+      await page.click(`#operatorsList [data-f-oid="${oid}"]`);
+      await expect(page.locator('#opModal')).toBeVisible();
+      expect(await page.locator('#opModal [data-op-perf="w"]').innerText(), `${oid} の作業件数`).toBe('—');
+      expect(await page.locator('#opModal [data-op-perf="r"]').innerText(), `${oid} の正答率`).toBe('—');
+      expect(await page.locator('#opModal [data-op-perf="sr"]').innerText(), `${oid} のスキップ率`).toBe('—');
+    }
   });
 
   test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {
