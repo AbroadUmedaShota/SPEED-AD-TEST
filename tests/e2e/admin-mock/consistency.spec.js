@@ -82,8 +82,10 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
 
   test('招待中の行はモーダルを開かず、行内の再送・キャンセルで操作する', async ({ page }) => {
     // 2026-08-28 レビュー反映: 招待中(期限切れ含む)は開いて見る情報が無いため、
-    // 行クリックでモーダルを開かない。操作は行内の再送・キャンセルに限る
+    // 行クリックでモーダルを開かない。操作は最終ログイン欄(未ログインで空いている)の
+    // 再送・キャンセルに限る。補助列(c-opt)のため 1460px 以上で表示する
     test.slow();   // 再送→キャンセル→登録済み確認と操作が多く、並列初回ロードで30秒を超えることがある
+    await page.setViewportSize({ width: 1920, height: 1080 });
     await openScreen(page, '/03_admin/operator-management.html');
     await page.click('#operatorsList [data-f-oid="OP-0075"]', { position: { x: 300, y: 20 } });
     await page.waitForTimeout(300);
@@ -120,8 +122,10 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
   });
 
   test('招待を送信すると新規行が末尾に入り、行内の再送・キャンセルだけで操作できる', async ({ page }) => {
-    // 招待直後の行も静的な招待中行と同じ扱い: モーダルは開かず、操作セルの
-    // 再送・キャンセルから確認モーダルへ繋がる(2026-08-28 レビュー反映)
+    // 招待直後の行も静的な招待中行と同じ扱い: モーダルは開かず、最終ログイン欄の
+    // 再送・キャンセルから確認モーダルへ繋がる(2026-08-28 レビュー反映)。
+    // 操作は補助列(c-opt)にあるため 1460px 以上のビューポートで確かめる
+    await page.setViewportSize({ width: 1920, height: 1080 });
     await openScreen(page, '/03_admin/operator-management.html');
     await page.click('button:has-text("＋ 新規招待")');
     await expect(page.locator('#mInviteOp')).toBeVisible();
