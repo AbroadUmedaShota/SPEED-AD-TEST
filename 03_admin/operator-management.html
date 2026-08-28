@@ -480,6 +480,23 @@ window.pOpGroupCreate = function () {
     window.pClose('mOpGroup');
 };
 
+// 適用済みの絞り込み条件だけを再評価する。pSearch は入力欄の現在値(未確定の下書き)を
+// 読んで適用してしまうため、行の書き換え後の再評価はこちらを使う
+// (下書きの条件は検索ボタンを押すまで効かせない)
+window.pOpRefilter = function () {
+    var list = document.getElementById('operatorsList');
+    if (list) { window.pFilter('operatorsList', list.__pConds || {}); }
+};
+
+// モーダルを閉じた後、フォーカスの復帰先(行内ボタン)が絞り込みで隠れた・行ごと消えた場合は
+// 一覧へフォーカスを移す。復帰先が不可視だと focus() が効かず、キーボード操作が迷子になる
+window.pOpFocusListIfLost = function () {
+    var a = document.activeElement;
+    if (a && a !== document.body && a.offsetParent !== null) { return; }
+    var list = document.getElementById('operatorsList');
+    if (list) { list.setAttribute('tabindex', '-1'); list.focus(); }
+};
+
 // 詳細モーダルの「変更を保存」ボタンから呼ぶ入力チェック。氏名・メールはモーダルで
 // 直接編集できるため(23号 §4.4)、空・形式不正・他アカウントとのメール重複を
 // ここで弾いてから確認モーダル(mConfirmDisableOp)を開く
@@ -578,7 +595,7 @@ window.pOpSave = function () {
             attrs.status = st;
         }
         window.pRowSet(row, cells, attrs);
-        window.pSearch('operatorsList');
+        window.pOpRefilter();
     }
     if (oid && window.pOpUpdate) {
         window.pOpUpdate(oid, { name: name, mail: mail, group: group, lv: lvNum, status: st, lang: langText });
@@ -710,10 +727,11 @@ window.pOpSetPw = function () {
             if (OPS[oid]) { OPS[oid].status = '招待中'; }
             window.pToast(oid + ' へ招待メールを再送しました(有効期限 2026/08/03)');
         }
-        // ステータスが招待中へ変わった行を絞り込みへ反映する。
+        // ステータスが招待中へ変わった行を、適用済みの条件で再評価する。
         // これが無いと「期限切れ」で絞ったまま再送した行が、条件に合わないのに残り続ける
-        window.pSearch('operatorsList');
+        window.pOpRefilter();
         window.pClose('mConfirmResendInviteOp');
+        window.pOpFocusListIfLost();
     };
 
     window.pOpInviteCancelGo = function () {
@@ -727,8 +745,9 @@ window.pOpSetPw = function () {
             delete OPS[oid];
             window.pToast(oid + ' の招待をキャンセルしました');
         }
-        window.pSearch('operatorsList');
+        window.pOpRefilter();
         window.pClose('mConfirmCancelInviteOp');
+        window.pOpFocusListIfLost();
     };
 
     // 対応可能言語チップ1個の見た目を on/off に合わせる(pLangChip の切替と同じ見た目)。

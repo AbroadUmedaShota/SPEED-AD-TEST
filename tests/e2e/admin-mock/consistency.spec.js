@@ -127,8 +127,9 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
   });
 
   test('期限切れで絞り込んだまま再送すると、招待中へ戻った行が結果から外れる', async ({ page }) => {
-    // 再送はステータスを期限切れ→招待中へ変えるため、アクティブな絞り込みも追従すること
-    // (pSearch の呼び忘れで、条件に合わない行が残り続ける事故の回帰検査)
+    // 再送はステータスを期限切れ→招待中へ変えるため、アクティブな絞り込みも追従すること。
+    // その際、検索を押していない入力欄の下書き条件を適用してはならない(適用済み条件のみ再評価)。
+    // また復帰先の行内ボタンが隠れた場合、キーボードフォーカスを一覧へ移して迷子を防ぐこと
     await page.setViewportSize({ width: 1920, height: 1080 });
     await openScreen(page, '/03_admin/operator-management.html');
     await page.selectOption('select[data-f-key="status"]', { label: '期限切れ' });
@@ -136,12 +137,19 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     await page.waitForTimeout(250);
     expect(await page.locator('#operatorsList [data-pg]:not([data-out])').count(), '期限切れは1件のはず').toBe(1);
 
+    // 下書き: 検索を押さずにステータス欄だけ「有効」へ変えておく(再送で適用されてはならない)
+    await page.selectOption('select[data-f-key="status"]', { label: '有効' });
+
     await page.click('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("再送")');
     await expect(page.locator('#mConfirmResendInviteOp')).toBeVisible();
     await page.click('#mConfirmResendInviteOp button:has-text("再送する")', { timeout: 30000 });
     await page.waitForTimeout(300);
     expect(await page.locator('#operatorsList [data-pg]:not([data-out])').count(),
-      '招待中へ戻った行が期限切れの絞り込み結果に残っている').toBe(0);
+      '適用済みの「期限切れ」ではなく下書きの条件が効いてしまっている(0件にならない)').toBe(0);
+    expect(await page.evaluate(() => {
+      const a = document.activeElement;
+      return !!a && a !== document.body && a.offsetParent !== null;
+    }), '再送後にキーボードフォーカスが失われた').toBe(true);
   });
 
   test('招待を送信すると新規行が末尾に入り、行内の再送・キャンセルだけで操作できる', async ({ page }) => {

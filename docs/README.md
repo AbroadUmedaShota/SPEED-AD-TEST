@@ -4,7 +4,7 @@
 
 ## 4分類
 
-- 正本: `docs/画面設計/` `docs/ハンドブック/` `docs/リファレンス/`
+- 正本: `docs/画面設計/` `docs/リライト版仕様書/`（管理者画面仕様） `docs/ハンドブック/` `docs/リファレンス/`
 - shared 補助資料: `docs/テンプレート/` `docs/サンプル/` `docs/変更履歴/CHANGELOG.md`
 - internal stub: `docs/プロダクト/` `docs/会議録/` `docs/メモ/meetings/` `docs/legacy-要件定義/`
 - アーカイブ: `docs/アーカイブ/`
