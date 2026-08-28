@@ -126,6 +126,24 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible()).toBe(true);
   });
 
+  test('期限切れで絞り込んだまま再送すると、招待中へ戻った行が結果から外れる', async ({ page }) => {
+    // 再送はステータスを期限切れ→招待中へ変えるため、アクティブな絞り込みも追従すること
+    // (pSearch の呼び忘れで、条件に合わない行が残り続ける事故の回帰検査)
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.selectOption('select[data-f-key="status"]', { label: '期限切れ' });
+    await page.click('[data-filter-for="operatorsList"] button:has-text("検索")');
+    await page.waitForTimeout(250);
+    expect(await page.locator('#operatorsList [data-pg]:not([data-out])').count(), '期限切れは1件のはず').toBe(1);
+
+    await page.click('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("再送")');
+    await expect(page.locator('#mConfirmResendInviteOp')).toBeVisible();
+    await page.click('#mConfirmResendInviteOp button:has-text("再送する")', { timeout: 30000 });
+    await page.waitForTimeout(300);
+    expect(await page.locator('#operatorsList [data-pg]:not([data-out])').count(),
+      '招待中へ戻った行が期限切れの絞り込み結果に残っている').toBe(0);
+  });
+
   test('招待を送信すると新規行が末尾に入り、行内の再送・キャンセルだけで操作できる', async ({ page }) => {
     // 招待直後の行も静的な招待中行と同じ扱い: モーダルは開かず、最終ログイン欄の
     // 再送・キャンセルから確認モーダルへ繋がる(2026-08-28 レビュー反映)。

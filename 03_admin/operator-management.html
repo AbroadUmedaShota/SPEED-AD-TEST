@@ -710,6 +710,9 @@ window.pOpSetPw = function () {
             if (OPS[oid]) { OPS[oid].status = '招待中'; }
             window.pToast(oid + ' へ招待メールを再送しました(有効期限 2026/08/03)');
         }
+        // ステータスが招待中へ変わった行を絞り込みへ反映する。
+        // これが無いと「期限切れ」で絞ったまま再送した行が、条件に合わないのに残り続ける
+        window.pSearch('operatorsList');
         window.pClose('mConfirmResendInviteOp');
     };
 
