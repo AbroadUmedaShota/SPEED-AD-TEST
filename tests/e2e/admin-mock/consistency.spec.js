@@ -80,41 +80,48 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(hit, `会期に時刻が出ている: ${hit.join(' / ')}`).toEqual([]);
   });
 
-  test('招待中のオペレーター詳細に登録済みアカウントの表示を出さない', async ({ page }) => {
-    // 招待中はまだ登録もログインもしていない。登録済みアカウント向けの
-    // サンプル表示(登録日時・最終ログイン)がそのまま出ていた(2026-08-24 修正)。
-    // パスワード操作も招待中は不可(23号 §4.7)
+  test('招待中の行はモーダルを開かず、行内の再送・キャンセルで操作する', async ({ page }) => {
+    // 2026-08-28 レビュー反映: 招待中(期限切れ含む)は開いて見る情報が無いため、
+    // 行クリックでモーダルを開かない。操作は行内の再送・キャンセルに限る
+    test.slow();   // 再送→キャンセル→登録済み確認と操作が多く、並列初回ロードで30秒を超えることがある
     await openScreen(page, '/03_admin/operator-management.html');
-    await page.click('#operatorsList [data-f-oid="OP-0075"]');
-    await expect(page.locator('#opModal')).toBeVisible();
-    const t = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    expect(t, '登録日時が本登録前になっていない').toContain('—(本登録前)');
-    expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible(),
-      '招待中なのにパスワード操作が出ている').toBe(false);
+    await page.click('#operatorsList [data-f-oid="OP-0075"]', { position: { x: 300, y: 20 } });
+    await page.waitForTimeout(300);
+    expect(await page.locator('#opModal').isHidden(), '招待中の行クリックでモーダルが開いた').toBe(true);
 
-    // 登録済みアカウントでは従来どおり登録日時・最終ログインとパスワード操作が出る。
-    // 復元は素のサンプルからで、識別子置換(walkSwap)後の内容を保存し直していないこと
-    await page.keyboard.press('Escape');
+    // 行内ボタンは招待中の行だけに出る
+    expect(await page.locator('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("再送")').isVisible()).toBe(true);
+    expect(await page.locator('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("キャンセル")').isVisible()).toBe(true);
+    expect(await page.locator('#operatorsList [data-f-oid="OP-0034"] .op-inv-act button').count(),
+      '登録済みの行に操作ボタンが出ている').toBe(0);
+
+    // 再送は確認モーダル(対象メール入り)を経て実行し、期限が延びて期限切れの注記が消える
+    expect(await page.locator('#operatorsList [data-f-oid="OP-0075"]').innerText()).toContain('期限切れ');
+    await page.click('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("再送")');
+    await expect(page.locator('#mConfirmResendInviteOp')).toBeVisible();
+    expect(await page.locator('#mConfirmResendInviteOp').innerText()).toContain('n.takahashi@datapartners.co.jp');
+    await page.click('#mConfirmResendInviteOp button:has-text("再送する")');
+    await page.waitForTimeout(300);
+    expect(await page.locator('#operatorsList [data-f-oid="OP-0075"]').innerText(),
+      '再送後も期限切れの注記が残っている').not.toContain('期限切れ');
+
+    // キャンセルは確認を経て行ごと消え、件数表示も追従する
+    await page.click('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("キャンセル")');
+    await expect(page.locator('#mConfirmCancelInviteOp')).toBeVisible();
+    await page.click('#mConfirmCancelInviteOp button:has-text("招待をキャンセルする")');
+    await page.waitForTimeout(300);
+    expect(await page.locator('#operatorsList [data-f-oid="OP-0075"]').count(), 'キャンセルしても行が残っている').toBe(0);
+    expect(await page.locator('#operatorsList-total').innerText()).toBe('12');
+
+    // 登録済みアカウントは従来どおりモーダルが開き、パスワード操作が出る
     await page.click('#operatorsList [data-f-oid="OP-0034"]');
-    const t2 = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    expect(t2, '登録日時が素のサンプルへ復元されない').toContain('2025/11/12 10:30');
+    await expect(page.locator('#opModal')).toBeVisible();
     expect(await page.getByRole('button', { name: '初期化メールを送信' }).isVisible()).toBe(true);
-
-    // 招待の再送は実行と別の記録で、実行日(招待メール送信)は上書きされない(23号 §7.5)。
-    // 2回再送すると招待帯に回数(計2回)が付き、送信日 2026/07/21 は残る
-    await page.keyboard.press('Escape');
-    await page.click('#operatorsList [data-f-oid="OP-0075"]');
-    await page.click('#opModal button:has-text("再送")');
-    await page.click('#opModal button:has-text("再送")');
-    const inv = (await page.locator('#opModal [data-slot="opInvite"]').innerText()).replace(/\s+/g, ' ');
-    expect(inv, '2回再送したのに回数表示が付かない').toContain('(計2回)');
-    expect(inv, '再送で実行日(招待メール送信)が上書きされた').toContain('招待メール送信 2026/07/21');
-    expect(inv, '再送日が表示されない').toContain('再送 2026/07/31');
   });
 
-  test('招待を送信すると新規行が本人の詳細を開く(OPS未登録で既定のOP-0034へ差し替わらない)', async ({ page }) => {
-    // 2026-08-25 修正: 招待送信時に OPS/INVITE へ登録していなかったため、招待直後の行を
-    // クリックすると OPS[oid] が見つからず既定の OP-0034(田中 大輔)の詳細が開いていた
+  test('招待を送信すると新規行が末尾に入り、行内の再送・キャンセルだけで操作できる', async ({ page }) => {
+    // 招待直後の行も静的な招待中行と同じ扱い: モーダルは開かず、操作セルの
+    // 再送・キャンセルから確認モーダルへ繋がる(2026-08-28 レビュー反映)
     await openScreen(page, '/03_admin/operator-management.html');
     await page.click('button:has-text("＋ 新規招待")');
     await expect(page.locator('#mInviteOp')).toBeVisible();
@@ -133,18 +140,23 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
       return maxOid;
     });
     expect(oid, '招待後に新規行が見つからない').not.toBe('');
+    const row = page.locator(`#operatorsList [data-f-oid="${oid}"]`);
+    expect((await row.innerText()).replace(/\s+/g, ' '), '新規行が招待中でない').toContain('招待中');
+    expect(await row.locator('.op-inv-act button:has-text("再送")').isVisible(), '新規行に再送ボタンが出ない').toBe(true);
+    expect(await row.locator('.op-inv-act button:has-text("キャンセル")').isVisible(), '新規行にキャンセルボタンが出ない').toBe(true);
 
-    await page.click(`#operatorsList [data-f-oid="${oid}"]`);
-    await expect(page.locator('#opModal')).toBeVisible();
-    const t = (await page.locator('#opModal').innerText()).replace(/\s+/g, ' ');
-    // メールは入力欄(2026-08-28 の編集化)のため innerText でなく値で確かめる
-    expect(await page.inputValue('#opModal input[data-op-field="mail"]'),
-      '招待直後の詳細に入力したメールが出ていない').toBe(mail);
-    expect(t, '招待直後の詳細に新規行のIDが出ていない').toContain(oid);
-    expect(t, '既定のOP-0034(田中 大輔)の氏名が残ったまま開いている').not.toContain('田中 大輔');
-    expect(t, '既定のOP-0034のメールが残ったまま開いている').not.toContain('d.tanaka@officeworks.co.jp');
-    expect(await page.getByRole('button', { name: '招待を再送' }).isVisible(), '招待中なのに再送ボタンが出ない').toBe(true);
-    expect(await page.getByRole('button', { name: '招待をキャンセル' }).isVisible(), '招待中なのにキャンセルボタンが出ない').toBe(true);
+    // クリックしてもモーダルは開かない
+    await row.click({ position: { x: 300, y: 20 } });
+    await page.waitForTimeout(300);
+    expect(await page.locator('#opModal').isHidden(), '招待直後の行クリックでモーダルが開いた').toBe(true);
+
+    // 確認モーダルには押した行のメールが入る(既定のサンプル値が残らない)
+    await row.locator('.op-inv-act button:has-text("キャンセル")').click();
+    await expect(page.locator('#mConfirmCancelInviteOp')).toBeVisible();
+    const confirm = await page.locator('#mConfirmCancelInviteOp').innerText();
+    expect(confirm, '確認モーダルに入力したメールが出ない').toContain(mail);
+    expect(confirm, '既定のサンプルメールが残っている').not.toContain('n.takahashi@datapartners.co.jp');
+    await page.keyboard.press('Escape');
 
     // 一覧の既定並び順(ID昇順)も壊れていないか(新規行は末尾=最大IDのはず)
     const oids = await page.$$eval('#operatorsList [data-f-oid]', (els) => els.map((e) => e.getAttribute('data-f-oid')));
@@ -187,6 +199,7 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
   test('詳細モーダルの保存が一覧とOPSの両方へ反映される(所属・権限・言語)', async ({ page }) => {
     // 2026-08-25 修正: pOpSave がステータス列しか書き戻さず、所属グループ・権限レベル・
     // 対応可能言語の変更が一覧にもOPS本体にも反映されなかった(開き直すと消えていた)
+    test.slow();   // 保存→開き直しの往復があり、並列初回ロードで30秒を超えることがある
     await openScreen(page, '/03_admin/operator-management.html');
     await page.click('#operatorsList [data-f-oid="OP-0058"]'); // Lv1・オフィスワークス・日本語+中国語簡/繁
     await expect(page.locator('#opModal')).toBeVisible();
@@ -294,16 +307,22 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(await page.locator('#opModal [data-op-perf="r"]').innerText()).toBe('95%');
     expect(await page.locator('#opModal [data-op-perf="sr"]').innerText()).toBe('2%');
 
-    // 実績のないオペレーター(OP-0069)と招待中(OP-0075)は3カードとも「—」で、
-    // PerfData 未登録でも例外を出さないこと
-    for (const oid of ['OP-0069', 'OP-0075']) {
-      await page.keyboard.press('Escape');
-      await page.click(`#operatorsList [data-f-oid="${oid}"]`);
-      await expect(page.locator('#opModal')).toBeVisible();
-      expect(await page.locator('#opModal [data-op-perf="w"]').innerText(), `${oid} の作業件数`).toBe('—');
-      expect(await page.locator('#opModal [data-op-perf="r"]').innerText(), `${oid} の正答率`).toBe('—');
-      expect(await page.locator('#opModal [data-op-perf="sr"]').innerText(), `${oid} のスキップ率`).toBe('—');
-    }
+    // 実績のないオペレーター(OP-0069)は3枠とも「—」で、PerfData 未登録でも例外を出さないこと
+    // (招待中はモーダル自体を開かないため対象外)
+    await page.keyboard.press('Escape');
+    await page.click('#operatorsList [data-f-oid="OP-0069"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    expect(await page.locator('#opModal [data-op-perf="w"]').innerText(), 'OP-0069 の作業件数').toBe('—');
+    expect(await page.locator('#opModal [data-op-perf="r"]').innerText(), 'OP-0069 の正答率').toBe('—');
+    expect(await page.locator('#opModal [data-op-perf="sr"]').innerText(), 'OP-0069 のスキップ率').toBe('—');
+
+    // 正答率 95% 未満は注意色(オペレーター実績確認の一覧と同じ基準)。OP-0061 は 92%
+    await page.keyboard.press('Escape');
+    await page.click('#operatorsList [data-f-oid="OP-0061"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    expect(await page.locator('#opModal [data-op-perf="r"]').innerText()).toBe('92%');
+    const warn = await page.locator('#opModal [data-op-perf="r"]').evaluate((el) => el.style.color);
+    expect(warn, '95%未満なのに注意色が付かない').toContain('--a-warn');
   });
 
   test('データ化中のアンケートに「納品済」を出さない', async ({ page }) => {

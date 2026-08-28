@@ -28,6 +28,8 @@
   #operatorsList > div > :nth-child(4),
   #operatorsList > div > :nth-child(7),
   #operatorsList > div > :nth-child(8) { display: none !important; }
+  /* 招待中の行内操作(再送・キャンセル)もスマホ段では隠す(操作はPC幅で行う) */
+  #operatorsList .op-inv-act { display: none !important; }
 }
 </style>
 </head>
@@ -105,8 +107,8 @@
               <div tabindex="0" role="button" data-f-any="OP-0069 中村 悠斗 y.nakamura@abroad.example.com" data-pg="1" data-f-oid="OP-0069" data-f-name="中村 悠斗" data-f-mail="y.nakamura@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv1" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0069')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
                 <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0069</span><span>中村 悠斗</span><span title="y.nakamura@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">y.nakamura@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/27</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 09:05</span>
               </div>
-              <div tabindex="0" role="button" data-f-any="OP-0075 高橋 直樹 n.takahashi@datapartners.co.jp" data-pg="1" data-f-oid="OP-0075" data-f-name="高橋 直樹" data-f-mail="n.takahashi@datapartners.co.jp" data-f-group="データパートナーズ株式会社" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="招待中" class="proto-row-hover" onclick="pOpenOperator('OP-0075')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px;cursor:pointer">
-                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0075</span><span>高橋 直樹</span><span title="n.takahashi@datapartners.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">n.takahashi@datapartners.co.jp</span><span>データパートナーズ株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-info">招待中</span><span title="招待メールの有効期限(72時間)を過ぎています。再送またはキャンセルしてください" style="display:block;font-size:10.5px;color:var(--a-danger);font-weight:700">期限切れ</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/21</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-faint)">—</span>
+              <div data-f-any="OP-0075 高橋 直樹 n.takahashi@datapartners.co.jp" data-pg="1" data-f-oid="OP-0075" data-f-name="高橋 直樹" data-f-mail="n.takahashi@datapartners.co.jp" data-f-group="データパートナーズ株式会社" data-f-lv="Lv1" data-f-lang="日本語・英語" data-f-status="招待中" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:6px 16px;min-height:52px;border-bottom:1px solid var(--a-border-soft);font-size:13px">
+                <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0075</span><span>高橋 直樹</span><span title="n.takahashi@datapartners.co.jp" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">n.takahashi@datapartners.co.jp</span><span>データパートナーズ株式会社</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv1</span></span><span><span class="status-badge status-info">招待中</span><span data-inv-expired title="招待メールの有効期限(72時間)を過ぎています。再送またはキャンセルしてください" style="display:block;font-size:10.5px;color:var(--a-danger);font-weight:700">期限切れ</span><span class="op-inv-act" style="display:flex;gap:6px;margin-top:4px"><button style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-info-border);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap" onclick="pOpAct('mConfirmResendInviteOp',this)">再送</button><button style="background:var(--a-surface);color:var(--a-danger);border:1px solid var(--a-danger-border);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap" onclick="pOpAct('mConfirmCancelInviteOp',this)">キャンセル</button></span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/21</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-faint)">—</span>
               </div>
               <div tabindex="0" role="button" data-f-any="OP-0077 山本 彩 a.yamamoto@abroad.example.com" data-pg="1" data-f-oid="OP-0077" data-f-name="山本 彩" data-f-mail="a.yamamoto@abroad.example.com" data-f-group="アブロード本体" data-f-lv="Lv2" data-f-lang="日本語" data-f-status="有効" class="proto-row-hover" onclick="pOpenOperator('OP-0077')" style="display:grid;grid-template-columns:minmax(104px,104fr) minmax(116px,116fr) minmax(190px,190fr) minmax(186px,186fr) minmax(64px,64fr) minmax(80px,80fr) minmax(112px,112fr) minmax(116px,116fr);align-items:center;padding:0 16px;height:52px;font-size:13px;cursor:pointer">
                 <span style="font-weight:500;font-variant-numeric:tabular-nums">OP-0077</span><span>山本 彩</span><span title="a.yamamoto@abroad.example.com" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:10px">a.yamamoto@abroad.example.com</span><span>アブロード本体</span><span><span style="font-size:11px;font-weight:700;color:var(--a-fg-muted);border:1px solid var(--a-border-strong);border-radius:4px;padding:1px 6px">Lv2</span></span><span><span class="status-badge status-active">有効</span></span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/28</span><span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">2026/07/31 07:40</span>
@@ -216,7 +218,6 @@
         <div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;font-size:13px">
           <label style="display:grid;grid-template-columns:110px 1fr;align-items:center;gap:12px;color:var(--a-fg-muted2)">所属グループ<select data-op-field="group" data-group-select style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option>オフィスワークス株式会社</option><option>アブロード本体</option><option>データパートナーズ株式会社</option></select></label>
           <label style="display:grid;grid-template-columns:110px 1fr;align-items:center;gap:12px;color:var(--a-fg-muted2)">権限レベル<select data-op-field="lv" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option>Lv2(OperatorAdmin)</option><option>Lv1(Operator)</option></select></label>
-          <div data-slot="opLvNote" style="font-size:11px;color:var(--a-warn)"></div>
           <div style="display:grid;grid-template-columns:110px 1fr;gap:12px;color:var(--a-fg-muted2)">対応可能言語
             <span data-lang-chips style="display:flex;gap:6px;flex-wrap:wrap">
               <span role="button" tabindex="0" aria-pressed="true" onclick="pLangChip(this)" style="border:1px solid var(--a-accent);background:var(--a-info-bg);color:var(--a-accent);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700;cursor:pointer">日本語 ✓</span>
@@ -227,7 +228,6 @@
             </span>
           </div>
           <label style="display:grid;grid-template-columns:110px 1fr;align-items:center;gap:12px;color:var(--a-fg-muted2)">ステータス<select data-op-field="status" style="border:1px solid var(--a-border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;color:var(--a-fg-strong)"><option>有効</option><option>無効</option></select></label>
-          <div data-slot="opInvite" hidden style="font-size:11.5px;color:var(--a-fg-muted2);background:var(--a-surface-2);border-radius:6px;padding:8px 12px;line-height:1.7"></div>
           <div id="opEditErr" role="alert" hidden style="font-size:12px;color:var(--a-danger);font-weight:700"></div>
           <div style="display:flex;justify-content:flex-end;margin-top:4px">
             <button style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" onclick="pOpConfirmSave()">変更を保存</button>
@@ -243,12 +243,21 @@
         </div>
         </div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">簡易集計<span style="font-weight:400;color:var(--a-fg-faint);margin-left:8px">当月(2026/07)</span></div>
-        <div class="perf-cards">
-          <div class="perf-card"><div class="perf-card-label">作業件数</div><div class="perf-card-num" data-op-perf="w">—</div></div>
-          <div class="perf-card"><div class="perf-card-label">正答率</div><div class="perf-card-num" data-op-perf="r">—</div></div>
-          <div class="perf-card"><div class="perf-card-label">スキップ率</div><div class="perf-card-num" data-op-perf="sr">—</div></div>
+        <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--a-border);border-radius:8px;background:var(--a-surface-2)">
+          <div style="padding:10px 14px">
+            <div style="font-size:11px;font-weight:500;color:var(--a-fg-muted)">作業件数</div>
+            <div data-op-perf="w" style="margin-top:3px;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25">—</div>
+          </div>
+          <div style="padding:10px 14px;border-left:1px solid var(--a-border)">
+            <div style="font-size:11px;font-weight:500;color:var(--a-fg-muted)">正答率</div>
+            <div data-op-perf="r" style="margin-top:3px;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25">—</div>
+          </div>
+          <div style="padding:10px 14px;border-left:1px solid var(--a-border)">
+            <div style="font-size:11px;font-weight:500;color:var(--a-fg-muted)">スキップ率</div>
+            <div data-op-perf="sr" style="margin-top:3px;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25">—</div>
+          </div>
         </div>
-        <div style="margin-top:8px;font-size:11px;color:var(--a-fg-faint)">スキップ率 = スキップ回数 ÷ (作業件数 + スキップ回数)。実績のないオペレーターは値を表示しません。</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--a-fg-faint);line-height:1.7">スキップ率 = スキップ回数 ÷ (作業件数 + スキップ回数)。正答率 95% 未満は注意色。実績のないオペレーターは値を表示しません。</div>
         <div style="font-size:12px;font-weight:700;color:var(--a-fg-muted);padding-bottom:8px;border-bottom:1px solid var(--a-border);margin-top:20px">実績</div>
         <div style="padding-top:12px"><a href="#op" data-go="perf" style="font-size:13px">オペレーター実績確認でこのオペレーターの集計を表示 →</a></div>
       </div>
@@ -307,6 +316,34 @@
   </div>
 </div>
 
+<div id="mConfirmResendInviteOp" class="proto-modal" hidden>
+  <div class="proto-dialog" style="width:460px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px 0">
+      <span style="font-size:15px;font-weight:700">招待メールを再送しますか?</span>
+      <span role="button" onclick="pClose('mConfirmResendInviteOp')" tabIndex="0" title="閉じる" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--a-fg-muted);cursor:pointer;border-radius:8px;margin:-6px -10px 0 0">×</span>
+    </div>
+    <div style="padding:10px 22px 0;font-size:13px;color:var(--a-fg-muted);line-height:1.8"><span data-slot="opInvMail">n.takahashi@datapartners.co.jp</span> へ招待メールを再送します。有効期限は再送時点から72時間です。</div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:18px 22px">
+      <button data-initial-focus onclick="pClose('mConfirmResendInviteOp')" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">キャンセル</button>
+      <button onclick="pOpInviteResendGo()" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">再送する</button>
+    </div>
+  </div>
+</div>
+
+<div id="mConfirmCancelInviteOp" class="proto-modal" hidden>
+  <div class="proto-dialog" style="width:460px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px 0">
+      <span style="font-size:15px;font-weight:700">招待をキャンセルしますか?</span>
+      <span role="button" onclick="pClose('mConfirmCancelInviteOp')" tabIndex="0" title="閉じる" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--a-fg-muted);cursor:pointer;border-radius:8px;margin:-6px -10px 0 0">×</span>
+    </div>
+    <div style="padding:10px 22px 0;font-size:13px;color:var(--a-fg-muted);line-height:1.8"><span data-slot="opInvMail">n.takahashi@datapartners.co.jp</span> への招待リンクを無効化し、仮アカウントの行を一覧から削除します。この操作は取り消せません(再度招待は可能です)。</div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:18px 22px">
+      <button data-initial-focus onclick="pClose('mConfirmCancelInviteOp')" style="background:var(--a-surface);color:var(--a-fg);border:1px solid var(--a-border-strong);border-radius:6px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">閉じる</button>
+      <button onclick="pOpInviteCancelGo()" style="background:var(--a-danger-bg-solid);color:var(--a-on-accent);border:none;border-radius:6px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">招待をキャンセルする</button>
+    </div>
+  </div>
+</div>
+
 <script type="module" src="src/admin.js"></script>
 <script src="src/proto-ui.js"></script>
 <script src="src/proto-level.js"></script>
@@ -348,6 +385,12 @@
         return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
+    // 招待中の行のステータスセルへ入れる操作(再送・キャンセル)。静的な OP-0075 行と同じマークアップ。
+    // 列は増やさず、招待中バッジの下に小さく並べる(2026-08-28 レビュー反映)
+    var OP_INV_ACT = '<span class="op-inv-act" style="display:flex;gap:6px;margin-top:4px">'
+        + '<button style="background:var(--a-surface);color:var(--a-accent);border:1px solid var(--a-info-border);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap" onclick="pOpAct(\'mConfirmResendInviteOp\',this)">再送</button>'
+        + '<button style="background:var(--a-surface);color:var(--a-danger);border:1px solid var(--a-danger-border);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap" onclick="pOpAct(\'mConfirmCancelInviteOp\',this)">キャンセル</button></span>';
+
     window.pOpInviteSend = function () {
     var box = document.getElementById('mInviteOp');
     var mail = box.querySelector('input').value.trim();
@@ -388,11 +431,14 @@
     var oid = 'OP-' + String(max + 1).padStart(4, '0');
     var now = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
     var today = now.getFullYear() + '/' + p(now.getMonth() + 1) + '/' + p(now.getDate());
-    var html = '<div tabindex="0" role="button" data-pg="1" data-f-any="' + esc(oid) + ' ' + esc(mail)
+    // 招待中の行はモーダルを開かず、行内の再送・キャンセルだけで操作する(2026-08-28 レビュー反映)。
+    // クリック相当(onclick/tabindex/role)は付けない
+    var html = '<div data-pg="1" data-f-any="' + esc(oid) + ' ' + esc(mail)
         + '" data-f-oid="' + esc(oid) + '" data-f-name="—" data-f-mail="' + esc(mail) + '" data-f-group="' + esc(group)
         + '" data-f-lv="' + esc(lv) + '" data-f-lang="' + esc(langText)
-        + '" data-f-status="招待中" class="proto-row-hover" onclick="pOpenOperator(\'' + oid + '\')"'
-        + ' style="' + head.getAttribute('style') + '">'
+        + '" data-f-status="招待中"'
+        + ' style="' + head.getAttribute('style').replace('cursor:pointer', 'cursor:default')
+            .replace('padding:0 16px;height:52px', 'padding:6px 16px;min-height:52px') + '">'
         + '<span style="font-weight:500;font-variant-numeric:tabular-nums">' + esc(oid) + '</span>'
         + '<span style="color:var(--a-fg-faint)">—</span>'
         + '<span title="' + esc(mail) + '" style="color:var(--a-fg-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'
@@ -400,7 +446,7 @@
         + '<span>' + esc(group) + '</span>'
         + '<span><span style="font-size:11px;font-weight:700;color:var(--a-accent);border:1px solid var(--a-info-border);'
         + 'border-radius:4px;padding:1px 6px">' + esc(lv) + '</span></span>'
-        + '<span><span class="status-badge status-info">招待中</span></span>'
+        + '<span><span class="status-badge status-info">招待中</span>' + OP_INV_ACT + '</span>'
         + '<span class="c-opt" style="font-size:12px;color:var(--a-fg-muted);font-variant-numeric:tabular-nums">'
         + today + '</span>'
         + '<span class="c-opt" style="font-size:12px;color:var(--a-fg-faint)">—</span></div>';
@@ -444,8 +490,7 @@ window.pOpConfirmSave = function () {
     var err = document.getElementById('opEditErr');
     var nameInp = m.querySelector('input[data-op-field="name"]');
     var mailInp = m.querySelector('input[data-op-field="mail"]');
-    // 招待中は氏名・メールが編集対象外(disabled)のため検証しない(23号 §4.7)
-    if (nameInp && mailInp && !nameInp.disabled) {
+    if (nameInp && mailInp) {
         var name = nameInp.value.trim();
         var mail = mailInp.value.trim();
         var msg = '';
@@ -481,9 +526,8 @@ window.pOpSave = function () {
     var row = oid ? window.pRow('operatorsList', 'oid', oid) : null;
     var nameInp = m.querySelector('input[data-op-field="name"]');
     var mailInp = m.querySelector('input[data-op-field="mail"]');
-    // 招待中は氏名・メールが編集対象外(disabled)のため読み飛ばす(23号 §4.7)
-    var name = (nameInp && !nameInp.disabled) ? nameInp.value.trim() : '';
-    var mail = (mailInp && !mailInp.disabled) ? mailInp.value.trim() : '';
+    var name = nameInp ? nameInp.value.trim() : '';
+    var mail = mailInp ? mailInp.value.trim() : '';
     var stSel = m.querySelector('select[data-op-field="status"]');
     var grSel = m.querySelector('select[data-op-field="group"]');
     var lvSel = m.querySelector('select[data-op-field="lv"]');
@@ -635,50 +679,50 @@ window.pOpSetPw = function () {
         return String(Math.floor(mins / 60)).padStart(2, '0') + ':' + String(mins % 60).padStart(2, '0');
     }
 
-    function renderInvite(m, oid, d) {
-        var box = m.querySelector('[data-slot="opInvite"]');
-        if (!box) { return; }
-        var info = INVITE[oid];
-        if (d.status !== '招待中' || !info) { box.hidden = true; box.innerHTML = ''; return; }
-        var expired = info.exp < TODAY;
-        var lastResend = (info.resends && info.resends.length) ? info.resends[info.resends.length - 1] : null;
-        box.hidden = false;
-        box.innerHTML = '招待メール送信 ' + info.sent.replace(/-/g, '/')
-            + (lastResend ? ' ・ 再送 ' + lastResend.d.replace(/-/g, '/') + ' ' + lastResend.t
-                + (info.resends.length > 1 ? '(計' + info.resends.length + '回)' : '') : '')
-            + ' ・ 有効期限 ' + info.exp.replace(/-/g, '/')
-            + (expired ? ' <span style="color:var(--a-danger);font-weight:700">(期限切れ)</span>' : '')
-            + '<br>期限切れはデータから自動で判定します。行える操作は招待の再送とキャンセルの2つです。'
-            + '<div style="margin-top:8px;display:flex;gap:8px">'
-            + '<button onclick="opInviteResend()" style="background:var(--a-accent-bg);color:var(--a-on-accent);border:none;border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit">招待を再送</button>'
-            + '<button onclick="opInviteCancel()" style="background:var(--a-surface);color:var(--a-danger);border:1px solid var(--a-danger-border);border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit">招待をキャンセル</button>'
-            + '</div>';
-    }
-
-    window.opInviteResend = function () {
-        // 招待の実行と再送は別の操作として記録する(23号 §7.5)。実行日は上書きせず、
-        // 再送は成立のたびに1件ずつ追記する(監査ログは追記専用)
-        var info = INVITE[cur] || { sent: TODAY, resends: [] };
-        info.resends = info.resends || [];
-        info.resends.push({ d: TODAY, t: opTime(info.resends.length), by: currentActor() });
-        info.exp = '2026-08-03';
-        INVITE[cur] = info;
-        var row = window.pRow('operatorsList', 'oid', cur);
-        if (row) { window.pRowSet(row, { 5: '<span class="status-badge status-info">招待中</span>' }); }
-        var m = document.getElementById('opModal');
-        renderInvite(m, cur, OPS[cur]);
-        paintInvitedState(m, cur, OPS[cur]);
-        window.pToast(cur + ' へ招待メールを再送しました(有効期限 2026/08/03)');
+    // 招待中の行の操作(2026-08-28 レビュー反映)。詳細モーダルは開かず、行内の
+    // 再送・キャンセルから確認モーダルを経て実行する(user-management.html の pUserAct と同型)
+    var P_OP_TARGET = null;
+    window.pOpAct = function (mid, el) {
+        P_OP_TARGET = el.closest('[data-f-oid]');
+        var m = document.getElementById(mid);
+        if (m && P_OP_TARGET) {
+            var mail = P_OP_TARGET.getAttribute('data-f-mail') || '';
+            m.querySelectorAll('[data-slot="opInvMail"]').forEach(function (e) { e.textContent = mail; });
+        }
+        window.pOpen(mid);
     };
-    window.opInviteCancel = function () {
-        var row = window.pRow('operatorsList', 'oid', cur);
-        if (row) { row.remove(); window.pSearch('operatorsList'); }
-        // 一覧から行を消すだけでなく、識別子置換用のデータも後始末する。残したままだと
-        // 存在しない仮アカウントの氏名・メールが他画面遷移時の swap 元に混ざりうる(レビュー指摘#12)
-        delete INVITE[cur];
-        delete OPS[cur];
-        window.pClose('opModal');
-        window.pToast(cur + ' の招待をキャンセルしました');
+
+    window.pOpInviteResendGo = function () {
+        if (P_OP_TARGET) {
+            var oid = P_OP_TARGET.getAttribute('data-f-oid');
+            // 招待の実行と再送は別の操作として記録する(23号 §7.5)。実行日は上書きせず、
+            // 再送は成立のたびに1件ずつ追記する(監査ログは追記専用)
+            var info = INVITE[oid] || { sent: TODAY, resends: [] };
+            info.resends = info.resends || [];
+            info.resends.push({ d: TODAY, t: opTime(info.resends.length), by: currentActor() });
+            info.exp = '2026-08-03';
+            INVITE[oid] = info;
+            // 期限が72時間先へ戻るため、ステータスセルの期限切れ注記だけを取り除く(操作ボタンは残す)
+            var note = P_OP_TARGET.querySelector('[data-inv-expired]');
+            if (note) { note.remove(); }
+            window.pToast(oid + ' へ招待メールを再送しました(有効期限 2026/08/03)');
+        }
+        window.pClose('mConfirmResendInviteOp');
+    };
+
+    window.pOpInviteCancelGo = function () {
+        if (P_OP_TARGET) {
+            var oid = P_OP_TARGET.getAttribute('data-f-oid');
+            P_OP_TARGET.parentNode.removeChild(P_OP_TARGET);
+            P_OP_TARGET = null;
+            // 行を消すだけでなく、識別子置換用のデータも後始末する。残したままだと
+            // 存在しない仮アカウントの氏名・メールが swap 元に混ざりうる(レビュー指摘#12)
+            delete INVITE[oid];
+            delete OPS[oid];
+            window.pToast(oid + ' の招待をキャンセルしました');
+        }
+        window.pSearch('operatorsList');
+        window.pClose('mConfirmCancelInviteOp');
     };
 
     // 対応可能言語チップ1個の見た目を on/off に合わせる(pLangChip の切替と同じ見た目)。
@@ -696,20 +740,13 @@ window.pOpSetPw = function () {
     // 氏名・メール・権限レベル・所属グループ・ステータス・対応可能言語を対象の値に合わせる。
     // 権限レベルの変更に操作者と対象の上下関係による制約は課さない。本画面にアクセスできる
     // Lv2 以上は誰にでも Lv1〜Lv4 を付与できる(23号 §4.4・2026-08-28 確定)。
-    // 非活性にするのは招待中の氏名・メール(本登録前のため対象外)とステータス(自動遷移)のみ
+    // 招待中はモーダル自体を開かない(pOpenOperator のガード)ため、ここへ来るのは有効・無効のみ
     function fillFields(m, d) {
         var target = parseInt(String(d.lv).replace(/\D/g, ''), 10) || 1;
-        // 招待中→有効は本登録完了で自動遷移する(01共通UI §7.4)。手動での切替は許さない
-        var inviting = d.status === '招待中';
 
         ['name', 'mail'].forEach(function (k) {
             var inp = m.querySelector('input[data-op-field="' + k + '"]');
-            if (!inp) { return; }
-            inp.value = d[k] || '';
-            inp.disabled = inviting;
-            inp.style.background = inviting ? 'var(--a-surface-2)' : '';
-            inp.style.color = inviting ? 'var(--a-fg-faint)' : '';
-            inp.title = inviting ? '招待中は本登録前のため、氏名・メールアドレスは変更できません' : '';
+            if (inp) { inp.value = d[k] || ''; }
         });
 
         var lvSel = m.querySelector('[data-op-field="lv"]');
@@ -721,9 +758,6 @@ window.pOpSetPw = function () {
             }
             lvSel.innerHTML = html;
             lvSel.value = String(target);
-            lvSel.disabled = false;
-            lvSel.style.background = '';
-            lvSel.style.color = '';
         }
 
         var grSel = m.querySelector('[data-op-field="group"]');
@@ -737,25 +771,7 @@ window.pOpSetPw = function () {
         }
 
         var stSel = m.querySelector('[data-op-field="status"]');
-        if (stSel) {
-            var has = false;
-            for (var t = 0; t < stSel.options.length; t++) {
-                if (stSel.options[t].textContent.trim() === d.status) { has = true; }
-            }
-            if (!has) { stSel.add(new Option(d.status, d.status)); }
-            stSel.value = d.status;
-            stSel.title = inviting ? '招待中は本登録の完了で自動的に「有効」になります。手動では変更できません' : '';
-            stSel.disabled = inviting;
-            stSel.style.background = inviting ? 'var(--a-surface-2)' : '';
-            stSel.style.color = inviting ? 'var(--a-fg-faint)' : '';
-        }
-
-        var note = m.querySelector('[data-slot="opLvNote"]');
-        if (note) {
-            note.textContent = inviting
-                ? '招待中のステータスは本登録の完了で自動的に「有効」になります(手動変更不可)。'
-                : '';
-        }
+        if (stSel) { stSel.value = d.status; }
 
         // 対応可能言語チップを対象の値に合わせる。以前は常に「日本語のみ」の初期表示で
         // 固定されており、保存して開き直しても対象の実際の値が見えなかった(レビュー指摘#4)
@@ -773,48 +789,32 @@ window.pOpSetPw = function () {
         if (err) { err.hidden = true; }
     }
 
-    // 登録日時・最終ログインの素のサンプルを読み込み時に確保する。
-    // walkSwap がテキストを識別子置換するため、開いた後に保存すると
-    // 置換済みの内容を復元してしまう。表示のたびにこの素の値から塗り直す
-    var PRISTINE = (function () {
-        var m = document.getElementById('opModal');
-        if (!m) { return {}; }
-        var q = function (s) { return m.querySelector(s); };
-        return {
-            created: (q('[data-slot="opCreated"]') || {}).textContent || '',
-            login: (q('[data-slot="opLastLogin"]') || {}).textContent || ''
-        };
-    })();
-
-    // 招待中はまだ登録もログインもしていないため、登録済みアカウント向けの
-    // サンプル表示(登録日時・最終ログイン)をそのまま出すと矛盾する。
-    // パスワード操作は「有効」のときだけ表示する。無効・招待中はいずれも不可
+    // パスワード操作は「有効」のときだけ表示する。無効はログインできる状態にないため不可
     // (23号 §4.7。以前は「招待中でなければ表示」で無効にも出てしまっていた=レビュー指摘#3)
-    function paintInvitedState(m, oid, d) {
-        var invited = d.status === '招待中';
-        var canPw = d.status === '有効';
-        var created = m.querySelector('[data-slot="opCreated"]');
-        var login = m.querySelector('[data-slot="opLastLogin"]');
+    function paintPwState(m, d) {
         var pw = m.querySelector('[data-slot="opPw"]');
-        if (created) { created.textContent = invited ? '—(本登録前)' : PRISTINE.created; }
-        if (login) { login.textContent = invited ? '—' : PRISTINE.login; }
         // 属性 hidden はインラインの display:contents に負けるため display で切り替える
-        if (pw) { pw.style.display = canPw ? 'contents' : 'none'; }
+        if (pw) { pw.style.display = d.status === '有効' ? 'contents' : 'none'; }
     }
 
     // 簡易集計(当月)。実績確認(performance-management.html)と同じ PerfData を参照して
     // 数値を必ず一致させる。スキップ率 = スキップ回数 ÷ (作業件数 + スキップ回数)
-    // (モック定義・23号 §4.8 ※要確定)。実績のないオペレーター(招待直後を含む)は「—」。
+    // (モック定義・23号 §4.8 ※要確定)。実績のないオペレーターは「—」。
     // PerfData.totals は未登録IDで例外を投げるため、必ず PERF の存在を先に確かめる。
-    // walkSwap が「—」の文字を置換で壊しうるため、pOpenOperator では置換後に毎回呼び直す
+    // pOpenOperator ではテキスト置換(walkSwap)の後に呼び直して表示を確定する
     function renderPerf(m, oid) {
         var P = window.PerfData;
         var t = (P && P.PERF && P.PERF[oid]) ? P.totals(oid, P.MONTHS[0]) : null;
         Array.prototype.forEach.call(m.querySelectorAll('[data-op-perf]'), function (el) {
             var k = el.getAttribute('data-op-perf');
+            el.style.color = '';
             if (!t) { el.textContent = '—'; return; }
             if (k === 'w') { el.textContent = P.num(t.w); }
-            else if (k === 'r') { el.textContent = P.rate(t.o, t.w); }
+            else if (k === 'r') {
+                el.textContent = P.rate(t.o, t.w);
+                // 95%未満は注意色(オペレーター実績確認の一覧と同じ基準)
+                if (t.w && Math.round(t.o / t.w * 100) < 95) { el.style.color = 'var(--a-warn)'; }
+            }
             else if (k === 'sr') { el.textContent = (t.w + t.s) ? Math.round(t.s / (t.w + t.s) * 100) + '%' : '—'; }
         });
     }
@@ -866,8 +866,8 @@ window.pOpSetPw = function () {
     };
 
     // 招待送信(別スクリプトの pOpInviteSend)から呼ばれる登録口。OPS/INVITE はこの
-    // IIFE のクロージャ内にあるため公開関数として用意する。登録しないと招待直後の行を
-    // クリックした際に OPS[oid] が見つからず、既定の OP-0034 の詳細が開いてしまう(レビュー指摘#1)
+    // IIFE のクロージャ内にあるため公開関数として用意する。登録しないと pOpenOperator の
+    // 招待中ガードとキャンセル時の後始末が効かない(レビュー指摘#1)
     window.pOpRegisterInvite = function (oid, data) {
         OPS[oid] = {
             name: '—', mail: data.mail, group: data.group, lv: data.lv, status: '招待中',
@@ -879,14 +879,15 @@ window.pOpSetPw = function () {
     window.pOpenOperator = function (oid) {
         var m = document.getElementById('opModal');
         var d = OPS[oid] || OPS[DEF];
+        // 招待中はモーダルを開かない。操作は一覧の行内の再送・キャンセルで行う(2026-08-28 レビュー反映)
+        if (d.status === '招待中') { return; }
         var from = OPS[cur] || OPS[DEF];
         walkSwap([[cur, oid], [from.name, d.name], [from.mail, d.mail], [from.group, d.group], [from.lv, d.lv]]);
         var b = m.querySelector('[data-slot="opstatus"]');
         if (b) { b.textContent = d.status; b.className = 'status-badge ' + (BADGE[d.status] || 'status-inactive'); }
         fillFields(m, d);
-        renderInvite(m, oid, d);
-        paintInvitedState(m, oid, d);
-        // 簡易集計はテキスト置換(walkSwap)の後に描き直す。「—」が置換で壊れても上書きで戻る
+        paintPwState(m, d);
+        // 簡易集計はテキスト置換(walkSwap)の後に描き直す
         renderPerf(m, oid);
         var go = m.querySelector('[data-go="perf"]');
         if (go) { go.onclick = function () { location.href = 'performance-management.html?oid=' + oid; return false; }; }
