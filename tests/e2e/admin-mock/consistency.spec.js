@@ -80,37 +80,42 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     expect(hit, `会期に時刻が出ている: ${hit.join(' / ')}`).toEqual([]);
   });
 
-  test('招待中の行はモーダルを開かず、行内の再送・キャンセルで操作する', async ({ page }) => {
-    // 2026-08-28 レビュー反映: 招待中(期限切れ含む)は開いて見る情報が無いため、
-    // 行クリックでモーダルを開かない。操作は最終ログイン欄(未ログインで空いている)の
-    // 再送・キャンセルに限る。補助列(c-opt)のため 1460px 以上で表示する
+  test('招待中・期限切れの行はモーダルを開かず、行内の再送・キャンセルで操作する', async ({ page }) => {
+    // 2026-08-28 レビュー反映: 招待中と期限切れ(招待中のうち有効期限を過ぎた独立ステータス)は
+    // 開いて見る情報が無いため、行クリックでモーダルを開かない。操作は最終ログイン欄
+    // (未ログインで空いている)の再送・キャンセルに限る。補助列(c-opt)のため 1460px 以上で表示する
     test.slow();   // 再送→キャンセル→登録済み確認と操作が多く、並列初回ロードで30秒を超えることがある
     await page.setViewportSize({ width: 1920, height: 1080 });
     await openScreen(page, '/03_admin/operator-management.html');
     await page.click('#operatorsList [data-f-oid="OP-0075"]', { position: { x: 300, y: 20 } });
     await page.waitForTimeout(300);
-    expect(await page.locator('#opModal').isHidden(), '招待中の行クリックでモーダルが開いた').toBe(true);
+    expect(await page.locator('#opModal').isHidden(), '期限切れの行クリックでモーダルが開いた').toBe(true);
 
-    // 行内ボタンは招待中の行だけに出る
+    // 行内ボタンは招待中・期限切れの行だけに出る
     expect(await page.locator('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("再送")').isVisible()).toBe(true);
     expect(await page.locator('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("キャンセル")').isVisible()).toBe(true);
     expect(await page.locator('#operatorsList [data-f-oid="OP-0034"] .op-inv-act button').count(),
       '登録済みの行に操作ボタンが出ている').toBe(0);
 
-    // 再送は確認モーダル(対象メール入り)を経て実行し、期限が延びて期限切れの注記が消える
-    expect(await page.locator('#operatorsList [data-f-oid="OP-0075"]').innerText()).toContain('期限切れ');
+    // 再送は確認モーダル(対象メール入り)を経て実行し、新しい期限が付くのでステータスは招待中へ戻る
+    expect(await page.getAttribute('#operatorsList [data-f-oid="OP-0075"]', 'data-f-status')).toBe('期限切れ');
     await page.click('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("再送")');
     await expect(page.locator('#mConfirmResendInviteOp')).toBeVisible();
     expect(await page.locator('#mConfirmResendInviteOp').innerText()).toContain('n.takahashi@datapartners.co.jp');
-    await page.click('#mConfirmResendInviteOp button:has-text("再送する")');
+    // 並列実行の高負荷時、可視・安定判定の後の click 完了が既定の15秒を超えることがある
+    await page.click('#mConfirmResendInviteOp button:has-text("再送する")', { timeout: 30000 });
     await page.waitForTimeout(300);
     expect(await page.locator('#operatorsList [data-f-oid="OP-0075"]').innerText(),
-      '再送後も期限切れの注記が残っている').not.toContain('期限切れ');
+      '再送後も期限切れバッジが残っている').not.toContain('期限切れ');
+    expect(await page.getAttribute('#operatorsList [data-f-oid="OP-0075"]', 'data-f-status'),
+      '再送しても絞り込み用ステータスが招待中へ戻らない').toBe('招待中');
+    expect(await page.locator('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("再送")').isVisible(),
+      '再送後に行内ボタンが消えた').toBe(true);
 
     // キャンセルは確認を経て行ごと消え、件数表示も追従する
     await page.click('#operatorsList [data-f-oid="OP-0075"] .op-inv-act button:has-text("キャンセル")');
     await expect(page.locator('#mConfirmCancelInviteOp')).toBeVisible();
-    await page.click('#mConfirmCancelInviteOp button:has-text("招待をキャンセルする")');
+    await page.click('#mConfirmCancelInviteOp button:has-text("招待をキャンセルする")', { timeout: 30000 });
     await page.waitForTimeout(300);
     expect(await page.locator('#operatorsList [data-f-oid="OP-0075"]').count(), 'キャンセルしても行が残っている').toBe(0);
     expect(await page.locator('#operatorsList-total').innerText()).toBe('12');
