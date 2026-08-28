@@ -10,7 +10,7 @@ This repository is a static mock development workspace for SPEED AD. The main wo
 - Start admin work from `03_admin/index.html`.
 - Start first-login flow checks from `04_first-login/index.html`.
 - Treat `docs/` as the canonical location for specifications, process notes, and templates.
-- Treat `docs/legacy-要件定義/` as an externalized legacy index only; new or revised specs should go to `docs/画面設計/仕様/`.
+- Treat `docs/legacy-要件定義/` as an externalized legacy index only; new or revised specs should go to `docs/画面設計/仕様/` (admin-screen specs: `docs/リライト版仕様書/admin/`).
 - Use `docs/リファレンス/共有規約/02_SHARED_DOC_BOUNDARY_RULES.md` as the source of truth for whether a document belongs in the shared repo or private management.
 
 ## Implementation Boundaries
@@ -32,7 +32,7 @@ This repository is a static mock development workspace for SPEED AD. The main wo
 - `python -m http.server 8000` serves the repository root. Main checks are `http://localhost:8000/02_dashboard/index.html`, `http://localhost:8000/03_admin/index.html`, and `http://localhost:8000/04_first-login/index.html`.
 - `npx serve .` is an acceptable alternative for static serving.
 - There is no root build pipeline or required npm script flow. Refreshing the browser reflects file changes directly.
-- Before starting implementation, review `docs/README.md`, the relevant spec under `docs/画面設計/仕様/`, and any shared handbook/reference docs needed for the task.
+- Before starting implementation, review `docs/README.md`, the relevant spec under `docs/画面設計/仕様/` (or `docs/リライト版仕様書/admin/` for admin screens), and any shared handbook/reference docs needed for the task.
 
 ## Coding Style & Documentation Expectations
 - Use ES modules, 2-space indentation, trailing semicolons, and single quotes.
@@ -41,10 +41,10 @@ This repository is a static mock development workspace for SPEED AD. The main wo
 - Align new UI patterns and interaction behavior with `docs/リファレンス/共有規約/01_SHARED_CODING_STANDARDS.md`.
 - For AI-facing responsibility boundaries, use `docs/リファレンス/共有規約/04_AI_RESPONSIBILITY_BOUNDARY.md` as the shared reference.
 - If implementation changes behavior, update the corresponding documentation in `docs/` within the same workstream.
-- For new or revised specifications, prefer `docs/画面設計/仕様/`. Internal product policy and business planning docs are managed outside the shared repo.
+- For new or revised specifications, prefer `docs/画面設計/仕様/` (admin screens: `docs/リライト版仕様書/admin/`). Internal product policy and business planning docs are managed outside the shared repo.
 
 ## AI Responsibility Notes
-- Treat `docs/画面設計/仕様/` as the source of truth for UI experience, copy, display conditions, and user guidance.
+- Treat `docs/画面設計/仕様/` (service screens) and `docs/リライト版仕様書/admin/` (admin screens) as the source of truth for UI experience, copy, display conditions, and user guidance.
 - Treat save, API, authz, and data-integrity rules as server-side concerns that must stand independently of UI gating.
 - When an operation flow requires assignment, reassignment, status transitions, or operator handling, capture the implementation-ready rule in shared docs instead of relying on private notes.
 - Do not store raw organization structure, personnel details, or meeting rationale in this repo.

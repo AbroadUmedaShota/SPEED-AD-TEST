@@ -602,6 +602,9 @@ window.pOpSave = function () {
     }
     window.pToast((oid || 'オペレーター').trim() + ' の設定を保存しました');
     window.pClose('mConfirmDisableOp');
+    // 保存で行が絞り込み対象外になった場合(例: 有効で絞ったまま無効へ変更)も
+    // 復帰先の行が不可視になるため、再送・キャンセルと同じくフォーカスを退避する
+    window.pOpFocusListIfLost();
 };
 
 // 対象のメールは innerText の正規表現抽出ではなく、識別子置換を管理する IIFE 側の

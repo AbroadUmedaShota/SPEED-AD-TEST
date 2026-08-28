@@ -152,6 +152,29 @@ test.describe('決着済みの配置（戻ったら落ちる）', () => {
     }), '再送後にキーボードフォーカスが失われた').toBe(true);
   });
 
+  test('有効で絞り込んだまま無効へ保存すると、行が結果から外れフォーカスも失わない', async ({ page }) => {
+    // 保存経路も再送・キャンセルと同じく、適用済み条件の再評価とフォーカス退避を通ること
+    await openScreen(page, '/03_admin/operator-management.html');
+    await page.selectOption('select[data-f-key="status"]', { label: '有効' });
+    await page.click('[data-filter-for="operatorsList"] button:has-text("検索")');
+    await page.waitForTimeout(250);
+    expect(await page.locator('#operatorsList [data-pg]:not([data-out])').count(), '有効は10件のはず').toBe(10);
+
+    await page.click('#operatorsList [data-f-oid="OP-0086"]');
+    await expect(page.locator('#opModal')).toBeVisible();
+    await page.selectOption('#opModal select[data-op-field="status"]', '無効');
+    await page.click('#opModal button:has-text("変更を保存")');
+    await expect(page.locator('#mConfirmDisableOp')).toBeVisible();
+    await page.click('#mConfirmDisableOp button:has-text("保存する")', { timeout: 30000 });
+    await page.waitForTimeout(300);
+    expect(await page.locator('#operatorsList [data-pg]:not([data-out])').count(),
+      '無効へ変えた行が有効の絞り込み結果に残っている').toBe(9);
+    expect(await page.evaluate(() => {
+      const a = document.activeElement;
+      return !!a && a !== document.body && a.offsetParent !== null;
+    }), '保存後にキーボードフォーカスが失われた').toBe(true);
+  });
+
   test('招待を送信すると新規行が末尾に入り、行内の再送・キャンセルだけで操作できる', async ({ page }) => {
     // 招待直後の行も静的な招待中行と同じ扱い: モーダルは開かず、最終ログイン欄の
     // 再送・キャンセルから確認モーダルへ繋がる(2026-08-28 レビュー反映)。
