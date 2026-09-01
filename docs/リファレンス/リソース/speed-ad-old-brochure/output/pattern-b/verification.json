@@ -1,0 +1,449 @@
+{
+  "generatedAt": "2026-08-25T10:43:56.503Z",
+  "expectedTarget": "https://speed-ad.com/",
+  "expectedContactEmail": "info@abroad-o.com",
+  "expectedCompanyWebsite": "https://www.abroad-o.com/",
+  "qrAssetIsVector": true,
+  "qrDecode": {
+    "htmlAsset": "https://speed-ad.com/",
+    "png": "https://speed-ad.com/",
+    "pdf300dpi": "https://speed-ad.com/"
+  },
+  "pdfInfo": {
+    "pages": 2,
+    "widthPt": 841.92,
+    "heightPt": 594.96
+  },
+  "pngInfo": {
+    "outside": {
+      "width": 4492,
+      "height": 3176,
+      "effectiveDpi": 384.2
+    },
+    "inside": {
+      "width": 4492,
+      "height": 3180,
+      "effectiveDpi": 384.2
+    }
+  },
+  "panelGeometryPass": true,
+  "brandAssetPass": true,
+  "insideDesignPass": true,
+  "coverDesignPass": true,
+  "companyWebsitePass": true,
+  "publicCopyPass": true,
+  "publicCopy": {
+    "html": {
+      "required": [
+        {
+          "id": "freeTwoFields",
+          "pass": true,
+          "phrases": [
+            "基本情報を無料でデータ化",
+            "2項目を無料で",
+            "氏名・メールアドレスの基本2項目"
+          ]
+        },
+        {
+          "id": "standardTenFields",
+          "pass": true,
+          "phrases": [
+            "標準10項目"
+          ]
+        },
+        {
+          "id": "onDemandConditions",
+          "pass": true,
+          "phrases": [
+            "オンデマンドなら最短当日中※",
+            "※最短当日中はオンデマンドプラン。Premium契約・18時までの入稿など所定条件があります。"
+          ]
+        },
+        {
+          "id": "csvPlanConditions",
+          "pass": true,
+          "phrases": [
+            "プランに応じてCSV出力し、営業共有や集計に活用。"
+          ]
+        },
+        {
+          "id": "billingStatement",
+          "pass": true,
+          "phrases": [
+            "請求書・明細確認",
+            "請求書と明細を一覧で確認し、PDF出力にも対応。"
+          ]
+        }
+      ],
+      "forbidden": [
+        {
+          "phrase": "対象イベント",
+          "present": false
+        },
+        {
+          "phrase": "自動で取り込み",
+          "present": false
+        },
+        {
+          "phrase": "外部システムと連携",
+          "present": false
+        },
+        {
+          "phrase": "入金状況を可視化",
+          "present": false
+        },
+        {
+          "phrase": "請求・クローズ",
+          "present": false
+        }
+      ]
+    },
+    "pdf": {
+      "required": [
+        {
+          "id": "freeTwoFields",
+          "pass": true,
+          "phrases": [
+            "基本情報を無料でデータ化",
+            "項目を無料で",
+            "氏名・メールアドレスの基本2項目"
+          ]
+        },
+        {
+          "id": "standardTenFields",
+          "pass": true,
+          "phrases": [
+            "標準10項目"
+          ]
+        },
+        {
+          "id": "onDemandConditions",
+          "pass": true,
+          "phrases": [
+            "オンデマンドなら",
+            "最短当日中※",
+            "※最短当日中はオンデマンドプラン。Premium契約・18時",
+            "までの入稿など所定条件があります。"
+          ]
+        },
+        {
+          "id": "csvPlanConditions",
+          "pass": true,
+          "phrases": [
+            "プランに応じてCSV出力し、営業共有や集計に活用。"
+          ]
+        },
+        {
+          "id": "billingStatement",
+          "pass": true,
+          "phrases": [
+            "請求書・明細確認",
+            "請求書と明細を一覧で確認し、PDF出力にも対応。"
+          ]
+        }
+      ],
+      "forbidden": [
+        {
+          "phrase": "対象イベント",
+          "present": false
+        },
+        {
+          "phrase": "自動で取り込み",
+          "present": false
+        },
+        {
+          "phrase": "外部システムと連携",
+          "present": false
+        },
+        {
+          "phrase": "入金状況を可視化",
+          "present": false
+        },
+        {
+          "phrase": "請求・クローズ",
+          "present": false
+        }
+      ]
+    },
+    "structuredHtml": {
+      "expected": {
+        "freeTitle": "基本情報を無料でデータ化",
+        "freeValue": "2項目を無料で",
+        "freeDetail": "氏名・メールアドレスの基本2項目から、費用をかけずにお試しいただけます。",
+        "paidTitle": "必要な情報を、より早く",
+        "paidValue": "標準10項目オンデマンドなら最短当日中※",
+        "paidDetail": "営業フォローに必要な情報を標準10項目でデータ化。納期も用途に合わせて選べます。",
+        "paidNote": "※最短当日中はオンデマンドプラン。Premium契約・18時までの入稿など所定条件があります。",
+        "csvDescription": "プランに応じてCSV出力し、営業共有や集計に活用。",
+        "billingTitle": "請求書・明細確認",
+        "billingDescription": "請求書と明細を一覧で確認し、PDF出力にも対応。"
+      },
+      "actual": {
+        "freeTitle": "基本情報を無料でデータ化",
+        "freeValue": "2項目を無料で",
+        "freeDetail": "氏名・メールアドレスの基本2項目から、費用をかけずにお試しいただけます。",
+        "paidTitle": "必要な情報を、より早く",
+        "paidValue": "標準10項目オンデマンドなら最短当日中※",
+        "paidDetail": "営業フォローに必要な情報を標準10項目でデータ化。納期も用途に合わせて選べます。",
+        "paidNote": "※最短当日中はオンデマンドプラン。Premium契約・18時までの入稿など所定条件があります。",
+        "csvDescription": "プランに応じてCSV出力し、営業共有や集計に活用。",
+        "billingTitle": "請求書・明細確認",
+        "billingDescription": "請求書と明細を一覧で確認し、PDF出力にも対応。"
+      },
+      "pass": true
+    }
+  },
+  "contactEmail": {
+    "html": "info@abroad-o.com",
+    "pdfTextIncludesExpected": true
+  },
+  "pass": true,
+  "results": [
+    {
+      "viewport": {
+        "width": 1684,
+        "height": 1191
+      },
+      "errors": [],
+      "layout": {
+        "sheets": [
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              97.1,
+              99.75,
+              99.75
+            ]
+          },
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              100.01,
+              99.75,
+              96.84
+            ]
+          }
+        ],
+        "qrAlt": "https://speed-ad.com/ へのQRコード",
+        "target": "https://speed-ad.com/",
+        "contactEmail": "info@abroad-o.com",
+        "companyWebsite": {
+          "href": "https://www.abroad-o.com/",
+          "text": "www.abroad-o.com"
+        },
+        "brand": {
+          "wordmarkFontLoaded": true,
+          "placements": [
+            {
+              "location": "back",
+              "emblemPresent": true,
+              "emblemLoaded": true,
+              "emblemSrc": "../../assets/brand/speed-ad-emblem-color.svg",
+              "wordmarkText": "SPEED AD",
+              "wordmarkFontFamily": "\"SPEED AD Wordmark\", serif"
+            },
+            {
+              "location": "cover",
+              "emblemPresent": true,
+              "emblemLoaded": true,
+              "emblemSrc": "../../assets/brand/speed-ad-emblem-color.svg",
+              "wordmarkText": "SPEED AD",
+              "wordmarkFontFamily": "\"SPEED AD Wordmark\", serif"
+            }
+          ]
+        },
+        "insideDesign": {
+          "headingTops": [
+            1095.45,
+            1095.45,
+            1095.45
+          ],
+          "mainBodyMinMm": 2.8,
+          "supplementalMinMm": 2.6,
+          "bottomWhitespaceMm": [
+            7,
+            7,
+            7
+          ]
+        },
+        "coverDesign": {
+          "lockupCenterOffsetPx": 0.5,
+          "hasDataFlowIllustration": true,
+          "sourceCount": 2,
+          "hasDataHub": true
+        },
+        "overflowElements": []
+      }
+    },
+    {
+      "viewport": {
+        "width": 1188,
+        "height": 840
+      },
+      "errors": [],
+      "layout": {
+        "sheets": [
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              97.1,
+              99.75,
+              99.75
+            ]
+          },
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              100.01,
+              99.75,
+              96.84
+            ]
+          }
+        ],
+        "qrAlt": "https://speed-ad.com/ へのQRコード",
+        "target": "https://speed-ad.com/",
+        "contactEmail": "info@abroad-o.com",
+        "companyWebsite": {
+          "href": "https://www.abroad-o.com/",
+          "text": "www.abroad-o.com"
+        },
+        "brand": {
+          "wordmarkFontLoaded": true,
+          "placements": [
+            {
+              "location": "back",
+              "emblemPresent": true,
+              "emblemLoaded": true,
+              "emblemSrc": "../../assets/brand/speed-ad-emblem-color.svg",
+              "wordmarkText": "SPEED AD",
+              "wordmarkFontFamily": "\"SPEED AD Wordmark\", serif"
+            },
+            {
+              "location": "cover",
+              "emblemPresent": true,
+              "emblemLoaded": true,
+              "emblemSrc": "../../assets/brand/speed-ad-emblem-color.svg",
+              "wordmarkText": "SPEED AD",
+              "wordmarkFontFamily": "\"SPEED AD Wordmark\", serif"
+            }
+          ]
+        },
+        "insideDesign": {
+          "headingTops": [
+            845.23,
+            845.23,
+            845.23
+          ],
+          "mainBodyMinMm": 2.8,
+          "supplementalMinMm": 2.6,
+          "bottomWhitespaceMm": [
+            5.04,
+            5.04,
+            5.04
+          ]
+        },
+        "coverDesign": {
+          "lockupCenterOffsetPx": 0.36,
+          "hasDataFlowIllustration": true,
+          "sourceCount": 2,
+          "hasDataHub": true
+        },
+        "overflowElements": []
+      }
+    },
+    {
+      "viewport": {
+        "width": 900,
+        "height": 1200
+      },
+      "errors": [],
+      "layout": {
+        "sheets": [
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              97.1,
+              99.75,
+              99.75
+            ]
+          },
+          {
+            "width": 1123,
+            "clientWidth": 1123,
+            "height": 794,
+            "clientHeight": 794,
+            "panelWidthsMm": [
+              100.01,
+              99.75,
+              96.84
+            ]
+          }
+        ],
+        "qrAlt": "https://speed-ad.com/ へのQRコード",
+        "target": "https://speed-ad.com/",
+        "contactEmail": "info@abroad-o.com",
+        "companyWebsite": {
+          "href": "https://www.abroad-o.com/",
+          "text": "www.abroad-o.com"
+        },
+        "brand": {
+          "wordmarkFontLoaded": true,
+          "placements": [
+            {
+              "location": "back",
+              "emblemPresent": true,
+              "emblemLoaded": true,
+              "emblemSrc": "../../assets/brand/speed-ad-emblem-color.svg",
+              "wordmarkText": "SPEED AD",
+              "wordmarkFontFamily": "\"SPEED AD Wordmark\", serif"
+            },
+            {
+              "location": "cover",
+              "emblemPresent": true,
+              "emblemLoaded": true,
+              "emblemSrc": "../../assets/brand/speed-ad-emblem-color.svg",
+              "wordmarkText": "SPEED AD",
+              "wordmarkFontFamily": "\"SPEED AD Wordmark\", serif"
+            }
+          ]
+        },
+        "insideDesign": {
+          "headingTops": [
+            845.23,
+            845.23,
+            845.23
+          ],
+          "mainBodyMinMm": 2.8,
+          "supplementalMinMm": 2.6,
+          "bottomWhitespaceMm": [
+            5.04,
+            5.04,
+            5.04
+          ]
+        },
+        "coverDesign": {
+          "lockupCenterOffsetPx": 0.36,
+          "hasDataFlowIllustration": true,
+          "sourceCount": 2,
+          "hasDataHub": true
+        },
+        "overflowElements": []
+      }
+    }
+  ]
+}

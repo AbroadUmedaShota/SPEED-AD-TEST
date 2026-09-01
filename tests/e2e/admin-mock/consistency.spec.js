@@ -573,11 +573,15 @@ test.describe('R-05 〜 R-13 用語の統一', () => {
     }
   });
 
-  test('R-07 サイドバーの項目名と、遷移先の画面名が一致する', async ({ page }) => {
+  test('R-07 サイドバーの項目名と、遷移先の画面呼称が一致する', async ({ page }) => {
     await openScreen(page, '/03_admin/index.html');
     const links = await page.evaluate(() => [...document.querySelectorAll('#sidebar-placeholder a')]
       .map((a) => ({ label: (a.textContent || '').trim(), href: a.getAttribute('href') }))
       .filter((x) => x.label && x.href && !x.href.startsWith('#')));
+    const navLabelOverrides = {
+      '/03_admin/data-entry/index.html': '入力画面',
+      '/03_admin/reconciliation/index.html': '照合画面',
+    };
 
     // 見出しは HTML に直書きなので、12画面を描画せず取得だけで足りる
     // （全部開くと並列実行のときに時間切れになる）
@@ -587,7 +591,8 @@ test.describe('R-05 〜 R-13 用語の統一', () => {
       const body = await (await page.request.get(url)).text();
       const m = /<h1[^>]*>([\s\S]*?)<\/h1>/.exec(body);
       const title = m ? m[1].replace(/<[^>]+>/g, '').trim() : '';
-      if (title && title !== l.label) { mismatch.push(`${l.label} → ${title}`); }
+      const expectedLabel = navLabelOverrides[new URL(url).pathname] || title;
+      if (title && expectedLabel !== l.label) { mismatch.push(`${l.label} → ${expectedLabel}（画面見出し: ${title}）`); }
     }
     expect(mismatch.length, `サイドバーと画面名が違う: ${mismatch.join(' / ')}`).toBe(0);
   });

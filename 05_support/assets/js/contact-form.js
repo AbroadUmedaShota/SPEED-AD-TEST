@@ -3,7 +3,16 @@ import {
   convertImageFileToWebp,
   normalizeWebpQuality,
 } from './contact-attachment-utils.js';
-import { getContactTestModeFromUrl } from './contact-form-utils.js';
+import {
+  buildContactAntiBotSignals,
+  buildTurnstileSubmissionPayload,
+  getTurnstileSiteKey,
+  getContactTestModeFromUrl,
+  TURNSTILE_ACTION,
+  TURNSTILE_FALLBACK_CONTACT,
+  TURNSTILE_FALLBACK_MESSAGE,
+  TURNSTILE_SCRIPT_SRC,
+} from './contact-form-utils.js?v=20260712-turnstile';
 
 const CONTACT_TYPE_LABELS = {
   general: '一般的なお問い合わせ',
@@ -77,6 +86,16 @@ function initContactForm() {
   const status = document.getElementById('contactStatus');
   const submit = form.querySelector('.contact-submit');
   const testModeNotice = document.getElementById('contactTestModeNotice');
+  const turnstileNotice = document.getElementById('contactTurnstileNotice');
+  const turnstileFallback = document.getElementById('contactTurnstileFallback');
+  const turnstileContainer = document.getElementById('contactTurnstileWidget');
+  const turnstileTokenEl = document.getElementById('f-turnstile-token');
+  const turnstileActionEl = document.getElementById('f-turnstile-action');
+  const turnstileSiteKeyEl = document.getElementById('f-turnstile-sitekey');
+  const turnstileError = document.getElementById('contactTurnstileError');
+  const honeypotEl = document.getElementById('f-website');
+  const formLoadedAtEl = document.getElementById('f-form-loaded-at');
+  const interactionCountEl = document.getElementById('f-form-interaction-count');
   const testModeState = getContactTestModeFromUrl(window.location.href);
   cleanContactTestModeUrl(testModeState);
   if (testModeNotice && testModeState.enabled) {
@@ -96,14 +115,77 @@ function initContactForm() {
   const maxAttachmentMb = getMaxAttachmentMb(form);
   const maxAttachmentBytes = maxAttachmentMb * 1024 * 1024;
   const webpQuality = getWebpQuality(form);
+  const turnstileSiteKey = getTurnstileSiteKey(form);
+  const formLoadedAt = Date.now();
   let files = [];
   let seq = 0;
   let isProcessingFiles = false;
   let isSubmitting = false;
+  let interactionCount = 0;
+  let turnstileWidgetId = null;
+  let turnstileReady = false;
+  let turnstileToken = '';
+  let turnstileUnavailable = false;
+
+  if (formLoadedAtEl) {
+    formLoadedAtEl.value = String(formLoadedAt);
+  }
+  if (turnstileSiteKeyEl) {
+    turnstileSiteKeyEl.value = turnstileSiteKey;
+  }
+  if (turnstileActionEl) {
+    turnstileActionEl.value = TURNSTILE_ACTION;
+  }
+
+  function bumpInteractionCount() {
+    interactionCount += 1;
+    if (interactionCountEl) {
+      interactionCountEl.value = String(interactionCount);
+    }
+  }
+
+  ['focusin', 'input', 'change', 'paste', 'click', 'keydown'].forEach((eventName) => {
+    form.addEventListener(eventName, bumpInteractionCount, { capture: true });
+  });
 
   function showStatus(message) {
     status.textContent = message;
     status.hidden = !message;
+  }
+
+  function setTurnstileError(message) {
+    if (turnstileError) {
+      turnstileError.textContent = message;
+      turnstileError.hidden = !message;
+    }
+  }
+
+  function setTurnstileUnavailable(message) {
+    turnstileUnavailable = true;
+    turnstileReady = false;
+    turnstileToken = '';
+    if (turnstileTokenEl) {
+      turnstileTokenEl.value = '';
+    }
+    setTurnstileError(message || TURNSTILE_FALLBACK_MESSAGE);
+    if (turnstileNotice) {
+      turnstileNotice.hidden = false;
+      turnstileNotice.textContent = message || TURNSTILE_FALLBACK_MESSAGE;
+    }
+    if (turnstileFallback) {
+      turnstileFallback.hidden = false;
+      turnstileFallback.innerHTML = `お問い合わせは <a href="mailto:${TURNSTILE_FALLBACK_CONTACT}">${TURNSTILE_FALLBACK_CONTACT}</a> へご連絡ください。`;
+    }
+    updateSubmitState();
+  }
+
+  function setTurnstileToken(token) {
+    turnstileToken = String(token || '').trim();
+    if (turnstileTokenEl) {
+      turnstileTokenEl.value = turnstileToken;
+    }
+    setTurnstileError('');
+    updateSubmitState();
   }
 
   function getDisplayErrorMessage(message) {
@@ -135,10 +217,77 @@ function initContactForm() {
   }
 
   function updateSubmitState() {
-    submit.disabled = isProcessingFiles || isSubmitting || isTestModeTokenMissing();
-    submit.textContent = isProcessingFiles ? '画像変換中...' : isSubmitting ? '送信中...' : '送信する';
+    const turnstileBlocked = !turnstileUnavailable && (!turnstileReady || !turnstileToken);
+    submit.disabled = isProcessingFiles || isSubmitting || isTestModeTokenMissing() || turnstileBlocked || turnstileUnavailable;
+    if (turnstileUnavailable) {
+      submit.textContent = '利用不可';
+    } else {
+      submit.textContent = isProcessingFiles ? '画像変換中...' : isSubmitting ? '送信中...' : '送信する';
+    }
   }
   updateSubmitState();
+  ensureTurnstileScript();
+
+  function ensureTurnstileScript() {
+    if (!turnstileSiteKey) {
+      setTurnstileUnavailable(TURNSTILE_FALLBACK_MESSAGE);
+      return;
+    }
+    if (!turnstileNotice) {
+      return;
+    }
+    turnstileNotice.hidden = false;
+    turnstileNotice.textContent = 'Turnstile を読み込み中です。';
+    const existing = document.querySelector('script[data-support-contact-turnstile="true"]');
+    if (existing) return;
+
+    const script = document.createElement('script');
+    script.src = TURNSTILE_SCRIPT_SRC;
+    script.async = true;
+    script.defer = true;
+    script.dataset.supportContactTurnstile = 'true';
+    script.addEventListener('load', renderTurnstileWidget);
+    script.addEventListener('error', () => setTurnstileUnavailable(TURNSTILE_FALLBACK_MESSAGE));
+    document.head.appendChild(script);
+  }
+
+  function renderTurnstileWidget() {
+    if (!turnstileSiteKey || turnstileUnavailable) return;
+    if (!window.turnstile || !turnstileContainer) {
+      setTurnstileUnavailable(TURNSTILE_FALLBACK_MESSAGE);
+      return;
+    }
+    if (turnstileWidgetId !== null) return;
+
+    try {
+      turnstileWidgetId = window.turnstile.render(turnstileContainer, {
+        sitekey: turnstileSiteKey,
+        action: TURNSTILE_ACTION,
+        theme: 'light',
+        callback: (token) => {
+          turnstileReady = true;
+          setTurnstileToken(token);
+        },
+        'expired-callback': () => {
+          turnstileReady = true;
+          setTurnstileToken('');
+          window.turnstile.reset(turnstileWidgetId);
+        },
+        'error-callback': () => setTurnstileUnavailable(TURNSTILE_FALLBACK_MESSAGE),
+        'before-interactive-callback': () => {
+          turnstileReady = true;
+          updateSubmitState();
+        },
+      });
+      turnstileReady = true;
+      if (turnstileNotice) {
+        turnstileNotice.textContent = '送信前に確認を完了してください。';
+      }
+      updateSubmitState();
+    } catch (_error) {
+      setTurnstileUnavailable(TURNSTILE_FALLBACK_MESSAGE);
+    }
+  }
 
   function render() {
     thumbs.innerHTML = '';
@@ -258,6 +407,11 @@ function initContactForm() {
       ok = false;
     }
 
+    if (honeypotEl && String(honeypotEl.value || '').trim()) {
+      showStatus('送信できませんでした。時間をおいて再度お試しください。');
+      ok = false;
+    }
+
     return ok;
   }
 
@@ -276,6 +430,14 @@ function initContactForm() {
   function buildPayload(attachments) {
     const formData = new FormData(form);
     const contactType = String(formData.get('contactType') || '').trim();
+    const antiBotSignals = buildContactAntiBotSignals({
+      honeypotValue: String(formData.get('website') || ''),
+      formLoadedAt: formLoadedAtEl ? formLoadedAtEl.value : formLoadedAt,
+      submittedAt: Date.now(),
+      interactionCount,
+      sourceUrl: window.location.href,
+    });
+    const turnstilePayload = buildTurnstileSubmissionPayload(turnstileToken, turnstileSiteKey);
     const payload = {
       contactType,
       contactTypeLabel: CONTACT_TYPE_LABELS[contactType] || contactType,
@@ -287,6 +449,13 @@ function initContactForm() {
       sourceUrl: window.location.href,
       userAgent: window.navigator.userAgent,
       privacyConsent: formData.get('privacyConsent') === 'on',
+      contactAntiBot: antiBotSignals,
+      honeypot: antiBotSignals.honeypotValue,
+      formLoadedAt: antiBotSignals.formLoadedAt,
+      formSubmittedAt: antiBotSignals.submittedAt,
+      formElapsedMs: antiBotSignals.elapsedMs,
+      formInteractionCount: antiBotSignals.interactionCount,
+      ...turnstilePayload,
     };
     if (testModeState.enabled) {
       payload.testMode = true;
@@ -356,6 +525,14 @@ function initContactForm() {
       return;
     }
     if (!validateTestModeBeforeSubmit()) {
+      return;
+    }
+    if (turnstileUnavailable) {
+      showStatus(TURNSTILE_FALLBACK_MESSAGE);
+      return;
+    }
+    if (!turnstileReady || !turnstileToken) {
+      showStatus('Turnstile の確認が完了するまで送信できません。');
       return;
     }
 

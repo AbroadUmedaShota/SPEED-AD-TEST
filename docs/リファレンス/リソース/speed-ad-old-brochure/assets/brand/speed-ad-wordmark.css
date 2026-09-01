@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "SPEED AD Wordmark";
+  src: url("./speed-ad-wordmark.woff2?v=5b26128c9b92") format("woff2");
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+}
+
+:root {
+  --speed-ad-wordmark-first-line-width: 4.275em;
+  --speed-ad-wordmark-block-offset: -0.088em;
+  --speed-ad-wordmark-first-line-indent: -0.048em;
+}
