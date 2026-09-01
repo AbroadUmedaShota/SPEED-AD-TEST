@@ -1,0 +1,272 @@
+{
+  "id": "sv_0003_26011",
+  "groupId": "group_marketing",
+  "name": {
+    "ja": "【サンプル】ABC展示会来場者アンケート",
+    "en": "[Sample] ABC Exhibition Visitor Survey"
+  },
+  "status": "完了",
+  "answerCount": 300,
+  "periodStart": "2026-06-15",
+  "periodEnd": "2026-06-17",
+  "plan": "Premium",
+  "details": [
+    {
+      "id": "Q1",
+      "text": {
+        "ja": "弊社ブースにお立ち寄り頂いた目的をお選びください（複数選択可）",
+        "en": "Why did you visit our booth? (multiple answers allowed)"
+      },
+      "type": "multi_choice",
+      "required": true,
+      "options": [
+        {
+          "value": "製品Aの導入を検討",
+          "text": {
+            "ja": "製品Aの導入を検討",
+            "en": "Considering Product A"
+          }
+        },
+        {
+          "value": "製品Bの導入を検討",
+          "text": {
+            "ja": "製品Bの導入を検討",
+            "en": "Considering Product B"
+          }
+        },
+        {
+          "value": "製品Cの導入を検討",
+          "text": {
+            "ja": "製品Cの導入を検討",
+            "en": "Considering Product C"
+          }
+        },
+        {
+          "value": "情報収集",
+          "text": {
+            "ja": "情報収集",
+            "en": "Information gathering"
+          }
+        },
+        {
+          "value": "その他",
+          "text": {
+            "ja": "その他",
+            "en": "Other"
+          }
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "text": {
+        "ja": "導入を予定されている時期をお選びください",
+        "en": "When do you plan to adopt?"
+      },
+      "type": "single_choice",
+      "required": true,
+      "options": [
+        {
+          "value": "直ぐにでも",
+          "text": {
+            "ja": "直ぐにでも",
+            "en": "Immediately"
+          }
+        },
+        {
+          "value": "3か月以内",
+          "text": {
+            "ja": "3か月以内",
+            "en": "Within 3 months"
+          }
+        },
+        {
+          "value": "1年以内",
+          "text": {
+            "ja": "1年以内",
+            "en": "Within 1 year"
+          }
+        },
+        {
+          "value": "検討中だが時期未定",
+          "text": {
+            "ja": "検討中だが時期未定",
+            "en": "Under consideration (timing TBD)"
+          }
+        },
+        {
+          "value": "導入予定なし",
+          "text": {
+            "ja": "導入予定なし",
+            "en": "No plans to adopt"
+          }
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "text": {
+        "ja": "導入のご検討にあたり重要視しているポイントをお知らせください",
+        "en": "What do you consider important when evaluating adoption?"
+      },
+      "type": "matrix_sa",
+      "required": true,
+      "rows": [
+        {
+          "id": "r1",
+          "text": {
+            "ja": "導入のコスト",
+            "en": "Initial cost"
+          }
+        },
+        {
+          "id": "r2",
+          "text": {
+            "ja": "維持管理のコスト",
+            "en": "Maintenance cost"
+          }
+        },
+        {
+          "id": "r3",
+          "text": {
+            "ja": "導入までのスピード",
+            "en": "Speed of deployment"
+          }
+        },
+        {
+          "id": "r4",
+          "text": {
+            "ja": "導入による業務効率化",
+            "en": "Operational efficiency"
+          }
+        },
+        {
+          "id": "r5",
+          "text": {
+            "ja": "他システムとの連携",
+            "en": "Integration with other systems"
+          }
+        },
+        {
+          "id": "r6",
+          "text": {
+            "ja": "アフターフォロー",
+            "en": "After-sales support"
+          }
+        }
+      ],
+      "options": [
+        {
+          "value": "1",
+          "text": {
+            "ja": "非常に重要視している",
+            "en": "Extremely important"
+          }
+        },
+        {
+          "value": "2",
+          "text": {
+            "ja": "重要視している",
+            "en": "Important"
+          }
+        },
+        {
+          "value": "3",
+          "text": {
+            "ja": "確認・比較はしている",
+            "en": "Reviewing and comparing"
+          }
+        },
+        {
+          "value": "4",
+          "text": {
+            "ja": "あまり重要としていない",
+            "en": "Not very important"
+          }
+        }
+      ]
+    },
+    {
+      "id": "Q4",
+      "text": {
+        "ja": "弊社からご案内する希望の情報をお選びください（複数選択可）",
+        "en": "What information would you like from us? (multiple answers allowed)"
+      },
+      "type": "multi_choice",
+      "required": true,
+      "options": [
+        {
+          "value": "営業担当からの説明・ご提案",
+          "text": {
+            "ja": "営業担当からの説明・ご提案",
+            "en": "Explanation and proposal from sales"
+          }
+        },
+        {
+          "value": "お見積り",
+          "text": {
+            "ja": "お見積り",
+            "en": "Quotation"
+          }
+        },
+        {
+          "value": "デモ・テスト導入",
+          "text": {
+            "ja": "デモ・テスト導入",
+            "en": "Demo / trial deployment"
+          }
+        },
+        {
+          "value": "その他",
+          "text": {
+            "ja": "その他",
+            "en": "Other"
+          }
+        },
+        {
+          "value": "案内を希望しない",
+          "text": {
+            "ja": "案内を希望しない",
+            "en": "No follow-up desired"
+          }
+        }
+      ]
+    },
+    {
+      "id": "Q5",
+      "text": {
+        "ja": "その他、ご意見・ご要望があれば、ご記入ください",
+        "en": "Please share any other comments or requests"
+      },
+      "type": "free_text",
+      "required": false
+    }
+  ],
+  "displayTitle": {
+    "ja": "ABC展示会ご来場者様アンケート",
+    "en": "ABC Exhibition Visitor Survey"
+  },
+  "description": {
+    "ja": "ご来場いただき、ありがとうございました。アンケートへのご協力をよろしくお願い致します。",
+    "en": "Thank you for visiting. We appreciate your cooperation with this survey."
+  },
+  "memo": "dev環境 questionnaire_answer?id=582 と同構成のダミーデータ検証用アンケートです。",
+  "realtimeAnswers": 0,
+  "deadline": "2026-09-30",
+  "downloadDeadline": "2026-09-30",
+  "dataCompletionDate": "2026-06-19",
+  "dataCompletionFlag": true,
+  "bizcardEnabled": true,
+  "bizcardRequest": 300,
+  "bizcardCompletionCount": 285,
+  "bypassDownloadDeadline": true,
+  "dataConversionPlan": "standard",
+  "thankYouEmailSettings": "自動送信",
+  "estimatedBillingAmount": 94050,
+  "bizcardSettings": {
+    "bizcardEnabled": true,
+    "bizcardRequest": 300,
+    "dataConversionPlan": "standard",
+    "internalMemo": "ABC展示会サンプル用の名刺データ化設定です。"
+  }
+}
