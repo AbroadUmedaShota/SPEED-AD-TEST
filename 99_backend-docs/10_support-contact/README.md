@@ -27,6 +27,8 @@ Apps Script エディタで `initializeContactStorage` と `checkContactConfigur
 - Verification: ローカルHTTP環境の `/05_support/contact/` から画面送信し、完了パネル表示まで確認済み。
 - Verification: 添付画像ありの `submitContact` テスト投稿で `storageStatus=stored` / `mailStatus=sent` を確認済み。
 - Viewer: 確認者専用GASは `viewer-gas/` に分離し、許可ユーザーだけが一覧、詳細、添付プレビュー、対応ステータス更新を行います。
+- CS運用拡張MVP: 担当、緊急度、分類、Gmail参照、進捗、引継ぎ、結果、次回確認日、追記専用履歴を確認者GASに追加します。設計正本は `../../docs/画面設計/仕様/25_support_contact_cs_operations_mvp.md` です。
+- CS運用拡張MVPのローカル実装は共有トークン認証を継続するため、操作者のアカウント単位監査は未対応です。Gmail本文取得、自動メール、外部通知、Laravel連携は含みません。
 
 ## 問い合わせDB整理方針
 

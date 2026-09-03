@@ -13,6 +13,8 @@
       --muted: #667085;
       --primary: #0f62fe;
       --danger: #b42318;
+      --warning: #b54708;
+      --success: #067647;
     }
     * { box-sizing: border-box; }
     body {
@@ -36,6 +38,7 @@
       font-size: 18px;
       font-weight: 700;
       letter-spacing: 0;
+      white-space: nowrap;
     }
     button, select, input, textarea {
       font: inherit;
@@ -63,6 +66,13 @@
     .muted { color: var(--muted); }
     .error { color: var(--danger); }
     .success { color: #067647; }
+    .auth-notice {
+      padding: 8px 20px;
+      border-bottom: 1px solid #fedf89;
+      background: #fffaeb;
+      color: #93370d;
+      font-size: 12px;
+    }
     .app {
       display: grid;
       grid-template-columns: minmax(320px, 42%) minmax(420px, 1fr);
@@ -167,6 +177,40 @@
       font-size: 12px;
       font-weight: 700;
     }
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 7px;
+      background: #f8fafc;
+      color: #475467;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge.high {
+      border-color: #fecdca;
+      background: #fef3f2;
+      color: var(--danger);
+    }
+    .badge.medium {
+      border-color: #fedf89;
+      background: #fffaeb;
+      color: var(--warning);
+    }
+    .attention-panel {
+      border: 1px solid #fecdca;
+      border-left: 4px solid var(--danger);
+      background: #fef3f2;
+      padding: 10px 12px;
+    }
+    .attention-panel strong { color: var(--danger); }
     .detail {
       display: grid;
       gap: 14px;
@@ -237,6 +281,47 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
+    }
+    .case-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .field-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .history-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .history-item {
+      display: grid;
+      gap: 4px;
+      border-left: 3px solid var(--line);
+      padding: 2px 0 2px 12px;
+    }
+    .history-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      color: var(--muted);
+      font-size: 12px;
     }
     .quick-actions {
       display: flex;
@@ -340,6 +425,8 @@
       .save-row { flex-direction: column; align-items: stretch; }
       .attachment-modal__body { grid-template-columns: 1fr; }
       .toolbar { grid-template-columns: 1fr; }
+      .case-form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
     }
   </style>
 </head>
@@ -351,6 +438,7 @@
       <button type="button" id="refreshButton">更新</button>
     </div>
   </header>
+  <div class="auth-notice" id="authNotice" hidden></div>
 
   <main class="denied" id="deniedView" hidden>
     <h2>アクセスできません</h2>
@@ -367,6 +455,8 @@
           <option value="all">すべて</option>
           <option value="未対応">未対応</option>
           <option value="対応中">対応中</option>
+          <option value="顧客確認待ち">顧客確認待ち</option>
+          <option value="引継ぎ待ち">引継ぎ待ち</option>
           <option value="保留">保留</option>
           <option value="対応済み">対応済み</option>
         </select>
@@ -544,22 +634,79 @@
       const counts = {
         total: 0,
         active: 0,
+        attention: 0,
         未対応: 0,
         対応中: 0,
+        顧客確認待ち: 0,
+        引継ぎ待ち: 0,
         保留: 0,
         対応済み: 0,
       };
       (submissions || []).forEach((submission) => {
         const status = normalizeViewerHandledStatus(submission && submission.handled_status);
         counts.total += 1;
-        if (status === '未対応' || status === '対応中') {
+        if (status !== '対応済み') {
           counts.active += 1;
         }
+        if (Array.isArray(submission.attention_reasons) && submission.attention_reasons.length) counts.attention += 1;
         if (Object.prototype.hasOwnProperty.call(counts, status)) {
           counts[status] += 1;
         }
       });
       return counts;
+    }
+
+    const CASE_FORM_FIELDS = [
+      'handled_status',
+      'assignee_email',
+      'urgency',
+      'case_category',
+      'gmail_thread_url',
+      'progress_note',
+      'handoff_to',
+      'handoff_status',
+      'resolution_code',
+      'resolution_summary',
+      'next_followup_at',
+      'history_note',
+    ];
+
+    function buildCaseFormSnapshot(values) {
+      return CASE_FORM_FIELDS.reduce((snapshot, key) => {
+        snapshot[key] = String((values && values[key]) || '');
+        return snapshot;
+      }, {});
+    }
+
+    function isCaseFormDirty(snapshot, values) {
+      const next = buildCaseFormSnapshot(values);
+      return CASE_FORM_FIELDS.some((key) => next[key] !== String((snapshot && snapshot[key]) || ''));
+    }
+
+    function getCaseEventLabel(eventType) {
+      const labels = {
+        handled_status: '状態',
+        assignee_email: '担当者',
+        urgency: '緊急度',
+        case_category: '分類',
+        gmail_thread_url: 'Gmail参照リンク',
+        progress_note: '進捗メモ',
+        handoff_to: '引継ぎ先',
+        handoff_status: '引継ぎ状態',
+        resolution_code: '対応結果',
+        resolution_summary: '対応結果要約',
+        next_followup_at: '次回確認日',
+      };
+      if (eventType === 'progress_added') return '対応履歴を追記';
+      const key = String(eventType || '').replace(/^field_changed:/, '');
+      return labels[key] ? `${labels[key]}を変更` : String(eventType || '更新');
+    }
+
+    function createCaseUpdateRequestId() {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return `case-${window.crypto.randomUUID()}`;
+      }
+      return `case-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     }
 
     function clampAttachmentIndex(index, attachments) {
@@ -658,6 +805,10 @@
       writeViewerAccessTokenToSession,
       clearViewerAccessTokenFromSession,
       computeQueueCounts,
+      buildCaseFormSnapshot,
+      isCaseFormDirty,
+      getCaseEventLabel,
+      createCaseUpdateRequestId,
       clampAttachmentIndex,
       normalizeViewerHandledStatus,
       shouldResetAttachmentModal,
@@ -731,10 +882,23 @@
       selectedId: window.CONTACT_VIEWER_INITIAL_ID || '',
       accessToken: window.CONTACT_VIEWER_ACCESS_TOKEN || readViewerAccessTokenFromSession(window.sessionStorage),
       submissions: [],
-      counts: { total: 0, active: 0, 未対応: 0, 対応中: 0, 保留: 0, 対応済み: 0 },
+      counts: { total: 0, active: 0, attention: 0, 未対応: 0, 対応中: 0, 顧客確認待ち: 0, 引継ぎ待ち: 0, 保留: 0, 対応済み: 0 },
+      options: {
+        statuses: ['未対応', '対応中', '顧客確認待ち', '引継ぎ待ち', '保留', '対応済み'],
+        assignees: [],
+        urgencies: ['高', '中', '低'],
+        categories: ['操作案内', '不具合', '契約・料金', '導入相談', '要望', 'その他'],
+        handoffTargets: ['CS', '営業', '開発', '管理者', 'その他'],
+        handoffStatuses: ['なし', '依頼済み', '受領済み', '差戻し'],
+        resolutionCodes: ['解決', '案内完了', '引継ぎ完了', '対応不要', '継続対応'],
+      },
+      events: [],
+      audit: null,
       loading: false,
       detail: null,
-      detailSnapshot: { handled_status: '', internal_note: '' },
+      detailSnapshot: buildCaseFormSnapshot({}),
+      detailRevision: '',
+      pendingRequestId: '',
       dirty: false,
       attachmentIndex: 0,
       attachmentRequestSerial: 0,
@@ -745,6 +909,7 @@
     const deniedView = document.getElementById('deniedView');
     const deniedMessage = document.getElementById('deniedMessage');
     const viewerEmail = document.getElementById('viewerEmail');
+    const authNotice = document.getElementById('authNotice');
     const refreshButton = document.getElementById('refreshButton');
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
@@ -809,8 +974,11 @@
       const chips = [
         { label: '全件', value: state.counts.total || 0 },
         { label: '対応が必要', value: state.counts.active || 0 },
+        { label: '要確認', value: state.counts.attention || 0 },
         { label: '未対応', value: state.counts['未対応'] || 0 },
         { label: '対応中', value: state.counts['対応中'] || 0 },
+        { label: '顧客確認待ち', value: state.counts['顧客確認待ち'] || 0 },
+        { label: '引継ぎ待ち', value: state.counts['引継ぎ待ち'] || 0 },
         { label: '保留', value: state.counts['保留'] || 0 },
         { label: '対応済み', value: state.counts['対応済み'] || 0 },
       ];
@@ -833,13 +1001,8 @@
 
     function markDirty() {
       if (!state.detail) return;
-      const statusSelect = document.getElementById('statusSelect');
-      const internalNote = document.getElementById('internalNote');
-      state.dirty = Boolean(
-        statusSelect && internalNote &&
-          (statusSelect.value !== state.detailSnapshot.handled_status ||
-            internalNote.value !== state.detailSnapshot.internal_note)
-      );
+      state.dirty = isCaseFormDirty(state.detailSnapshot, getCaseFormValues());
+      if (state.dirty) state.pendingRequestId = '';
       const statusSaveMessage = document.getElementById('statusSaveMessage');
       if (statusSaveMessage && state.dirty) {
         statusSaveMessage.textContent = '未保存の変更があります。';
@@ -854,11 +1017,31 @@
     }
 
     function setDetailSnapshot(submission) {
-      state.detailSnapshot = {
+      state.detailSnapshot = buildCaseFormSnapshot({
         handled_status: submission.handled_status || '未対応',
-        internal_note: submission.internal_note || '',
-      };
+        assignee_email: submission.assignee_email || '',
+        urgency: submission.urgency || '中',
+        case_category: submission.case_category || '',
+        gmail_thread_url: submission.gmail_thread_url || '',
+        progress_note: submission.progress_note || submission.internal_note || '',
+        handoff_to: submission.handoff_to || '',
+        handoff_status: submission.handoff_status || 'なし',
+        resolution_code: submission.resolution_code || '',
+        resolution_summary: submission.resolution_summary || '',
+        next_followup_at: submission.next_followup_at || '',
+        history_note: '',
+      });
+      state.detailRevision = submission.handled_at || '';
+      state.pendingRequestId = '';
       state.dirty = false;
+    }
+
+    function getCaseFormValues() {
+      return CASE_FORM_FIELDS.reduce((values, key) => {
+        const element = document.getElementById(key);
+        values[key] = element ? element.value : '';
+        return values;
+      }, {});
     }
 
     function renderList() {
@@ -876,7 +1059,11 @@
               <span>${escapeHtml(item.email || '-')}</span>
               <span>${escapeHtml(item.contact_type || '-')}</span>
               <span>${Number(item.attachment_count || 0) > 0 ? `添付 ${escapeHtml(item.attachment_count)}件` : '添付なし'}</span>
+              <span>担当: ${escapeHtml(item.assignee_email || '未割当')}</span>
+              <span>緊急度: ${escapeHtml(item.urgency || '中')}</span>
+              ${item.case_category ? `<span>${escapeHtml(item.case_category)}</span>` : ''}
             </div>
+            <div class="badges">${(item.attention_reasons || []).map((reason) => `<span class="badge ${escapeHtml(reason.severity || 'medium')}">${escapeHtml(reason.label)}</span>`).join('')}</div>
           </td>
           <td><span class="status">${escapeHtml(item.handled_status || '未対応')}</span></td>
         </tr>
@@ -901,7 +1088,14 @@
       const attachments = submission.attachments || [];
       const replyMailHref = buildMailToHref(submission.email || '', submission.subject || 'お問い合わせ');
       const currentStatus = submission.handled_status || '未対応';
+      const attentionReasons = submission.attention_reasons || [];
       detailView.innerHTML = `
+        ${attentionReasons.length ? `
+          <section class="attention-panel" aria-label="要確認事項">
+            <strong>要確認</strong>
+            <div class="badges">${attentionReasons.map((reason) => `<span class="badge ${escapeHtml(reason.severity || 'medium')}">${escapeHtml(reason.label)}</span>`).join('')}</div>
+          </section>
+        ` : ''}
         <section class="section">
           <h2>${escapeHtml(submission.subject || 'お問い合わせ')}</h2>
           <div class="grid">
@@ -919,30 +1113,83 @@
           <div class="message">${escapeHtml(submission.message || '-')}</div>
         </section>
         <section class="section">
-          <h2>対応</h2>
+          <h2>案件管理</h2>
           <div class="actions">
             <div class="quick-actions">
               ${[
                 ['対応中', '対応中にする'],
+                ['顧客確認待ち', '顧客確認待ち'],
+                ['引継ぎ待ち', '引継ぎ待ち'],
                 ['対応済み', '対応済みにする'],
                 ['保留', '保留にする'],
               ].map(([status, label]) => `<button type="button" class="ghost quick-status" data-status="${status}">${label}</button>`).join('')}
             </div>
-            <div class="action-row">
-              <select id="statusSelect">
-                ${['未対応', '対応中', '対応済み', '保留'].map((status) => `<option value="${status}" ${status === currentStatus ? 'selected' : ''}>${status}</option>`).join('')}
-              </select>
-              <textarea id="internalNote" placeholder="内部メモ">${escapeHtml(submission.internal_note || '')}</textarea>
-              <button type="button" class="primary" id="saveStatusButton">保存</button>
+            <div class="case-form-grid">
+              <div class="field">
+                <label for="handled_status">状態</label>
+                <select id="handled_status">${renderSelectOptions(state.options.statuses, currentStatus)}</select>
+              </div>
+              <div class="field">
+                <label for="assignee_email">担当者</label>
+                <select id="assignee_email">${renderSelectOptions(state.options.assignees, submission.assignee_email || '', '未割当')}</select>
+              </div>
+              <div class="field">
+                <label for="urgency">緊急度</label>
+                <select id="urgency">${renderSelectOptions(state.options.urgencies, submission.urgency || '中')}</select>
+              </div>
+              <div class="field">
+                <label for="case_category">分類</label>
+                <select id="case_category">${renderSelectOptions(state.options.categories, submission.case_category || '', '未分類')}</select>
+              </div>
+              <div class="field">
+                <label for="handoff_to">引継ぎ先</label>
+                <select id="handoff_to">${renderSelectOptions(state.options.handoffTargets, submission.handoff_to || '', '引継ぎなし')}</select>
+              </div>
+              <div class="field">
+                <label for="handoff_status">引継ぎ状態</label>
+                <select id="handoff_status">${renderSelectOptions(state.options.handoffStatuses, submission.handoff_status || 'なし')}</select>
+              </div>
+              <div class="field">
+                <label for="resolution_code">対応結果</label>
+                <select id="resolution_code">${renderSelectOptions(state.options.resolutionCodes, submission.resolution_code || '', '未設定')}</select>
+              </div>
+              <div class="field">
+                <label for="next_followup_at">次回確認日</label>
+                <input id="next_followup_at" type="date" value="${escapeHtml(submission.next_followup_at || '')}">
+              </div>
+              <div class="field full">
+                <label for="gmail_thread_url">Gmail参照リンク</label>
+                <input id="gmail_thread_url" type="url" inputmode="url" placeholder="https://mail.google.com/mail/..." value="${escapeHtml(submission.gmail_thread_url || '')}">
+                ${submission.gmail_thread_url ? `<a href="${escapeHtml(submission.gmail_thread_url)}" target="_blank" rel="noopener noreferrer">Gmailで開く</a>` : ''}
+                <p class="field-note">リンク先の閲覧可否はGoogle側のログイン状態と権限に従います。</p>
+              </div>
+              <div class="field full">
+                <label for="progress_note">進捗メモ</label>
+                <textarea id="progress_note" maxlength="4000" placeholder="現在の状況を要約">${escapeHtml(submission.progress_note || submission.internal_note || '')}</textarea>
+              </div>
+              <div class="field full">
+                <label for="resolution_summary">対応結果要約</label>
+                <textarea id="resolution_summary" maxlength="2000" placeholder="最終的な対応結果を記録">${escapeHtml(submission.resolution_summary || '')}</textarea>
+              </div>
+              <div class="field full">
+                <label for="history_note">今回の対応履歴</label>
+                <textarea id="history_note" maxlength="2000" placeholder="今回行った確認や連絡を追記"></textarea>
+                <p class="field-note">保存後は履歴として追記され、上書きされません。</p>
+              </div>
             </div>
             <div class="save-row">
               <div class="status-note">
                 <p class="muted" id="statusSaveMessage"></p>
                 <a href="${escapeHtml(replyMailHref)}" target="_blank" rel="noopener noreferrer" id="replyMailLink">返信メールを作成</a>
               </div>
-              <span class="muted">最終更新: ${escapeHtml(submission.handled_by || '-')} / ${escapeHtml(formatDate(submission.handled_at))}</span>
+              <button type="button" class="primary" id="saveCaseButton">案件を保存</button>
             </div>
+            <span class="muted">最終更新: ${escapeHtml(submission.handled_by || '-')} / ${escapeHtml(formatDate(submission.handled_at))}</span>
           </div>
+        </section>
+        <section class="section">
+          <h2>対応履歴</h2>
+          ${state.events.length ? `<ol class="history-list">${state.events.map(renderCaseEvent).join('')}</ol>` : '<p class="muted">対応履歴はまだありません。</p>'}
         </section>
         <section class="section">
           <h2>添付</h2>
@@ -952,14 +1199,15 @@
         </section>
       `;
 
-      document.getElementById('saveStatusButton').addEventListener('click', saveStatus);
+      document.getElementById('saveCaseButton').addEventListener('click', () => saveCase());
       document.querySelectorAll('.quick-status').forEach((button) => {
-        button.addEventListener('click', () => saveStatus(button.dataset.status));
+        button.addEventListener('click', () => saveCase(button.dataset.status));
       });
-      const statusSelect = document.getElementById('statusSelect');
-      const internalNote = document.getElementById('internalNote');
-      statusSelect.addEventListener('change', markDirty);
-      internalNote.addEventListener('input', markDirty);
+      CASE_FORM_FIELDS.forEach((key) => {
+        const element = document.getElementById(key);
+        if (!element) return;
+        element.addEventListener(element.tagName === 'TEXTAREA' || element.tagName === 'INPUT' ? 'input' : 'change', markDirty);
+      });
       document.querySelectorAll('.preview-button').forEach((button) => {
         button.addEventListener('click', () => openAttachmentViewer(Number(button.dataset.attachmentIndex || 0)));
       });
@@ -967,6 +1215,36 @@
       setDetailSnapshot(submission);
       markDirty();
       syncAttachmentModalControls();
+    }
+
+    function renderSelectOptions(values, currentValue, emptyLabel) {
+      const options = [];
+      if (emptyLabel) options.push(`<option value="">${escapeHtml(emptyLabel)}</option>`);
+      (values || []).forEach((value) => {
+        options.push(`<option value="${escapeHtml(value)}" ${value === currentValue ? 'selected' : ''}>${escapeHtml(value)}</option>`);
+      });
+      return options.join('');
+    }
+
+    function renderCaseEvent(event) {
+      const fromValue = event.from_value || '';
+      const toValue = event.to_value || '';
+      const change = fromValue || toValue
+        ? `<div>${escapeHtml(fromValue || '未設定')} → ${escapeHtml(toValue || '未設定')}</div>`
+        : '';
+      return `
+        <li class="history-item">
+          <strong>${escapeHtml(getCaseEventLabel(event.event_type))}</strong>
+          ${change}
+          ${event.note ? `<div class="message">${escapeHtml(event.note)}</div>` : ''}
+          <div class="history-meta">
+            <span>${escapeHtml(formatDate(event.created_at))}</span>
+            <span>認証主体: ${escapeHtml(event.actor_identity || 'shared-token')}</span>
+            ${event.actor_email ? `<span>参考Session: ${escapeHtml(event.actor_email)}</span>` : ''}
+            <span>方式: ${escapeHtml(event.actor_auth_mode || 'shared_token')}</span>
+          </div>
+        </li>
+      `;
     }
 
     function renderAttachmentShell(attachment, index) {
@@ -1021,6 +1299,7 @@
         });
         state.submissions = result.submissions || [];
         state.counts = result.counts || state.counts;
+        state.options = result.options || state.options;
         renderStatusSummary();
         renderStatusFilterLabel();
         renderList();
@@ -1051,6 +1330,9 @@
       try {
         const result = await callServer('getContactSubmission', state.accessToken, id);
         state.detail = result.submission;
+        state.events = result.events || [];
+        state.options = result.options || state.options;
+        state.audit = result.audit || state.audit;
         renderDetail(state.detail);
         setDetailSnapshot(state.detail);
       } catch (error) {
@@ -1059,21 +1341,27 @@
       }
     }
 
-    async function saveStatus(nextStatus) {
-      const statusSelect = document.getElementById('statusSelect');
+    async function saveCase(nextStatus) {
+      const statusSelect = document.getElementById('handled_status');
       if (nextStatus) {
+        if (statusSelect.value !== nextStatus) state.pendingRequestId = '';
         statusSelect.value = nextStatus;
       }
-      const status = statusSelect.value;
-      const note = document.getElementById('internalNote').value;
-      const button = document.getElementById('saveStatusButton');
+      const payload = getCaseFormValues();
+      state.pendingRequestId = state.pendingRequestId || createCaseUpdateRequestId();
+      payload.request_id = state.pendingRequestId;
+      payload.expected_handled_at = state.detailRevision;
+      const button = document.getElementById('saveCaseButton');
       const message = document.getElementById('statusSaveMessage');
       button.disabled = true;
       message.textContent = '保存中...';
       message.classList.remove('error', 'success');
       try {
-        const result = await callServer('updateContactSubmissionStatus', state.accessToken, state.selectedId, status, note);
+        const result = await callServer('updateContactCase', state.accessToken, state.selectedId, payload);
         state.detail = result.submission;
+        state.events = result.events || [];
+        state.options = result.options || state.options;
+        state.audit = result.audit || state.audit;
         renderDetail(state.detail);
         setDetailSnapshot(state.detail);
         await loadList();
@@ -1224,6 +1512,7 @@
 
     function showDenied(message, shouldCleanUrl) {
       viewerEmail.textContent = viewerContext.email || '';
+      authNotice.hidden = true;
       deniedMessage.textContent = message;
       deniedView.hidden = false;
       appView.hidden = true;
@@ -1236,6 +1525,8 @@
 
     function showApp(appsScriptLocation) {
       viewerEmail.textContent = viewerContext.email || '';
+      authNotice.textContent = '共有リンク認証で利用中です。表示中のアカウントは、更新者を個人単位で保証する監査情報ではありません。';
+      authNotice.hidden = viewerContext.authMode !== 'token';
       deniedView.hidden = true;
       appView.hidden = false;
       cleanAccessTokenFromUrl(appsScriptLocation);
