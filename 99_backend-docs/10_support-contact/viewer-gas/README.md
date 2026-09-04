@@ -12,7 +12,9 @@
 - 投稿データの正本は既存 Spreadsheet `contact_submissions`、添付本体は既存 Drive フォルダです。
 - 仕様確認後の作業DB整理では、プレビュー関数で削除候補を確認してからバックアップ作成付きで削除します。
 
-## 現行デプロイ
+## 既存デプロイ記録（実環境未再確認）
+
+以下は過去の運用記録です。CS運用MVPの現行環境・切り戻し先を保証しません。既存アプリ更新は[反映・移行手順](../../../docs/ハンドブック/デプロイ/06_SUPPORT_CONTACT_CS_MVP_RELEASE.md)に従い、対象・バージョン・権限・列・timezoneを別承認のもと事前確認します。ローカル準備完了と本番受入完了は区別します。
 
 - Script ID: `1tG0AXoDPAG86OurWepwGnZRoZNbplnq_VsiYUINIrv_NbVnMl1Mj7NwW`
 - Web App URL: `https://script.google.com/macros/s/AKfycbxz4foQKPlgAeF5ShuM2RBudUpYD8VOvIi7riU1j4QtghnHzvpw9JSKQgfcm61hJKh3/exec`
@@ -46,7 +48,9 @@ CONTACT_VIEWER_EMAILS=customer@speed-ad.com,s-umeda@abroad-o.com,t-hayashi@abroa
 CONTACT_VIEWER_ACCESS_TOKEN=<Script Properties only>
 ```
 
-## 配備後設定
+## 初回構築時の配備後設定
+
+次は新規構築用です。既存アプリのCS運用MVP更新ではURL発行、トークン変更、公開投稿GASの再デプロイは行いません。
 
 1. 確認アプリの Web App URL を発行する。
 2. 確認アプリと公開投稿用 GAS の Script Property `CONTACT_VIEWER_ACCESS_TOKEN` に同じ値を設定する。
@@ -96,15 +100,17 @@ closed_by
 
 共有トークン運用中の `actor_auth_mode` は `shared_token` です。Sessionからメールアドレスを取得できても参考値であり、アカウント単位監査の証拠にはなりません。個人別監査を必須にする場合は、Googleアカウント単位認証へ移行してから本運用化します。
 
-本番移行前はSpreadsheet全体のバックアップを作成します。ロールバック時は確認者GASを直前バージョンへ戻し、追加列と履歴シートは削除せず参照停止します。列・履歴シートの削除は別承認で実施します。
+本番移行前は別承認でSpreadsheet全体を保全します。移行関数の自動バックアップは受付シート1枚の複製だけで、既存履歴や全Spreadsheetの保全を代替しません。追加列・履歴シートは切り戻し時も削除しません。CS編集開始後は新状態・進捗を旧版で安全に扱えないため、編集停止・現状保全・個別復旧判断が必須です。バックアップ全体の上書きで移行後の新規投稿を消してはいけません。詳細は[反映・移行手順](../../../docs/ハンドブック/デプロイ/06_SUPPORT_CONTACT_CS_MVP_RELEASE.md)を参照してください。
 
 一覧・詳細の読み取りでは列や履歴シートを追加しません。移行はApps Scriptエディタから次の順で実行します。共有トークン経由では実行できません。
 
 1. `previewContactCaseSchemaMigration()` で不足列、履歴シート有無、既存の対応済み行を確認する。
-2. 実行承認後だけ `executeContactCaseSchemaMigration('PREPARE_CONTACT_CASE_SCHEMA_V1')` を実行する。
+2. 実行承認後だけ `executeContactCaseSchemaMigration('PREPARE_CONTACT_CASE_SCHEMA_V1')` を実行する。通常のエディタRunは引数を渡せないため、承認済みの呼出方法を事前に確定する。未確定なら停止し、一時公開入口は追加しない。
 3. 同一Spreadsheet内にバックアップシートが作成され、不足列が末尾追加され、既存の対応済み行へ `legacy_migrated` 履歴が1件ずつ追加されたことを確認する。
 
 移行関数は既存行の状態を再判定・上書きしません。再実行時は既に `legacy_migrated` がある受付IDを除外します。
+
+履歴列は正規11列の順序を固定し、通常追記には完全一致を要求します。移行だけは未作成・空シート・正規先頭部分の末尾補完を許可します。列順違い、重複、未知列、途中欠落はバックアップ/列追加前に拒否し、自動で並べ替えません。受付列の順序・重複は実装だけで完全検証しないため、先頭17列と追加12列を事前照合します。移行全体のロックや自動復旧はないため同時編集を停止し、部分成功後は無条件再実行しません。
 
 本番反映時は、確認者GASのソースをpushしても既存Web Appデプロイは更新せず、先に移行プレビューとバックアップ付き移行を完了します。列・履歴シートを確認してから新バージョンをWeb Appへ反映します。移行前に新UIだけを公開しないでください。
 

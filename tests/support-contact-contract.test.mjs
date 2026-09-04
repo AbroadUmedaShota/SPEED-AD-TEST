@@ -679,6 +679,7 @@ test('support contact CS event sheet starts headers at the first column', async 
   const writes = [];
   const sheet = {
     getLastColumn: () => 0,
+    getLastRow: () => 0,
     getMaxColumns: () => 26,
     insertColumnsAfter: () => {},
     getRange: (row, column, rowCount, columnCount) => ({
@@ -987,4 +988,69 @@ test('normal save button does not pass its click event as the next status', asyn
   const handler = vm.runInNewContext(`(${match[1]})`, { saveCase: (...args) => calls.push(args) });
   handler({ type: 'click' });
   assert.deepEqual(calls, [[]]);
+});
+
+test('event schema rejects reordered, duplicate and unknown columns before writes or migration backup', async () => {
+  const helpers = await loadViewerCaseHelpers();
+  const canonical = Array.from(helpers.CONTACT_CASE_EVENT_HEADERS);
+  const reordered = canonical.slice();
+  [reordered[0], reordered[1]] = [reordered[1], reordered[0]];
+  const variants = [reordered, ['custom', ...canonical], [...canonical, 'custom'], [...canonical, canonical[0]], [canonical[0], canonical[0], ...canonical.slice(2)], canonical.filter((_, index) => index !== 2), ['']];
+  for (const headers of variants) {
+    let writes = 0;
+    const eventSheet = {
+      getLastColumn: () => headers.length,
+      getLastRow: () => 2,
+      getRange: () => ({ getValues: () => [headers], setValues: () => { writes += 1; } }),
+      getDataRange: () => ({ getValues: () => [headers, ['existing-data']] }),
+      insertColumnsAfter: () => { writes += 1; },
+    };
+    const spreadsheet = { getSheetByName: () => eventSheet, insertSheet: () => { writes += 1; } };
+    const contactHeaders = Array.from(helpers.CONTACT_HEADERS).slice(0, 17);
+    const sheet = {
+      getLastColumn: () => contactHeaders.length,
+      getRange: () => ({ getValues: () => [contactHeaders], setValues: () => { writes += 1; } }),
+      getDataRange: () => ({ getValues: () => [contactHeaders] }),
+      getParent: () => spreadsheet,
+      getName: () => 'contact_submissions',
+    };
+    helpers.assertContactDbCleanupOperator_ = () => 'fixture@example.invalid';
+    helpers.getConfiguredSheet_ = () => sheet;
+    helpers.createContactDbCleanupBackup_ = () => { writes += 1; return 'unexpected-backup'; };
+    const readySheet = {
+      ...sheet,
+      getLastColumn: () => helpers.CONTACT_HEADERS.length,
+      getRange: () => ({ getValues: () => [Array.from(helpers.CONTACT_HEADERS)] }),
+    };
+    assert.throws(() => helpers.assertContactCaseSchemaReady_(readySheet), /正規スキーマ/);
+    assert.throws(() => helpers.appendContactCaseEvents_(spreadsheet, 'fixture-001', [{ event_type: 'status_changed' }]), /正規スキーマ/);
+    assert.throws(() => helpers.ensureContactCaseEventSheet_(spreadsheet), /正規スキーマ/);
+    assert.throws(() => helpers.previewContactCaseSchemaMigration(), /正規スキーマ/);
+    assert.throws(() => helpers.executeContactCaseSchemaMigration('PREPARE_CONTACT_CASE_SCHEMA_V1'), /正規スキーマ/);
+    assert.equal(writes, 0, JSON.stringify(headers));
+  }
+});
+
+test('event schema migration only extends a canonical prefix and leaves canonical headers untouched', async () => {
+  const helpers = await loadViewerCaseHelpers();
+  const canonical = Array.from(helpers.CONTACT_CASE_EVENT_HEADERS);
+  for (const initial of [[], canonical.slice(0, 4), canonical]) {
+    let headers = initial.slice();
+    const writes = [];
+    const sheet = {
+      getLastColumn: () => headers.length,
+      getLastRow: () => headers.length ? 2 : 0,
+      getMaxColumns: () => 26,
+      getRange: (row, col, rows, cols) => ({
+        getValues: () => [headers.length ? headers.slice() : ['']],
+        setValues: (values) => { writes.push({ row, col, rows, cols }); headers = Array.from(values[0]); },
+      }),
+    };
+    assert.deepEqual(Array.from(helpers.assertContactCaseEventHeaders_(sheet, true)), initial);
+    if (initial.length < canonical.length) assert.throws(() => helpers.assertContactCaseEventSchemaReady_(sheet), /正規スキーマ/);
+    helpers.ensureContactCaseEventSheet_({ getSheetByName: () => sheet });
+    helpers.assertContactCaseEventSchemaReady_(sheet);
+    assert.deepEqual(headers, canonical);
+    assert.deepEqual(writes, initial.length === canonical.length ? [] : [{ row: 1, col: 1, rows: 1, cols: canonical.length }]);
+  }
 });

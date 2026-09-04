@@ -651,11 +651,20 @@ function assertContactCaseEventSchemaReady_(sheet) {
   if (!sheet) {
     throw new Error('対応履歴シートが未作成です。CS運用スキーマ移行を先に実行してください。');
   }
+  assertContactCaseEventHeaders_(sheet, false);
+}
+
+function assertContactCaseEventHeaders_(sheet, allowIncomplete) {
   var headers = readHeaders_(sheet);
-  var missing = CONTACT_CASE_EVENT_HEADERS.filter(function (header) { return headers.indexOf(header) === -1; });
-  if (missing.length) {
-    throw new Error('対応履歴シートの列が不足しています。CS運用スキーマ移行を先に実行してください。');
+  if (!headers.some(function (header) { return !!header; }) && sheet.getLastRow() < 2) headers = [];
+  // Event rows are written in this exact order; never reinterpret existing columns.
+  var nonCanonical = headers.some(function (header, index) {
+    return header !== CONTACT_CASE_EVENT_HEADERS[index];
+  });
+  if (nonCanonical || (!allowIncomplete && headers.length !== CONTACT_CASE_EVENT_HEADERS.length)) {
+    throw new Error('対応履歴シートの列順・重複・不足が正規スキーマと一致しません。更新を中止して管理者に確認してください。');
   }
+  return headers;
 }
 
 function assertContactCaseSchemaReady_(sheet) {
@@ -692,21 +701,11 @@ function ensureContactCaseEventSheet_(spreadsheet) {
   if (!sheet) {
     sheet = spreadsheet.insertSheet(CONTACT_CASE_EVENT_SHEET_NAME);
   }
-  var lastColumn = Math.max(sheet.getLastColumn(), 1);
-  var headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(function (value) {
-    return String(value || '').trim();
-  });
-  var hasAnyHeader = headers.some(function (value) { return !!value; });
-  if (!hasAnyHeader) {
+  var headers = assertContactCaseEventHeaders_(sheet, true);
+  if (headers.length < CONTACT_CASE_EVENT_HEADERS.length) {
     ensureSheetColumnCapacity_(sheet, CONTACT_CASE_EVENT_HEADERS.length);
     sheet.getRange(1, 1, 1, CONTACT_CASE_EVENT_HEADERS.length).setValues([CONTACT_CASE_EVENT_HEADERS]);
-    return sheet;
   }
-  CONTACT_CASE_EVENT_HEADERS.forEach(function (header) {
-    if (headers.indexOf(header) === -1) headers.push(header);
-  });
-  ensureSheetColumnCapacity_(sheet, headers.length);
-  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   return sheet;
 }
 
@@ -794,9 +793,9 @@ function buildContactCaseSchemaMigrationPlan_(sheet) {
   var values = sheet.getDataRange().getValues();
   var idIndex = headers.indexOf('submission_id');
   var statusIndex = headers.indexOf('handled_status');
-  var migratedIds = getLegacyMigratedSubmissionIds_(sheet.getParent());
   var eventSheet = sheet.getParent().getSheetByName(CONTACT_CASE_EVENT_SHEET_NAME);
-  var eventHeaders = eventSheet ? readHeaders_(eventSheet) : [];
+  var eventHeaders = eventSheet ? assertContactCaseEventHeaders_(eventSheet, true) : [];
+  var migratedIds = getLegacyMigratedSubmissionIds_(sheet.getParent());
   var missingEventHeaders = CONTACT_CASE_EVENT_HEADERS.filter(function (header) { return eventHeaders.indexOf(header) === -1; });
   var legacyCompletedSubmissionIds = [];
   if (idIndex !== -1 && statusIndex !== -1) {
