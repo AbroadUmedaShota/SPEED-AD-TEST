@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "support-contact-d1-atomicity-poc",
+  "main": "./worker.mjs",
+  "compatibility_date": "2026-09-06",
+  "send_metrics": false,
+  "workers_dev": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "support-contact-d1-atomicity-poc",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "preview_database_id": "support-contact-d1-atomicity-local",
+      "migrations_dir": "./migrations",
+      "remote": false
+    }
+  ],
+  "vars": {
+    "POC_LOCAL_ONLY": "true"
+  }
+}

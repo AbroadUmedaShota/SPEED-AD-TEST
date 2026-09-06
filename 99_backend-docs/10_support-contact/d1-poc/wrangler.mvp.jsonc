@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "support-contact-d1-mvp-local",
+  "main": "./mvpWorker.mjs",
+  "compatibility_date": "2026-09-06",
+  "send_metrics": false,
+  "workers_dev": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "support-contact-d1-mvp-local",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "preview_database_id": "support-contact-d1-mvp-local",
+      "migrations_dir": "./migrations-mvp",
+      "remote": false
+    }
+  ],
+  "vars": {
+    "MVP_LOCAL_ONLY": "true"
+  }
+}
