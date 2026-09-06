@@ -41,6 +41,10 @@ The proposed scope that consumes this verified atomicity contract is documented
 in [MVP_IMPLEMENTATION_PACKAGE.md](MVP_IMPLEMENTATION_PACKAGE.md). It keeps the
 local, shared-trial and production completion gates separate; it does not approve
 external resources, authentication, cost, production data or deployment.
+The accepted local evidence is mapped in
+[LOCAL_MVP_ACCEPTANCE.md](LOCAL_MVP_ACCEPTANCE.md), and the proposed shared-trial
+architecture and approval gates are in
+[SHARED_TRIAL_EXECUTION_PACKAGE.md](SHARED_TRIAL_EXECUTION_PACKAGE.md).
 
 The first approved local vertical slice uses the separate
 [`migrations-mvp`](migrations-mvp/0001_contact_mvp.sql) schema and

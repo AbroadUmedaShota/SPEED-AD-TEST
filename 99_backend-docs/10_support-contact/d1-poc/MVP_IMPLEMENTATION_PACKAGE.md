@@ -211,3 +211,5 @@ Cloudflare D1を採用する方針と、ローカルD1/workerdで確認済みの
 ローカル復元は問い合わせ5テーブルだけをexportし、migrationを順番に適用した別DBへimportする。添付はDBとは別のmanifestとblob bundleとして扱い、ID、案件ID、object key、サイズ、SHA-256が一致しなければ復元完了としない。元DBを上書き・削除せず、旧形式の冪等hashと保存済みreceiptの再送互換性も確認する。
 
 次は`Q-CONTACT-002`を判断した後、共有試用向けの実認証adapterと非公開添付storeを設計し、別検証資源で同じ契約を再検証する。今回の完了は共有方式の採用、Cloudflare資源や費用の承認、実アカウント、remote D1、R2、Drive、実データ、本番移行の完了を意味しない。
+
+ローカルMVPの要件別判定と証跡は[ローカルMVP受入表](LOCAL_MVP_ACCEPTANCE.md)、`Q-CONTACT-002`の推奨、費用上限、環境分離、実行ゲートは[共有試用実行パッケージ](SHARED_TRIAL_EXECUTION_PACKAGE.md)を参照する。
