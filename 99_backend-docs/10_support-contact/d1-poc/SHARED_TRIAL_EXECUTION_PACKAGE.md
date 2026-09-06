@@ -1,11 +1,14 @@
 ---
 owner: support-contact
-status: proposed
+status: approved-architecture-only
 last_reviewed: 2026-09-06
-depends_on: Q-CONTACT-002
+decision: D-CONTACT-SHARED-ARCHITECTURE
+depends_on: G1-G6 execution approval
 ---
 
 # CSオペレーターアプリ 共有試用実行パッケージ
+
+`Q-CONTACT-002`は、Cloudflare Workers、D1、Accessの汎用Google IdPとexact email allowlist、WorkerでのJWT再検証、D1のactive operator照合、非公開R2を採用するアーキテクチャ判断として解決済みである。これは実アカウント登録、資源作成、費用、deploy、共有試用、移行または本番利用の承認を意味しない。セッション8時間は設計既定値であり、実環境には未設定である。
 
 ## 1. 推奨構成
 

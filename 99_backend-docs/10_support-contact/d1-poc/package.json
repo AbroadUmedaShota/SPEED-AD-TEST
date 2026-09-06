@@ -6,9 +6,13 @@
   "scripts": {
     "test:sqlite": "node --test ../../../tests/support-contact-d1-atomicity.test.mjs",
     "test:d1": "node --test tests/d1-binding-contract.test.mjs",
-    "test:mvp": "node --test --test-concurrency=1 tests/mvp-vertical-slice.test.mjs tests/ui-request-coordinator.test.mjs tests/local-restore.test.mjs"
+    "test:mvp": "node --test --test-concurrency=1 tests/mvp-vertical-slice.test.mjs tests/ui-request-coordinator.test.mjs tests/local-restore.test.mjs",
+    "test:shared": "node --test tests/access-principal-resolver.test.mjs tests/shared-worker.test.mjs tests/shared-boundary.test.mjs tests/shared-ui-request-state.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.129.0"
+  },
+  "dependencies": {
+    "jose": "6.2.12"
   }
 }

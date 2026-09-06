@@ -46,6 +46,16 @@ The accepted local evidence is mapped in
 architecture and approval gates are in
 [SHARED_TRIAL_EXECUTION_PACKAGE.md](SHARED_TRIAL_EXECUTION_PACKAGE.md).
 
+The architecture-only decision for a shared trial is Workers + D1 + Cloudflare
+Access with exact-email Google identities, Worker-side JWT verification, an
+active-operator check in D1 and private R2 attachments. The isolated candidate
+entry point is [`sharedWorker.mjs`](sharedWorker.mjs), with a selector-free UI
+under [`shared-ui`](shared-ui/index.html) and fail-closed placeholder settings in
+[`wrangler.shared.example.jsonc`](wrangler.shared.example.jsonc). Run its local
+unit and boundary tests with `npm run test:shared`. These files do not authorize
+or perform resource creation, deployment, real-account registration or data
+migration.
+
 The first approved local vertical slice uses the separate
 [`migrations-mvp`](migrations-mvp/0001_contact_mvp.sql) schema and
 [`mvpWorker.mjs`](mvpWorker.mjs). Run it with:

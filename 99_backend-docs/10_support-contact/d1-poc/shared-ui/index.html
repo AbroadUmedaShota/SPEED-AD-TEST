@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>問い合わせ対応 | SPEED AD</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div><strong>SPEED AD</strong><span>問い合わせ対応</span></div>
+    <output id="principal">担当者を確認中</output>
+  </header>
+  <div id="message" role="status" aria-live="polite"></div>
+  <main class="workspace">
+    <aside aria-label="問い合わせ一覧">
+      <div class="heading"><h1>問い合わせ</h1><button id="refresh" type="button" title="一覧を更新" aria-label="一覧を更新">↻</button></div>
+      <label>検索<input id="search" type="search" placeholder="件名・投稿者・種別"></label>
+      <p id="queue-state">読み込み中です</p>
+      <ol id="cases"></ol>
+    </aside>
+    <section id="detail" aria-label="問い合わせ詳細">
+      <div id="empty"><h2>案件を選択してください</h2></div>
+    </section>
+  </main>
+  <template id="detail-template">
+    <article>
+      <div class="detail-heading"><div><span id="status"></span><h2 id="subject"></h2></div><button id="reload-detail" type="button">最新版を取得</button></div>
+      <dl id="customer"></dl><p id="body"></p>
+      <section id="attachments"><h3>添付ファイル</h3><ul></ul></section>
+      <section><h3>対応を更新</h3><div id="actions"></div><form id="action-form" hidden><div id="fields"></div><button type="button" id="cancel">キャンセル</button><button type="submit">保存</button></form></section>
+      <section><h3>対応履歴</h3><ol id="events"></ol></section>
+    </article>
+  </template>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "support-contact-shared-trial",
+  "main": "sharedWorker.mjs",
+  "compatibility_date": "2026-09-06",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "contact-ops.example.invalid", "custom_domain": true }],
+  "assets": { "directory": "./shared-ui", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "support-contact-shared-trial",
+    "database_id": "00000000-0000-0000-0000-000000000000"
+  }],
+  "r2_buckets": [{ "binding": "ATTACHMENTS", "bucket_name": "support-contact-shared-trial" }],
+  "vars": {
+    "TRIAL_ENABLED": "false",
+    "TRIAL_ATTACHMENTS_ENABLED": "false",
+    "TRIAL_HOSTNAME": "contact-ops.example.invalid",
+    "ACCESS_TEAM_DOMAIN": "example.cloudflareaccess.com",
+    "ACCESS_AUD": "replace-with-access-application-audience",
+    "TIME_ZONE": "Asia/Tokyo"
+  }
+}
