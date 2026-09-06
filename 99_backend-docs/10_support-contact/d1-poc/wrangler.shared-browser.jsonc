@@ -1,0 +1,37 @@
+{
+  // Local browser acceptance only. Never deploy this test entry point.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "support-contact-shared-browser-local",
+  "main": "./tests/shared-browser-worker.mjs",
+  "compatibility_date": "2026-09-06",
+  "send_metrics": false,
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./shared-ui",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "support-contact-shared-browser-local",
+    "database_id": "00000000-0000-0000-0000-000000000000",
+    "preview_database_id": "support-contact-shared-browser-local",
+    "migrations_dir": "./migrations-shared-browser",
+    "remote": false
+  }],
+  "r2_buckets": [{
+    "binding": "ATTACHMENTS",
+    "bucket_name": "support-contact-shared-browser-local",
+    "preview_bucket_name": "support-contact-shared-browser-local",
+    "remote": false
+  }],
+  "vars": {
+    "TRIAL_ENABLED": "true",
+    "TRIAL_ATTACHMENTS_ENABLED": "true",
+    "TRIAL_HOSTNAME": "127.0.0.1",
+    "ACCESS_TEAM_DOMAIN": "example.cloudflareaccess.com",
+    "ACCESS_AUD": "shared-browser-local",
+    "TIME_ZONE": "Asia/Tokyo",
+    "LOCAL_BROWSER_HARNESS": "enabled"
+  }
+}

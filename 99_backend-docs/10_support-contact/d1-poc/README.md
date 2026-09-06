@@ -56,6 +56,13 @@ unit and boundary tests with `npm run test:shared`. These files do not authorize
 or perform resource creation, deployment, real-account registration or data
 migration.
 
+The repeatable browser-only harness is
+[`wrangler.shared-browser.jsonc`](wrangler.shared-browser.jsonc) with its entry
+point under `tests/`. It requires a runtime-generated test JWT and injected
+public JWKS, uses only local D1/R2 and must never be deployed. The completed
+browser scenarios and bounded G1 metadata findings are recorded in
+[`SHARED_LOCAL_BROWSER_ACCEPTANCE.md`](SHARED_LOCAL_BROWSER_ACCEPTANCE.md).
+
 The first approved local vertical slice uses the separate
 [`migrations-mvp`](migrations-mvp/0001_contact_mvp.sql) schema and
 [`mvpWorker.mjs`](mvpWorker.mjs). Run it with:
