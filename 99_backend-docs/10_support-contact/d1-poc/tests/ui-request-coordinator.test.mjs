@@ -41,3 +41,14 @@ test('session change invalidates every list and detail response from the previou
   assert.equal(coordinator.isCurrentList(oldList), false);
   assert.equal(coordinator.isCurrentDetail(oldDetail), false);
 });
+
+test('case or actor changes invalidate an in-flight attachment response', () => {
+  const coordinator = createRequestCoordinator();
+  const beforeCaseChange = coordinator.beginAttachment();
+  coordinator.beginDetail();
+  assert.equal(coordinator.isCurrentAttachment(beforeCaseChange), false);
+
+  const beforeActorChange = coordinator.beginAttachment();
+  coordinator.advanceSession();
+  assert.equal(coordinator.isCurrentAttachment(beforeActorChange), false);
+});

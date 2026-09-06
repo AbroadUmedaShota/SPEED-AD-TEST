@@ -8,6 +8,8 @@ import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { syntheticAttachment } from '../syntheticAttachmentStore.mjs';
+
 const projectDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const wranglerBin = path.join(projectDir, 'node_modules', 'wrangler', 'bin', 'wrangler.js');
 const configPath = path.join(projectDir, 'wrangler.mvp.jsonc');
@@ -70,6 +72,12 @@ async function resetDatabase() {
 
 function authenticatedGet(pathname) {
   return requestJson(pathname, { headers: { 'x-mvp-actor': actor } });
+}
+
+function attachmentRequest(attachmentId, actorEmail = actor) {
+  const headers = {};
+  if (actorEmail) headers['x-mvp-actor'] = actorEmail;
+  return fetch(`${baseUrl}/api/attachments/${attachmentId}/content`, { headers });
 }
 
 function action(name, payload, actorEmail = actor, extraHeaders = {}, caseId = 'case-mvp-1') {
@@ -200,6 +208,85 @@ test('operator UI is served while API and local test routes still reach the Work
   assert.equal(cases.body.cases.length, 1);
   const reset = await requestJson('/__test/reset', { method: 'POST' });
   assert.equal(reset.status, 200);
+});
+
+test('case detail lists safe attachment metadata without exposing its storage key or hash', async () => {
+  await resetDatabase();
+  const detail = await authenticatedGet('/api/cases/case-mvp-1');
+  assert.equal(detail.status, 200);
+  assert.deepEqual(detail.body.attachments, [{
+    attachment_id: syntheticAttachment.attachmentId,
+    case_id: syntheticAttachment.caseId,
+    original_name: syntheticAttachment.originalName,
+    mime_type: syntheticAttachment.mimeType,
+    size_bytes: syntheticAttachment.bytes.byteLength,
+    created_at: '2026-09-06T00:00:00.000Z',
+  }]);
+  assert.equal(JSON.stringify(detail.body).includes('object_key'), false);
+  assert.equal(JSON.stringify(detail.body).includes('sha256'), false);
+});
+
+test('every active operator can retrieve another assignee attachment with safe headers', async () => {
+  await resetDatabase();
+  await prepareInProgressCase();
+  for (const operator of [actor, 'operator-b@example.invalid']) {
+    const response = await attachmentRequest(syntheticAttachment.attachmentId, operator);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('content-type'), 'image/webp');
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+    assert.equal(response.headers.get('content-disposition'),
+      `inline; filename="${syntheticAttachment.attachmentId}.webp"`);
+    assert.match(response.headers.get('content-security-policy') || '', /default-src 'none'/);
+    assert.deepEqual(new Uint8Array(await response.arrayBuffer()), syntheticAttachment.bytes);
+  }
+});
+
+test('attachment metadata and content reject missing or disabled principals before disclosure', async () => {
+  await resetDatabase();
+  const anonymousDetail = await requestJson('/api/cases/case-mvp-1');
+  assert.equal(anonymousDetail.status, 403);
+  const anonymousContent = await attachmentRequest(syntheticAttachment.attachmentId, null);
+  assert.equal(anonymousContent.status, 403);
+  assert.deepEqual(await anonymousContent.json(), { error: 'not_allowed' });
+
+  await testCommand('operator-active', { email: actor, active: false });
+  const disabledDetail = await authenticatedGet('/api/cases/case-mvp-1');
+  assert.equal(disabledDetail.status, 403);
+  const disabledContent = await attachmentRequest(syntheticAttachment.attachmentId);
+  assert.equal(disabledContent.status, 403);
+  assert.deepEqual(await disabledContent.json(), { error: 'not_allowed' });
+});
+
+test('attachment content rejects unknown IDs, malformed paths and archived parent cases', async () => {
+  await resetDatabase();
+  assert.equal((await attachmentRequest('unknown-attachment')).status, 404);
+  const malformed = await fetch(`${baseUrl}/api/attachments/not.valid/content`, {
+    headers: { 'x-mvp-actor': actor },
+  });
+  assert.equal(malformed.status, 404);
+  const extraPath = await fetch(
+    `${baseUrl}/api/attachments/${syntheticAttachment.attachmentId}/extra/content`,
+    { headers: { 'x-mvp-actor': actor } },
+  );
+  assert.equal(extraPath.status, 404);
+
+  await testCommand('case-archive', { archived: true });
+  const archived = await attachmentRequest(syntheticAttachment.attachmentId);
+  assert.equal(archived.status, 404);
+  assert.deepEqual(await archived.json(), { error: 'attachment_not_found' });
+});
+
+test('missing or hash-mismatched synthetic blobs fail closed without returning file bytes', async () => {
+  for (const mode of ['drop', 'corrupt']) {
+    await resetDatabase();
+    const configured = await testCommand('attachment-blob', { mode });
+    assert.equal(configured.status, 200);
+    const response = await attachmentRequest(syntheticAttachment.attachmentId);
+    assert.equal(response.status, 503);
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    assert.deepEqual(await response.json(), { error: 'attachment_unavailable' });
+  }
 });
 
 test('migration 0002 upgrades populated 0001 data without changing legacy receipt or history', async () => {

@@ -1,4 +1,7 @@
 import { executeCaseAction, supportedCaseActions } from './caseActions.mjs';
+import {
+  sha256Hex, syntheticAttachment, SyntheticAttachmentStore,
+} from './syntheticAttachmentStore.mjs';
 
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
@@ -10,6 +13,9 @@ const SYNTHETIC_OPERATORS = [
 ];
 const CASE_STATUSES = ['未対応', '対応中', '顧客確認待ち', '引継ぎ待ち', '保留', '対応済み'];
 const raceBarriers = new Map();
+const attachmentStore = new SyntheticAttachmentStore();
+let attachmentSource = null;
+let configuredAttachmentBytes = null;
 
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
@@ -41,8 +47,28 @@ function waitAtRaceBarrier(name) {
   });
 }
 
+function configureAttachmentStore(env) {
+  const encoded = typeof env.MVP_ATTACHMENT_BLOB_BASE64 === 'string'
+    ? env.MVP_ATTACHMENT_BLOB_BASE64 : '';
+  const source = encoded
+    ? `restored:${encoded}`
+    : env.MVP_SYNTHETIC_ATTACHMENT_MODE === 'embedded' ? 'embedded' : 'missing';
+  if (source === attachmentSource) return;
+  attachmentSource = source;
+  try {
+    configuredAttachmentBytes = encoded
+      ? Uint8Array.from(atob(encoded), character => character.charCodeAt(0))
+      : source === 'embedded' ? syntheticAttachment.bytes : null;
+  } catch {
+    configuredAttachmentBytes = null;
+  }
+  attachmentStore.reset(configuredAttachmentBytes);
+}
+
 async function resetDatabase(db) {
   const timestamp = '2026-09-06T00:00:00.000Z';
+  attachmentStore.reset(configuredAttachmentBytes);
+  const attachmentSha256 = await sha256Hex(syntheticAttachment.bytes);
   await db.batch([
     db.prepare('UPDATE contact_cases SET last_request_id = NULL'),
     db.prepare('DELETE FROM contact_case_events'),
@@ -61,6 +87,13 @@ async function resetDatabase(db) {
       .bind('case-mvp-1', timestamp, '操作案内', '合成問い合わせ', '合成利用者',
         'customer@example.invalid', 'これは合成データです。', 'https://example.invalid/contact',
         'Synthetic-Test-Agent', timestamp, timestamp),
+    db.prepare(`INSERT INTO contact_attachments
+      (attachment_id, case_id, object_key, original_name, mime_type, size_bytes,
+       sha256, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+      .bind(syntheticAttachment.attachmentId, syntheticAttachment.caseId,
+        syntheticAttachment.objectKey, syntheticAttachment.originalName,
+        syntheticAttachment.mimeType, syntheticAttachment.bytes.byteLength,
+        attachmentSha256, timestamp),
   ]);
   return { ok: true };
 }
@@ -86,6 +119,38 @@ async function getEvents(db, caseId) {
     actor_email, from_version, to_version, note, changes_json, created_at
     FROM contact_case_events WHERE case_id = ? ORDER BY to_version ASC`).bind(caseId).all();
   return query.results.map(row => ({ ...row, changes: JSON.parse(row.changes_json) }));
+}
+
+async function getAttachmentMetadata(db, caseId) {
+  const query = await db.prepare(`SELECT attachment_id, case_id, original_name,
+    mime_type, size_bytes, created_at FROM contact_attachments
+    WHERE case_id = ? ORDER BY attachment_id`).bind(caseId).all();
+  return query.results;
+}
+
+async function getAttachmentContent(db, attachmentId) {
+  const row = await db.prepare(`SELECT a.attachment_id, a.object_key, a.mime_type,
+    a.size_bytes, a.sha256, c.status FROM contact_attachments a
+    JOIN contact_cases c ON c.case_id = a.case_id
+    WHERE a.attachment_id = ? AND c.archived_at IS NULL`).bind(attachmentId).first();
+  if (!row || !CASE_STATUSES.includes(row.status)) {
+    return jsonResponse({ error: 'attachment_not_found' }, 404);
+  }
+  const bytes = await attachmentStore.get(row.object_key);
+  if (!bytes || bytes.byteLength !== row.size_bytes || await sha256Hex(bytes) !== row.sha256) {
+    return jsonResponse({ error: 'attachment_unavailable' }, 503);
+  }
+  const mimeType = row.mime_type === 'image/webp' ? row.mime_type : 'application/octet-stream';
+  return new Response(bytes, {
+    headers: {
+      'cache-control': 'no-store',
+      'content-disposition': `inline; filename="${attachmentId}.webp"`,
+      'content-length': String(bytes.byteLength),
+      'content-security-policy': "default-src 'none'; sandbox",
+      'content-type': mimeType,
+      'x-content-type-options': 'nosniff',
+    },
+  });
 }
 
 async function snapshotDatabase(db) {
@@ -138,6 +203,27 @@ async function clearResolutionField(request, db) {
   }
   await db.prepare(`UPDATE contact_cases SET ${body.field} = NULL
     WHERE case_id = 'case-mvp-1' AND status = '対応済み' AND assignee_email IS NOT NULL`).run();
+  return jsonResponse({ ok: true });
+}
+
+async function configureAttachmentBlob(request) {
+  const body = await request.json();
+  if (body.mode === 'drop') attachmentStore.drop(syntheticAttachment.objectKey);
+  else if (body.mode === 'corrupt') attachmentStore.corrupt(syntheticAttachment.objectKey);
+  else if (body.mode === 'reset') attachmentStore.reset();
+  else return jsonResponse({ error: 'invalid_test_command' }, 400);
+  return jsonResponse({ ok: true });
+}
+
+async function configureCaseArchive(request, db) {
+  const body = await request.json();
+  if (typeof body.archived !== 'boolean') {
+    return jsonResponse({ error: 'invalid_test_command' }, 400);
+  }
+  await db.prepare(`UPDATE contact_cases SET archived_at = ?, archived_by = ?
+    WHERE case_id = 'case-mvp-1'`)
+    .bind(body.archived ? new Date().toISOString() : null,
+      body.archived ? SYNTHETIC_OPERATORS[0].email : null).run();
   return jsonResponse({ ok: true });
 }
 
@@ -222,6 +308,7 @@ export default {
     if (env.MVP_LOCAL_ONLY !== 'true' || !isLoopback(request)) {
       return jsonResponse({ error: 'local MVP only' }, 403);
     }
+    configureAttachmentStore(env);
     const url = new URL(request.url);
     if (request.method === 'POST' && url.pathname === '/__test/reset') {
       return jsonResponse(await resetDatabase(env.DB));
@@ -238,6 +325,12 @@ export default {
     if (request.method === 'POST' && url.pathname === '/__test/clear-resolution-field') {
       return clearResolutionField(request, env.DB);
     }
+    if (request.method === 'POST' && url.pathname === '/__test/attachment-blob') {
+      return configureAttachmentBlob(request);
+    }
+    if (request.method === 'POST' && url.pathname === '/__test/case-archive') {
+      return configureCaseArchive(request, env.DB);
+    }
     if (request.method === 'POST' && url.pathname === '/__test/seed-legacy-note') {
       return seedLegacyNoteReceipt(env.DB);
     }
@@ -251,11 +344,18 @@ export default {
     const detailMatch = /^\/api\/cases\/([a-zA-Z0-9_-]{1,80})$/.exec(url.pathname);
     if (request.method === 'GET' && detailMatch) {
       const caseData = await getCase(env.DB, detailMatch[1]);
-      return caseData ? jsonResponse({ case: caseData }) : jsonResponse({ error: 'case_not_found' }, 404);
+      if (!caseData) return jsonResponse({ error: 'case_not_found' }, 404);
+      const attachments = await getAttachmentMetadata(env.DB, detailMatch[1]);
+      return jsonResponse({ case: caseData, attachments });
     }
     const eventsMatch = /^\/api\/cases\/([a-zA-Z0-9_-]{1,80})\/events$/.exec(url.pathname);
     if (request.method === 'GET' && eventsMatch) {
       return jsonResponse({ events: await getEvents(env.DB, eventsMatch[1]) });
+    }
+    const attachmentMatch = /^\/api\/attachments\/([a-zA-Z0-9_-]{1,80})\/content$/
+      .exec(url.pathname);
+    if (request.method === 'GET' && attachmentMatch) {
+      return getAttachmentContent(env.DB, attachmentMatch[1]);
     }
     const actionMatch = /^\/api\/cases\/([a-zA-Z0-9_-]{1,80})\/actions\/([a-z-]+)$/.exec(
       url.pathname,

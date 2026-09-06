@@ -21,6 +21,7 @@
   ],
   "vars": {
     "MVP_LOCAL_ONLY": "true",
-    "MVP_TIME_ZONE": "Asia/Tokyo"
+    "MVP_TIME_ZONE": "Asia/Tokyo",
+    "MVP_SYNTHETIC_ATTACHMENT_MODE": "embedded"
   }
 }

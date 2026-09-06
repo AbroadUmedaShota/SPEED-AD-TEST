@@ -7,6 +7,8 @@ const state = {
   cases: [],
   currentCase: null,
   events: [],
+  attachments: [],
+  attachmentObjectUrls: new Set(),
   filter: 'mine',
   search: '',
   action: null,
@@ -22,6 +24,7 @@ const elements = Object.fromEntries([
   'customer-details', 'case-message', 'version-label', 'action-buttons', 'action-form',
   'action-form-fields', 'form-message', 'cancel-action', 'submit-action', 'history-state',
   'event-list', 'global-message',
+  'attachments-section', 'attachment-list',
 ].map(id => [id, document.getElementById(id)]));
 
 const statusLabels = {
@@ -146,11 +149,34 @@ async function api(path, options = {}) {
   return body;
 }
 
+async function attachmentApi(path, sessionRevision) {
+  const headers = new Headers();
+  if (state.actor) headers.set('x-mvp-actor', state.actor);
+  const response = await fetch(path, { headers });
+  if (response.status === 401 || response.status === 403) {
+    if (sessionRevision === requests.currentSession()) showAuthBlocked();
+    throw Object.assign(new Error('auth_required'), { status: response.status });
+  }
+  if (!response.ok) {
+    throw Object.assign(new Error('attachment_unavailable'), { status: response.status });
+  }
+  return response.blob();
+}
+
+function clearAttachmentPreviews() {
+  state.attachmentObjectUrls.forEach(url => URL.revokeObjectURL(url));
+  state.attachmentObjectUrls.clear();
+  elements['attachment-list'].replaceChildren();
+  elements['attachments-section'].hidden = true;
+}
+
 function showAuthBlocked() {
   requests.advanceSession();
   state.cases = [];
   state.currentCase = null;
   state.events = [];
+  state.attachments = [];
+  clearAttachmentPreviews();
   elements['case-list'].replaceChildren();
   elements['queue-state'].textContent = '担当者を確認できません';
   elements['refresh-button'].disabled = false;
@@ -247,6 +273,33 @@ function renderCustomerDetails(item) {
   });
   elements['customer-details'].replaceChildren(...nodes);
   elements['case-message'].textContent = item.message;
+}
+
+function formatBytes(value) {
+  if (!Number.isFinite(value)) return 'サイズ不明';
+  if (value < 1024) return `${value} B`;
+  return `${(value / 1024).toFixed(1)} KB`;
+}
+
+function renderAttachments() {
+  elements['attachments-section'].hidden = !state.attachments.length;
+  elements['attachment-list'].replaceChildren(...state.attachments.map(attachment => {
+    const item = createElement('li', { className: 'attachment-item' });
+    const row = createElement('div', { className: 'attachment-row' });
+    const name = createElement('div', { className: 'attachment-name' });
+    name.append(
+      createElement('strong', { text: attachment.original_name }),
+      createElement('small', { text: `${attachment.mime_type}・${formatBytes(attachment.size_bytes)}` }),
+    );
+    const button = createElement('button', {
+      className: 'secondary-button', text: 'プレビューを表示',
+      attributes: { type: 'button', 'data-attachment-id': attachment.attachment_id },
+    });
+    row.append(name, button);
+    const preview = createElement('div', { className: 'attachment-preview', attributes: { 'aria-live': 'polite' } });
+    item.append(row, preview);
+    return item;
+  }));
 }
 
 function availableActions(item) {
@@ -369,6 +422,7 @@ function renderDetail() {
   elements['detail-content'].hidden = false;
   renderSummary(item);
   renderCustomerDetails(item);
+  renderAttachments();
   elements['version-label'].textContent = `版 ${item.version}`;
   renderActionButtons();
   renderEvents();
@@ -399,6 +453,7 @@ async function loadCases({ preserveMessage = false } = {}) {
 
 async function loadDetail(caseId, { keepDraft = true } = {}) {
   const token = requests.beginDetail();
+  clearAttachmentPreviews();
   if (keepDraft) saveDraft();
   closeAction();
   state.queueScrollTop = elements['queue-pane'].scrollTop;
@@ -416,6 +471,7 @@ async function loadDetail(caseId, { keepDraft = true } = {}) {
     if (!requests.isCurrentDetail(token)) return;
     state.currentCase = detail.case;
     state.events = history.events;
+    state.attachments = detail.attachments || [];
     renderQueue();
     renderDetail();
     elements['case-summary'].querySelector('h1')?.focus();
@@ -532,6 +588,46 @@ elements['action-buttons'].addEventListener('click', event => {
   if (button) openAction(button.dataset.action);
 });
 
+elements['attachment-list'].addEventListener('click', async event => {
+  const button = event.target.closest('button[data-attachment-id]');
+  if (!button || !state.currentCase) return;
+  const attachmentId = button.dataset.attachmentId;
+  const attachment = state.attachments.find(item => item.attachment_id === attachmentId);
+  if (!attachment) return;
+  const attachmentToken = requests.beginAttachment();
+  const sessionRevision = attachmentToken.sessionRevision;
+  const caseId = state.currentCase.case_id;
+  const preview = button.closest('.attachment-item').querySelector('.attachment-preview');
+  button.disabled = true;
+  preview.replaceChildren(createElement('p', { text: 'プレビューを読み込み中です' }));
+  try {
+    const blob = await attachmentApi(
+      `/api/attachments/${encodeURIComponent(attachmentId)}/content`, sessionRevision,
+    );
+    if (!requests.isCurrentAttachment(attachmentToken)
+      || state.currentCase?.case_id !== caseId) return;
+    const objectUrl = URL.createObjectURL(blob);
+    state.attachmentObjectUrls.add(objectUrl);
+    const image = createElement('img', {
+      attributes: { src: objectUrl, alt: `${attachment.original_name}のプレビュー` },
+    });
+    preview.replaceChildren(image);
+    button.textContent = 'プレビューを再読み込み';
+  } catch (error) {
+    if (error.message !== 'auth_required'
+      && sessionRevision === requests.currentSession()
+      && requests.isCurrentAttachment(attachmentToken)
+      && state.currentCase?.case_id === caseId) {
+      preview.replaceChildren(createElement('p', { text: '添付ファイルを取得できませんでした' }));
+    }
+  } finally {
+    if (requests.isCurrentAttachment(attachmentToken)
+      && state.currentCase?.case_id === caseId) {
+      button.disabled = false;
+    }
+  }
+});
+
 elements['action-form'].addEventListener('input', saveDraft);
 elements['action-form'].addEventListener('submit', submitAction);
 elements['cancel-action'].addEventListener('click', () => closeAction());
@@ -551,6 +647,8 @@ elements['actor-select'].addEventListener('change', async event => {
   requests.advanceSession();
   state.currentCase = null;
   state.events = [];
+  state.attachments = [];
+  clearAttachmentPreviews();
   elements['detail-content'].hidden = true;
   elements['detail-empty'].hidden = false;
   elements['auth-blocked'].hidden = true;

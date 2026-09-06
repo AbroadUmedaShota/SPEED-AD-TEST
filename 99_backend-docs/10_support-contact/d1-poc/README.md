@@ -80,7 +80,7 @@ required; the immutable event records every cleared value before the current
 case fields are reset. Reopen requires a reason, returns the case to `対応中`,
 and records the previous resolution while preserving all earlier events.
 
-The local MVP suite now has 43 tests. It covers UI asset routing and deterministic
+The local MVP suite now has 53 tests. It covers UI asset routing and deterministic
 late-response rejection after wait, resolution and operator changes,
 resolve/reopen/re-resolve,
 invalid states and inputs, replay and request-ID conflicts, deterministic
@@ -90,6 +90,26 @@ event-failure rollback, and incomplete legacy resolution metadata. A separate
 temporary D1 applies migration `0001`, inserts a synthetic
 case with an old-format receipt and event, then applies `0002`; the test verifies
 the row, receipt, event count and foreign keys after the ordered upgrade.
+
+The local attachment boundary stores one valid synthetic WebP outside the static
+UI assets. Case detail returns safe metadata only. The authenticated fixed
+content endpoint verifies the active operator, attachment/case relation, case
+state, blob presence, byte size and SHA-256 before returning bytes with
+`Cache-Control: no-store`, `nosniff` and a restrictive CSP. Unknown IDs,
+malformed paths, disabled principals, archived cases and missing or corrupted
+blobs are rejected without returning attachment bytes. The UI creates a
+temporary `blob:` URL only after an operator requests a preview, and revokes and
+removes it when the case or operator changes.
+
+The restore test exports only the five formal `contact_*` tables from a synthetic
+source D1 database. It applies migrations `0001` and `0002` in order to a new,
+independent target database and imports the data there; it never overwrites or
+deletes the source. It then verifies all table rows, foreign keys, case version,
+history, an old-format payload hash, exact immutable receipt replay and that the
+replay causes no mutation. Attachment bytes are exported separately with a
+manifest and must match the D1 attachment ID, case ID, object key, size and
+SHA-256 during restore. A DB-only restore with a missing, corrupt or mismatched
+blob fails validation.
 
 ## Local operator UI
 
@@ -210,4 +230,6 @@ The local D1 binding has seven integration tests covering:
   configuration remain separate work.
 - No idempotency expiry or cleanup is introduced. A production retention policy
   requires separate design; deleting receipt records changes replay guarantees.
-- Nonpublic attachment storage, DB/file restore, real authentication and shared trial remain unfinished.
+- The nonpublic attachment and DB/file restore contracts are verified only with
+  local synthetic data. A shared attachment service, remote restore rehearsal,
+  real authentication and shared trial remain unfinished.
