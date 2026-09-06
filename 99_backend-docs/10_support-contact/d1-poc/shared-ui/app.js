@@ -6,13 +6,48 @@ const state = {
 };
 const byId = id => document.getElementById(id);
 
+export function isSessionBlockingResponse(status, body) {
+  return status === 401 || status === 403 || body?.error === 'trial_disabled';
+}
+
+export function clearSessionState(requestState, sessionState, revokeObjectUrl) {
+  requestState.invalidateSession();
+  sessionState.objectUrls.forEach(revokeObjectUrl);
+  sessionState.objectUrls.clear();
+  sessionState.cases = [];
+  sessionState.current = null;
+  sessionState.principal = null;
+}
+
 async function api(path, options = {}) {
   const headers = new Headers(options.headers || {});
   headers.set('x-requested-with', 'XMLHttpRequest');
   if (options.body) headers.set('content-type', 'application/json');
-  const response = await fetch(path, { ...options, headers });
-  const body = await response.json().catch(() => ({}));
-  if (response.status === 401 || response.status === 403) blockAccess();
+  let response;
+  try {
+    response = await fetch(path, { ...options, headers });
+  } catch {
+    blockAccess();
+    throw Object.assign(new Error('request_failed'), { sessionBlocked: true });
+  }
+  if (response.redirected
+    || response.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {
+    blockAccess();
+    throw Object.assign(new Error('invalid_response'), { sessionBlocked: true });
+  }
+  let body;
+  try {
+    body = await response.json();
+  } catch {
+    blockAccess();
+    throw Object.assign(new Error('invalid_response'), { sessionBlocked: true });
+  }
+  if (isSessionBlockingResponse(response.status, body)) {
+    blockAccess();
+    throw Object.assign(new Error(body.error || 'request_failed'), {
+      status: response.status, body, sessionBlocked: true,
+    });
+  }
   if (!response.ok) throw Object.assign(new Error(body.error || 'request_failed'), {
     status: response.status, body,
   });
@@ -47,11 +82,7 @@ function saveVisibleDraft() {
 
 function blockAccess() {
   saveVisibleDraft();
-  requests.invalidateSession();
-  clearObjectUrls();
-  state.cases = [];
-  state.current = null;
-  state.principal = null;
+  clearSessionState(requests, state, url => URL.revokeObjectURL(url));
   byId('cases').replaceChildren();
   byId('detail').replaceChildren(text('div', 'セッションを確認できません。再ログイン後に再読み込みしてください。'));
   byId('principal').textContent = 'アクセスできません';
@@ -120,13 +151,48 @@ async function loadDetail(caseId) {
     button.addEventListener('click', async () => {
       const attachmentToken = requests.currentDetail();
       const selectedCaseId = state.current?.case_id;
-      const response = await fetch(`/api/attachments/${encodeURIComponent(attachment.attachment_id)}/content`, {
-        headers: { 'x-requested-with': 'XMLHttpRequest' },
-      });
-      if (response.status === 401 || response.status === 403) return blockAccess();
-      if (!response.ok) return message('添付ファイルを取得できませんでした。');
+      let response;
+      try {
+        response = await fetch(`/api/attachments/${encodeURIComponent(attachment.attachment_id)}/content`, {
+          headers: { 'x-requested-with': 'XMLHttpRequest' },
+        });
+      } catch {
+        blockAccess();
+        return;
+      }
+      if (response.status === 401 || response.status === 403 || response.redirected) {
+        blockAccess();
+        return;
+      }
+      const contentType = response.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
+      if (!response.ok) {
+        if (contentType !== 'application/json') {
+          blockAccess();
+          return;
+        }
+        let body;
+        try {
+          body = await response.json();
+        } catch {
+          blockAccess();
+          return;
+        }
+        if (isSessionBlockingResponse(response.status, body)) blockAccess();
+        else message('添付ファイルを取得できませんでした。');
+        return;
+      }
+      if (contentType !== 'image/webp') {
+        blockAccess();
+        return;
+      }
       if (!requests.isCurrent(attachmentToken) || state.current?.case_id !== selectedCaseId) return;
-      const blob = await response.blob();
+      let blob;
+      try {
+        blob = await response.blob();
+      } catch {
+        blockAccess();
+        return;
+      }
       if (!requests.isCurrent(attachmentToken) || state.current?.case_id !== selectedCaseId) return;
       const image = document.createElement('img');
       image.alt = `${attachment.original_name}のプレビュー`;
@@ -200,7 +266,7 @@ async function loadDetail(caseId) {
           const currentCaseId = state.current?.case_id;
           await Promise.all([loadCases(), currentCaseId ? loadDetail(currentCaseId) : Promise.resolve()]);
         }
-      } else if (error.status !== 401 && error.status !== 403) {
+      } else if (!error.sessionBlocked && error.status !== 401 && error.status !== 403) {
         message('保存結果を確認できませんでした。同じ内容で再送すると同じ操作IDを使用します。');
       }
     } finally {
@@ -221,16 +287,18 @@ async function start() {
     byId('principal').textContent = session.principal.displayName
       ? `${session.principal.displayName} (${session.principal.email})` : session.principal.email;
     await loadCases();
-  } catch {
+  } catch (error) {
     byId('principal').textContent = 'アクセスできません';
-    message('担当者情報を確認できませんでした。再ログインしてください。');
+    if (!error.sessionBlocked) message('担当者情報を確認できませんでした。再ログインしてください。');
   }
 }
 
-byId('refresh').addEventListener('click', loadCases);
-byId('search').addEventListener('input', renderCases);
-byId('cases').addEventListener('click', event => {
-  const button = event.target.closest('button[data-case-id]');
-  if (button) loadDetail(button.dataset.caseId);
-});
-start();
+if (typeof document !== 'undefined') {
+  byId('refresh').addEventListener('click', loadCases);
+  byId('search').addEventListener('input', renderCases);
+  byId('cases').addEventListener('click', event => {
+    const button = event.target.closest('button[data-case-id]');
+    if (button) loadDetail(button.dataset.caseId);
+  });
+  start();
+}

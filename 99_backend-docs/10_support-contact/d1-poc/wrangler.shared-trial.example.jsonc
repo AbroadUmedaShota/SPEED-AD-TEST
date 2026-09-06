@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "support-contact-workersdev-trial",
+  "main": "./sharedWorker.mjs",
+  "compatibility_date": "2026-09-06",
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./shared-ui",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "support-contact-shared-trial",
+    "database_id": "00000000-0000-0000-0000-000000000000",
+    "migrations_dir": "./migrations-mvp"
+  }],
+  "vars": {
+    "TRIAL_ENABLED": "false",
+    "TRIAL_ATTACHMENTS_ENABLED": "false",
+    "TRIAL_HOSTNAME": "replace-with-trial-hostname.example.invalid",
+    "ACCESS_TEAM_DOMAIN": "replace-with-access-team.example.invalid",
+    "ACCESS_AUD": "replace-with-access-application-audience",
+    "TIME_ZONE": "Asia/Tokyo"
+  }
+}

@@ -9,6 +9,16 @@ function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
 }
 
+function noStore(response) {
+  const headers = new Headers(response.headers);
+  headers.set('cache-control', 'no-store');
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 function trustedHost(request, env) {
   const expected = String(env.TRIAL_HOSTNAME || '').trim().toLowerCase();
   return expected && new URL(request.url).hostname.toLowerCase() === expected;
@@ -100,6 +110,13 @@ async function actionResponse(request, env, principal, caseId, action) {
   return json(result.body, result.status);
 }
 
+async function assetResponse(request, env) {
+  if (!env.ASSETS || typeof env.ASSETS.fetch !== 'function') {
+    return json({ error: 'not_found' }, 404);
+  }
+  return noStore(await env.ASSETS.fetch(request));
+}
+
 export function createSharedWorker(options = {}) {
   const principalResolver = options.principalResolver || accessPrincipalResolver;
   const createAttachmentStore = options.createAttachmentStore
@@ -140,7 +157,13 @@ export function createSharedWorker(options = {}) {
       if (actionMatch) {
         return actionResponse(request, env, principal, actionMatch[1], actionMatch[2]);
       }
-      return json({ error: 'not_found' }, 404);
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return json({ error: 'method_not_allowed' }, 405);
+      }
+      if (url.pathname.startsWith('/api/')) {
+        return json({ error: 'not_found' }, 404);
+      }
+      return assetResponse(request, env);
     },
   };
 }

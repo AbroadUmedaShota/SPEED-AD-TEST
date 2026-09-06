@@ -46,15 +46,30 @@ The accepted local evidence is mapped in
 architecture and approval gates are in
 [SHARED_TRIAL_EXECUTION_PACKAGE.md](SHARED_TRIAL_EXECUTION_PACKAGE.md).
 
-The architecture-only decision for a shared trial is Workers + D1 + Cloudflare
-Access with exact-email Google identities, Worker-side JWT verification, an
-active-operator check in D1 and private R2 attachments. The isolated candidate
+The architecture-only decision for the initial workers.dev shared trial is
+Workers + D1 + Cloudflare Access with exact-email Google identities, Worker-side
+JWT verification, and an active-operator check in D1. It has attachments
+disabled and no R2 binding or subscription. Private R2 attachments are a
+deferred G7 full candidate, not part of the initial trial. The isolated initial
 entry point is [`sharedWorker.mjs`](sharedWorker.mjs), with a selector-free UI
-under [`shared-ui`](shared-ui/index.html) and fail-closed placeholder settings in
-[`wrangler.shared.example.jsonc`](wrangler.shared.example.jsonc). Run its local
-unit and boundary tests with `npm run test:shared`. These files do not authorize
-or perform resource creation, deployment, real-account registration or data
-migration.
+under [`shared-ui`](shared-ui/index.html). The existing
+[`wrangler.shared.example.jsonc`](wrangler.shared.example.jsonc) remains the
+separate custom-domain/R2 candidate. The workers.dev bootstrap profile is
+[`wrangler.shared-trial-bootstrap.example.jsonc`](wrangler.shared-trial-bootstrap.example.jsonc):
+it has no bindings or assets and returns only `503 {"error":"trial_disabled"}`
+with `Cache-Control: no-store`. The non-custom-domain trial profile is
+[`wrangler.shared-trial.example.jsonc`](wrangler.shared-trial.example.jsonc): it
+has ASSETS and D1 placeholders, starts disabled, and has no R2 binding. The
+required shared-trial command includes the new boundary suite and the directly
+affected shared suites:
+
+```powershell
+node --test --test-concurrency=1 tests/shared-trial-boundary.test.mjs tests/shared-worker.test.mjs tests/shared-ui-request-state.test.mjs tests/shared-boundary.test.mjs
+```
+
+`npm run test:shared` remains useful for its existing suite but does not include
+`tests/shared-trial-boundary.test.mjs`. These files do not authorize or perform
+resource creation, deployment, real-account registration or data migration.
 
 The repeatable browser-only harness is
 [`wrangler.shared-browser.jsonc`](wrangler.shared-browser.jsonc) with its entry
