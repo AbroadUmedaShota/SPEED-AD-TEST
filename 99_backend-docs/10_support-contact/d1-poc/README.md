@@ -1,8 +1,9 @@
 # D1 atomic note proof of concept
 
-This is a local-only consistency experiment, not a deployment candidate.
-The only action is appending a synthetic note. The six existing status values
-are preserved without adding or changing transition, priority, archive or resolution rules.
+This is a local-only consistency and operator-flow experiment, not a deployment candidate.
+It implements the approved fixed case actions and an operator UI over synthetic data.
+The six existing status values are preserved without adding priority, archive, SLA or
+notification rules.
 The Worker listener and D1 binding are local-only test adapters. The configuration
 contains no credential or deployable D1 resource identifier and rejects non-loopback requests.
 
@@ -79,7 +80,9 @@ required; the immutable event records every cleared value before the current
 case fields are reset. Reopen requires a reason, returns the case to `対応中`,
 and records the previous resolution while preserving all earlier events.
 
-The local MVP suite now has 39 tests. It covers resolve/reopen/re-resolve,
+The local MVP suite now has 43 tests. It covers UI asset routing and deterministic
+late-response rejection after wait, resolution and operator changes,
+resolve/reopen/re-resolve,
 invalid states and inputs, replay and request-ID conflicts, deterministic
 concurrent resolution, event-failure rollback and updates by another allowed
 operator. Reopen is independently covered for replay, concurrent updates,
@@ -87,6 +90,27 @@ event-failure rollback, and incomplete legacy resolution metadata. A separate
 temporary D1 applies migration `0001`, inserts a synthetic
 case with an old-format receipt and event, then applies `0002`; the test verifies
 the row, receipt, event count and foreign keys after the ordered upgrade.
+
+## Local operator UI
+
+Apply the local migrations and start the MVP Worker from this directory:
+
+```powershell
+npx wrangler d1 migrations apply DB --local --config wrangler.mvp.jsonc
+npx wrangler dev --local --config wrangler.mvp.jsonc
+```
+
+Open the loopback URL printed by Wrangler. The interface provides the four
+approved queues, delayed detail/history loading and the eight fixed operations.
+It uses only the two synthetic operators from the local Worker. Selecting
+`認証なし（検証用）` proves the failure state; it is not an authentication
+implementation or a shared-login substitute.
+
+Unsaved form values and acknowledgement-uncertain request IDs stay only in the
+current page memory. They are never written to browser storage or the URL.
+Version conflicts reload the latest case while retaining the draft, require the
+operator to review it and never resubmit automatically. API values are rendered
+through DOM text nodes rather than HTML injection.
 
 ## SQL contract
 
@@ -180,10 +204,10 @@ The local D1 binding has seven integration tests covering:
 - A production D1 adapter must preserve primary-consistent replay/error
   reconciliation; distributed failure behavior remains untested.
 - The PoC schema is not a migration of the existing Spreadsheet. It contains
-  only synthetic cases and operators (`demo-a`, `demo-b`).
+  only synthetic cases and operators (`operator-a`, `operator-b`).
 - The HTTP wrapper is tested both in-process and through local workerd. Production
   request streaming limits, CSRF controls, routing/authentication and deployment
   configuration remain separate work.
 - No idempotency expiry or cleanup is introduced. A production retention policy
   requires separate design; deleting receipt records changes replay guarantees.
-- Nonpublic attachment storage, DB/file restore, new UI and shared trial remain unfinished.
+- Nonpublic attachment storage, DB/file restore, real authentication and shared trial remain unfinished.

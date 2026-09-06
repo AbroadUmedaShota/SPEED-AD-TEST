@@ -187,6 +187,21 @@ test('migration creates exactly the five formal MVP tables', async () => {
   assert.equal(snapshot.body.cases.length, 1);
 });
 
+test('operator UI is served while API and local test routes still reach the Worker', async () => {
+  const page = await fetch(`${baseUrl}/`);
+  assert.equal(page.status, 200);
+  assert.match(page.headers.get('content-type') || '', /text\/html/);
+  const html = await page.text();
+  assert.match(html, /問い合わせ対応/);
+  assert.match(html, /ローカル・合成データ/);
+
+  const cases = await authenticatedGet('/api/cases');
+  assert.equal(cases.status, 200);
+  assert.equal(cases.body.cases.length, 1);
+  const reset = await requestJson('/__test/reset', { method: 'POST' });
+  assert.equal(reset.status, 200);
+});
+
 test('migration 0002 upgrades populated 0001 data without changing legacy receipt or history', async () => {
   const upgradeDir = await mkdtemp(path.join(os.tmpdir(), 'contact-d1-upgrade-'));
   const migrationDir = path.join(upgradeDir, 'migrations');

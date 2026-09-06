@@ -5,6 +5,10 @@
   "compatibility_date": "2026-09-06",
   "send_metrics": false,
   "workers_dev": false,
+  "assets": {
+    "directory": "./ui",
+    "run_worker_first": ["/api/*", "/__test/*"]
+  },
   "d1_databases": [
     {
       "binding": "DB",
