@@ -62,16 +62,31 @@ The approved wait-management slice adds migration `0002_wait_management.sql`
 and fixed `wait-customer`, `wait-internal` and `hold` actions. It keeps the
 assignee while storing the reason, next action, follow-up date and optional
 internal target in the same atomic update and immutable event. The local suite
-now has 25 tests, including invalid and past dates, exact input boundaries, state preconditions,
+includes invalid and past dates, exact input boundaries, state preconditions,
 idempotency conflicts, deterministic concurrent waits and full rollback after
-an event constraint failure. `resolve` and `reopen` are approved MVP operations
-but remain unimplemented in this slice.
+an event constraint failure.
 
 For replay compatibility, the three operations shipped in commit `c4ecb97`
 (`assign-self`, `start`, `note`) retain their original canonical hash format.
 New wait operations hash a sorted list of every accepted business field. An
 upgrade test seeds an old-format immutable receipt, applies the current schema,
 and verifies that the same request still replays without another event.
+
+The approved resolution slice implements fixed `resolve` and `reopen` actions.
+Resolution requires an assignee, one of `解決` / `案内完了` / `対応不要`, and a
+final note. If pending wait fields exist, an explicit completion note is also
+required; the immutable event records every cleared value before the current
+case fields are reset. Reopen requires a reason, returns the case to `対応中`,
+and records the previous resolution while preserving all earlier events.
+
+The local MVP suite now has 39 tests. It covers resolve/reopen/re-resolve,
+invalid states and inputs, replay and request-ID conflicts, deterministic
+concurrent resolution, event-failure rollback and updates by another allowed
+operator. Reopen is independently covered for replay, concurrent updates,
+event-failure rollback, and incomplete legacy resolution metadata. A separate
+temporary D1 applies migration `0001`, inserts a synthetic
+case with an old-format receipt and event, then applies `0002`; the test verifies
+the row, receipt, event count and foreign keys after the ordered upgrade.
 
 ## SQL contract
 

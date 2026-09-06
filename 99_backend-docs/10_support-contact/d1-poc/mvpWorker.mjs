@@ -130,6 +130,17 @@ async function configureCaseStatus(request, db) {
   return jsonResponse({ ok: true });
 }
 
+async function clearResolutionField(request, db) {
+  const body = await request.json();
+  const allowedFields = ['resolution_code', 'resolved_at', 'resolved_by'];
+  if (!allowedFields.includes(body.field)) {
+    return jsonResponse({ error: 'invalid_test_command' }, 400);
+  }
+  await db.prepare(`UPDATE contact_cases SET ${body.field} = NULL
+    WHERE case_id = 'case-mvp-1' AND status = '対応済み' AND assignee_email IS NOT NULL`).run();
+  return jsonResponse({ ok: true });
+}
+
 async function seedLegacyNoteReceipt(db) {
   const actorEmail = SYNTHETIC_OPERATORS[0].email;
   const requestId = 'legacy-note-request';
@@ -223,6 +234,9 @@ export default {
     }
     if (request.method === 'POST' && url.pathname === '/__test/case-status') {
       return configureCaseStatus(request, env.DB);
+    }
+    if (request.method === 'POST' && url.pathname === '/__test/clear-resolution-field') {
+      return clearResolutionField(request, env.DB);
     }
     if (request.method === 'POST' && url.pathname === '/__test/seed-legacy-note') {
       return seedLegacyNoteReceipt(env.DB);

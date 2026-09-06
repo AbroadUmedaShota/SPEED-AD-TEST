@@ -106,16 +106,86 @@ const ACTIONS = Object.freeze({
       receipt.createdAt, receipt.caseId, receipt.fromVersion,
     ],
   },
+  resolve: {
+    eventType: 'resolved',
+    payloadKeys: ['requestId', 'expectedVersion', 'resolutionCode', 'finalNote'],
+    optionalPayloadKeys: ['pendingClosureNote'],
+    changes: (actorEmail, payload, current, createdAt) => ({
+      status: '対応済み',
+      resolutionCode: payload.resolutionCode,
+      resolvedAt: createdAt,
+      resolvedBy: actorEmail,
+      clearedPending: hasPendingConditions(current) ? {
+        nextAction: current.next_action,
+        followupAt: current.followup_at,
+        waitTarget: current.wait_target,
+        waitReason: current.wait_reason,
+        completionNote: payload.pendingClosureNote,
+      } : null,
+    }),
+    note: payload => payload.finalNote,
+    validateCase: (row, payload) => {
+      const hasPending = hasPendingConditions(row);
+      return row.status !== '対応済み'
+        && row.assignee_email !== null
+        && (hasPending
+          ? validText(payload.pendingClosureNote, 4000)
+          : !hasOwn(payload, 'pendingClosureNote'));
+    },
+    updateSql: `UPDATE contact_cases
+      SET status = '対応済み', next_action = NULL, followup_at = NULL,
+        wait_target = NULL, wait_reason = NULL, resolution_code = ?, resolved_at = ?,
+        resolved_by = ?, version = version + 1, last_request_id = ?, updated_at = ?
+      WHERE case_id = ? AND version = ? AND status <> '対応済み'
+        AND assignee_email IS NOT NULL AND archived_at IS NULL`,
+    updateBindings: (actorEmail, receipt, payload) => [
+      payload.resolutionCode, receipt.createdAt, actorEmail, receipt.requestId,
+      receipt.createdAt, receipt.caseId, receipt.fromVersion,
+    ],
+  },
+  reopen: {
+    eventType: 'reopened',
+    payloadKeys: ['requestId', 'expectedVersion', 'reason'],
+    changes: (_actorEmail, payload, current) => ({
+      status: '対応中',
+      reopenReason: payload.reason,
+      previousResolution: {
+        resolutionCode: current.resolution_code,
+        resolvedAt: current.resolved_at,
+        resolvedBy: current.resolved_by,
+      },
+    }),
+    note: payload => payload.reason,
+    validateCase: row => row.status === '対応済み'
+      && row.assignee_email !== null
+      && row.resolution_code !== null
+      && row.resolved_at !== null
+      && row.resolved_by !== null,
+    updateSql: `UPDATE contact_cases
+      SET status = '対応中', resolution_code = NULL, resolved_at = NULL,
+        resolved_by = NULL, version = version + 1, last_request_id = ?, updated_at = ?
+      WHERE case_id = ? AND version = ? AND status = '対応済み'
+        AND assignee_email IS NOT NULL AND resolution_code IS NOT NULL
+        AND resolved_at IS NOT NULL AND resolved_by IS NOT NULL AND archived_at IS NULL`,
+    updateBindings: (_actorEmail, receipt) => [
+      receipt.requestId, receipt.createdAt, receipt.caseId, receipt.fromVersion,
+    ],
+  },
 });
 
 const REQUEST_SQL = 'SELECT * FROM contact_api_requests WHERE request_id = ?';
-const CASE_SQL = `SELECT case_id, status, assignee_email, version, archived_at
+const CASE_SQL = `SELECT case_id, status, assignee_email, next_action, followup_at,
+    wait_target, wait_reason, resolution_code, resolved_at, resolved_by, version, archived_at
   FROM contact_cases WHERE case_id = ?`;
 const ID_PATTERN = /^[a-zA-Z0-9_-]{1,80}$/;
 const INTERNAL_TARGETS = ['CS', '営業', '開発', '管理者', 'その他'];
 
 const result = (status, body) => ({ status, body });
 const errorResult = (status, error, details = {}) => result(status, { error, ...details });
+
+function hasPendingConditions(row) {
+  return Boolean(row.next_action || row.followup_at || row.wait_target || row.wait_reason);
+}
 
 function validText(value, maximum) {
   return typeof value === 'string' && value.trim().length > 0 && !value.includes('\0')
@@ -155,7 +225,9 @@ async function payloadHash(actorEmail, action, caseId, payload) {
     ]);
   }
   const businessPayload = ACTIONS[action].payloadKeys
+    .concat(ACTIONS[action].optionalPayloadKeys || [])
     .filter(key => key !== 'requestId')
+    .filter(key => hasOwn(payload, key))
     .sort()
     .map(key => [key, payload[key]]);
   return hashCanonical([
@@ -176,8 +248,9 @@ function validatePayload(action, payload, timeZone) {
   const definition = ACTIONS[action];
   if (!definition || !payload || typeof payload !== 'object' || Array.isArray(payload)) return false;
   const keys = Object.keys(payload).sort();
-  const allowed = [...definition.payloadKeys].sort();
-  if (keys.length !== allowed.length || keys.some((key, index) => key !== allowed[index])) return false;
+  const allowed = [...definition.payloadKeys, ...(definition.optionalPayloadKeys || [])].sort();
+  if (keys.some(key => !allowed.includes(key))
+    || definition.payloadKeys.some(key => !hasOwn(payload, key))) return false;
   if (typeof payload.requestId !== 'string' || !ID_PATTERN.test(payload.requestId)) return false;
   if (!Number.isSafeInteger(payload.expectedVersion) || payload.expectedVersion < 1
     || payload.expectedVersion >= Number.MAX_SAFE_INTEGER) return false;
@@ -189,6 +262,11 @@ function validatePayload(action, payload, timeZone) {
   if (hasOwn(payload, 'reason') && !validText(payload.reason, 4000)) return false;
   if (hasOwn(payload, 'resumeCondition')
     && !validText(payload.resumeCondition, 200)) return false;
+  if (hasOwn(payload, 'finalNote') && !validText(payload.finalNote, 4000)) return false;
+  if (hasOwn(payload, 'pendingClosureNote')
+    && !validText(payload.pendingClosureNote, 4000)) return false;
+  if (hasOwn(payload, 'resolutionCode')
+    && !['解決', '案内完了', '対応不要'].includes(payload.resolutionCode)) return false;
   if (hasOwn(payload, 'followupAt')
     && (!validCalendarDate(payload.followupAt)
       || payload.followupAt < todayInTimeZone(timeZone))) return false;
@@ -238,11 +316,12 @@ export async function executeCaseAction(db, principal, action, caseId, payload, 
     if (current.version !== payload.expectedVersion) {
       return errorResult(409, 'version_conflict', { currentVersion: current.version });
     }
-    if (definition.validateCase && !definition.validateCase(current)) {
+    if (definition.validateCase && !definition.validateCase(current, payload)) {
       return errorResult(409, 'state_conflict', { currentStatus: current.status });
     }
     if (hooks.afterPreflight) await hooks.afterPreflight();
 
+    const createdAt = new Date().toISOString();
     const receipt = {
       requestId: payload.requestId,
       eventId: crypto.randomUUID(),
@@ -253,8 +332,8 @@ export async function executeCaseAction(db, principal, action, caseId, payload, 
       fromVersion: payload.expectedVersion,
       toVersion: payload.expectedVersion + 1,
       note: definition.note ? definition.note(payload) : action === 'note' ? payload.note : null,
-      changes: definition.changes(principal.email, payload),
-      createdAt: new Date().toISOString(),
+      changes: definition.changes(principal.email, payload, current, createdAt),
+      createdAt,
     };
     const changesJson = hooks.failEventInsert ? null : JSON.stringify(receipt.changes);
 
