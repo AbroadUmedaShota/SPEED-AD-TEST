@@ -58,6 +58,21 @@ unsupported actions, and rejecting missing or disabled principals before parsing
 their bodies. The MVP configuration remains local-only and does not select a
 shared authentication or attachment service.
 
+The approved wait-management slice adds migration `0002_wait_management.sql`
+and fixed `wait-customer`, `wait-internal` and `hold` actions. It keeps the
+assignee while storing the reason, next action, follow-up date and optional
+internal target in the same atomic update and immutable event. The local suite
+now has 25 tests, including invalid and past dates, exact input boundaries, state preconditions,
+idempotency conflicts, deterministic concurrent waits and full rollback after
+an event constraint failure. `resolve` and `reopen` are approved MVP operations
+but remain unimplemented in this slice.
+
+For replay compatibility, the three operations shipped in commit `c4ecb97`
+(`assign-self`, `start`, `note`) retain their original canonical hash format.
+New wait operations hash a sorted list of every accepted business field. An
+upgrade test seeds an old-format immutable receipt, applies the current schema,
+and verifies that the same request still replays without another event.
+
 ## SQL contract
 
 [Migration](migrations/0001_atomic_note.sql) defines five isolated `poc_*` tables.

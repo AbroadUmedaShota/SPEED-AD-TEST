@@ -77,7 +77,7 @@ async function getCase(db, caseId) {
   return db.prepare(`SELECT case_id, received_at, category, subject, customer_name,
     customer_email, message, source_url, user_agent, status, priority, assignee_email,
     next_action, followup_at, resolution_code, resolved_at, resolved_by, version,
-    created_at, updated_at
+    wait_target, wait_reason, created_at, updated_at
     FROM contact_cases WHERE case_id = ? AND archived_at IS NULL`).bind(caseId).first();
 }
 
@@ -130,6 +130,44 @@ async function configureCaseStatus(request, db) {
   return jsonResponse({ ok: true });
 }
 
+async function seedLegacyNoteReceipt(db) {
+  const actorEmail = SYNTHETIC_OPERATORS[0].email;
+  const requestId = 'legacy-note-request';
+  const note = '旧canonical形式の合成メモ';
+  const createdAt = '2026-09-06T01:00:00.000Z';
+  const canonical = JSON.stringify([actorEmail, 'note', 'case-mvp-1', 1, note]);
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical));
+  const payloadHash = Array.from(new Uint8Array(digest),
+    byte => byte.toString(16).padStart(2, '0')).join('');
+  const receipt = {
+    requestId,
+    eventId: 'legacy-note-event',
+    caseId: 'case-mvp-1',
+    action: 'note',
+    eventType: 'note_added',
+    actorEmail,
+    fromVersion: 1,
+    toVersion: 2,
+    note,
+    changes: {},
+    createdAt,
+  };
+  await db.batch([
+    db.prepare(`INSERT INTO contact_api_requests
+      (request_id, actor_email, action, case_id, expected_version, payload_hash,
+       response_json, created_at) VALUES (?, ?, 'note', 'case-mvp-1', 1, ?, ?, ?)`)
+      .bind(requestId, actorEmail, payloadHash, JSON.stringify(receipt), createdAt),
+    db.prepare(`UPDATE contact_cases SET version = 2, last_request_id = ?, updated_at = ?
+      WHERE case_id = 'case-mvp-1' AND version = 1`).bind(requestId, createdAt),
+    db.prepare(`INSERT INTO contact_case_events
+      (event_id, request_id, case_id, event_type, actor_email, from_version,
+       to_version, note, changes_json, created_at)
+      VALUES ('legacy-note-event', ?, 'case-mvp-1', 'note_added', ?, 1, 2, ?, '{}', ?)`)
+      .bind(requestId, actorEmail, note, createdAt),
+  ]);
+  return jsonResponse({ ok: true, payload: { requestId, expectedVersion: 1, note } });
+}
+
 async function resolvePrincipal(request, db) {
   const email = request.headers.get('x-mvp-actor');
   if (!SYNTHETIC_OPERATORS.some(operator => operator.email === email)) return null;
@@ -139,31 +177,33 @@ async function resolvePrincipal(request, db) {
   return operator?.active ? { email } : null;
 }
 
-async function handleAction(request, db, principal, caseId, action) {
+async function handleAction(request, db, principal, caseId, action, timeZone) {
   if (!supportedCaseActions.includes(action)) return jsonResponse({ error: 'not_found' }, 404);
   if (request.method !== 'POST') return jsonResponse({ error: 'method_not_allowed' }, 405);
   if (!principal) return jsonResponse({ error: 'not_allowed' }, 403);
   if (request.headers.get('content-type')?.split(';')[0] !== 'application/json') {
     return jsonResponse({ error: 'json_required' }, 415);
   }
+  let payload;
   try {
     const text = await request.text();
     if (new TextEncoder().encode(text).length > 24_000) {
       return jsonResponse({ error: 'payload_too_large' }, 413);
     }
-    const payload = JSON.parse(text);
-    const barrierName = request.headers.get('x-mvp-race-barrier');
-    const result = await executeCaseAction(db, principal, action, caseId, payload, {
-      afterPreflight: barrierName ? () => waitAtRaceBarrier(barrierName) : null,
-      failEventInsert: request.headers.get('x-mvp-fail-event') === '1',
-    });
-    if (request.headers.get('x-mvp-drop-ack') === '1' && result.status === 200) {
-      return jsonResponse({ error: 'simulated_acknowledgement_loss' }, 503);
-    }
-    return jsonResponse(result.body, result.status);
+    payload = JSON.parse(text);
   } catch {
     return jsonResponse({ error: 'invalid_json' }, 400);
   }
+  const barrierName = request.headers.get('x-mvp-race-barrier');
+  const result = await executeCaseAction(db, principal, action, caseId, payload, {
+    afterPreflight: barrierName ? () => waitAtRaceBarrier(barrierName) : null,
+    failEventInsert: request.headers.get('x-mvp-fail-event') === '1',
+    timeZone,
+  });
+  if (request.headers.get('x-mvp-drop-ack') === '1' && result.status === 200) {
+    return jsonResponse({ error: 'simulated_acknowledgement_loss' }, 503);
+  }
+  return jsonResponse(result.body, result.status);
 }
 
 export default {
@@ -183,6 +223,9 @@ export default {
     }
     if (request.method === 'POST' && url.pathname === '/__test/case-status') {
       return configureCaseStatus(request, env.DB);
+    }
+    if (request.method === 'POST' && url.pathname === '/__test/seed-legacy-note') {
+      return seedLegacyNoteReceipt(env.DB);
     }
 
     const principal = await resolvePrincipal(request, env.DB);
@@ -204,7 +247,9 @@ export default {
       url.pathname,
     );
     if (actionMatch) {
-      return handleAction(request, env.DB, principal, actionMatch[1], actionMatch[2]);
+      return handleAction(
+        request, env.DB, principal, actionMatch[1], actionMatch[2], env.MVP_TIME_ZONE,
+      );
     }
     return jsonResponse({ error: 'not_found' }, 404);
   },
