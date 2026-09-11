@@ -116,7 +116,14 @@ required; the immutable event records every cleared value before the current
 case fields are reset. Reopen requires a reason, returns the case to `対応中`,
 and records the previous resolution while preserving all earlier events.
 
-The local MVP suite now has 53 tests. It covers UI asset routing and deterministic
+`reopen` requires an assignee and a reason. It returns `対応済み` cases with complete
+resolution metadata, plus `顧客確認待ち`, `引継ぎ待ち` and `保留` cases, to `対応中`.
+For every wait-state reopen it clears `next_action`, `followup_at`, `wait_target`
+and `wait_reason` in the same atomic update; the receipt/event preserves the
+pre-clear values and reopening reason. The existing resolved-case reopen receipt
+continues to preserve its previous resolution metadata.
+
+The local MVP suite now has 57 tests. It covers UI asset routing and deterministic
 late-response rejection after wait, resolution and operator changes,
 resolve/reopen/re-resolve,
 invalid states and inputs, replay and request-ID conflicts, deterministic

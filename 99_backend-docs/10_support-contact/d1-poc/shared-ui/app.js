@@ -56,13 +56,25 @@ async function api(path, options = {}) {
 
 function message(value) { byId('message').textContent = value; }
 function text(tag, value) { const node = document.createElement(tag); node.textContent = value; return node; }
-function field(label, name, type = 'text', value = '') {
+function field(label, name, type = 'text', value = '', options = []) {
   const wrapper = text('label', label);
-  const input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+  const input = document.createElement(type === 'textarea' ? 'textarea' : type === 'select' ? 'select' : 'input');
   input.name = name;
   input.required = true;
+  if (type === 'select') {
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '選択してください';
+    input.append(placeholder, ...options.map(option => {
+      const node = document.createElement('option');
+      node.value = option;
+      node.textContent = option;
+      return node;
+    }));
+  } else if (type !== 'textarea') {
+    input.type = type;
+  }
   input.value = value;
-  if (type !== 'textarea') input.type = type;
   wrapper.append(input);
   return wrapper;
 }
@@ -93,11 +105,23 @@ const actions = {
   'assign-self': ['自分を担当にする', []], start: ['対応を始める', []],
   note: ['メモを残す', [['メモ', 'note', 'textarea']]],
   'wait-customer': ['お客様の返信を待つ', [['待機理由', 'note', 'textarea'], ['次の対応', 'nextAction'], ['確認予定日', 'followupAt', 'date']]],
-  'wait-internal': ['社内へ確認する', [['確認先', 'confirmationTarget'], ['依頼内容', 'note', 'textarea'], ['次の対応', 'nextAction'], ['確認予定日', 'followupAt', 'date']]],
+  'wait-internal': ['社内へ確認する', [['確認先', 'confirmationTarget', 'select', ['CS', '営業', '開発', '管理者', 'その他']], ['依頼内容', 'note', 'textarea'], ['次の対応', 'nextAction'], ['確認予定日', 'followupAt', 'date']]],
   hold: ['保留する', [['保留理由', 'reason', 'textarea'], ['再開条件', 'resumeCondition'], ['確認予定日', 'followupAt', 'date']]],
-  resolve: ['解決する', [['対応結果', 'resolutionCode'], ['最終対応メモ', 'finalNote', 'textarea']]],
+  resolve: ['解決する', [['対応結果', 'resolutionCode', 'select', ['解決', '案内完了', '対応不要']], ['最終対応メモ', 'finalNote', 'textarea']]],
   reopen: ['対応を再開する', [['再開理由', 'reason', 'textarea']]],
 };
+
+function availableActions(item) {
+  const available = ['note'];
+  if (item.status === '未対応' && !item.assignee_email) available.unshift('assign-self');
+  if (item.status === '未対応' && item.assignee_email) available.unshift('start');
+  if (item.status === '対応中') available.push('wait-customer', 'wait-internal', 'hold');
+  if (item.assignee_email && item.status !== '対応済み') available.push('resolve');
+  if (item.assignee_email && ['対応済み', '顧客確認待ち', '引継ぎ待ち', '保留'].includes(item.status)) {
+    available.push('reopen');
+  }
+  return available;
+}
 
 function renderCases() {
   const query = byId('search').value.trim().toLowerCase();
@@ -205,7 +229,8 @@ async function loadDetail(caseId) {
   });
   const form = fragment.querySelector('#action-form');
   const fields = fragment.querySelector('#fields');
-  fragment.querySelector('#actions').replaceChildren(...Object.entries(actions).map(([key, definition]) => {
+  fragment.querySelector('#actions').replaceChildren(...availableActions(state.current).map(key => {
+    const definition = actions[key];
     const button = text('button', definition[0]);
     button.type = 'button';
     button.addEventListener('click', () => {
@@ -218,7 +243,7 @@ async function loadDetail(caseId) {
         definitions.push(['未完了条件を閉じる理由', 'pendingClosureNote', 'textarea']);
       }
       fields.replaceChildren(...definitions.map(item => field(
-        item[0], item[1], item[2] || 'text', draft[item[1]] || '',
+        item[0], item[1], item[2] || 'text', draft[item[1]] || '', item[3] || [],
       )));
       form.hidden = false;
     });

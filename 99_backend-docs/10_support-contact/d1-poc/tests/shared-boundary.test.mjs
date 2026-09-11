@@ -34,9 +34,48 @@ test('shared deployment placeholders are fail-closed and prohibit Access bypass'
   assert.equal(config.vars.TRIAL_ATTACHMENTS_ENABLED, 'false');
   assert.equal(policy.decision, 'allow');
   assert.ok(policy.include.every(rule => Object.keys(rule).join() === 'email'));
+  assert.equal(policy.require.length, 1);
+  assert.deepEqual(policy.require[0], { login_method: { id: '<GOOGLE_IDP_LOGIN_METHOD_ID>' } });
   assert.equal(JSON.stringify(policy).toLowerCase().includes('bypass'), false);
   assert.equal(JSON.stringify(policy).toLowerCase().includes('everyone'), false);
   assert.equal(JSON.stringify(policy).includes('email_domain'), false);
+});
+
+test('Access policy structure rejects an empty or unrelated Require selector and broad access rules', async () => {
+  const policy = JSON.parse(await readFile(path.join(root, 'access-policy.shared.example.json'), 'utf8'));
+  const isStrictGooglePolicy = candidate => candidate.decision === 'allow'
+    && Array.isArray(candidate.include)
+    && candidate.include.length > 0
+    && candidate.include.every(rule => Object.keys(rule).join() === 'email'
+      && typeof rule.email?.email === 'string' && rule.email.email.length > 0)
+    && Array.isArray(candidate.require)
+    && candidate.require.length === 1
+    && Object.keys(candidate.require[0]).join() === 'login_method'
+    && candidate.require[0].login_method?.id === '<GOOGLE_IDP_LOGIN_METHOD_ID>'
+    && !JSON.stringify(candidate).toLowerCase().includes('bypass');
+  assert.equal(isStrictGooglePolicy(policy), true);
+  assert.equal(isStrictGooglePolicy({ ...policy, require: [] }), false);
+  assert.equal(isStrictGooglePolicy({ ...policy, require: [{ email: { email: 'operator-one@example.invalid' } }] }), false);
+  assert.equal(isStrictGooglePolicy({ ...policy, include: [{ email_domain: { domain: 'example.invalid' } }] }), false);
+  assert.equal(isStrictGooglePolicy({ ...policy, include: [{ everyone: {} }] }), false);
+  assert.equal(isStrictGooglePolicy({ ...policy, require: [{ bypass: {} }] }), false);
+});
+
+test('shared and local UIs expose fixed selects and only state-valid fixed actions', async () => {
+  const [sharedUi, localUi] = await Promise.all([
+    readFile(path.join(root, 'shared-ui', 'app.js'), 'utf8'),
+    readFile(path.join(root, 'ui', 'app.js'), 'utf8'),
+  ]);
+  for (const ui of [sharedUi, localUi]) {
+    assert.match(ui, /confirmationTarget/);
+    assert.match(ui, /resolutionCode/);
+    assert.match(ui, /'CS', '営業', '開発', '管理者', 'その他'/);
+    assert.match(ui, /'解決', '案内完了', '対応不要'/);
+    assert.match(ui, /\['対応済み', '顧客確認待ち', '引継ぎ待ち', '保留'\]\.includes\(item\.status\)/);
+    assert.match(ui, /item\.status === '対応中'/);
+  }
+  assert.match(sharedUi, /document\.createElement\(type === 'textarea' \? 'textarea' : type === 'select' \? 'select' : 'input'\)/);
+  assert.match(localUi, /type: 'select'/);
 });
 
 test('generated shared Worker bundle excludes local-only capabilities', async () => {

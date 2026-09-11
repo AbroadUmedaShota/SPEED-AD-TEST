@@ -308,7 +308,9 @@ function availableActions(item) {
   if (item.status === '未対応' && item.assignee_email) actions.unshift('start');
   if (item.status === '対応中') actions.push('wait-customer', 'wait-internal', 'hold');
   if (item.assignee_email && item.status !== '対応済み') actions.push('resolve');
-  if (item.status === '対応済み') actions.push('reopen');
+  if (item.assignee_email && ['対応済み', '顧客確認待ち', '引継ぎ待ち', '保留'].includes(item.status)) {
+    actions.push('reopen');
+  }
   return actions;
 }
 

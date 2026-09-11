@@ -995,6 +995,126 @@ test('reopen requires a reason and preserves the previous resolution in history'
   assert.equal(detail.body.case.resolved_by, null);
 });
 
+test('reopen returns each assigned wait state to in-progress and preserves its cleared values in history', async () => {
+  const waitCases = [
+    ['wait-customer', {
+      requestId: 'reopen-customer-wait', expectedVersion: 3,
+      note: '顧客からの追加回答を待っています。', nextAction: '回答内容を確認する',
+      followupAt: '2099-12-31',
+    }, { nextAction: '回答内容を確認する', followupAt: '2099-12-31', waitTarget: 'customer', waitReason: '顧客からの追加回答を待っています。' }],
+    ['wait-internal', {
+      requestId: 'reopen-internal-wait', expectedVersion: 3, confirmationTarget: '開発',
+      note: '調査結果を待っています。', nextAction: '調査結果を確認する', followupAt: '2099-12-31',
+    }, { nextAction: '調査結果を確認する', followupAt: '2099-12-31', waitTarget: '開発', waitReason: '調査結果を待っています。' }],
+    ['hold', {
+      requestId: 'reopen-hold-wait', expectedVersion: 3,
+      reason: '外部条件の確定を待っています。', resumeCondition: '条件確定を確認する',
+      followupAt: '2099-12-31',
+    }, { nextAction: '条件確定を確認する', followupAt: '2099-12-31', waitTarget: null, waitReason: '外部条件の確定を待っています。' }],
+  ];
+
+  for (const [waitAction, waitPayload, clearedPending] of waitCases) {
+    await resetDatabase();
+    await prepareInProgressCase();
+    assert.equal((await action(waitAction, waitPayload)).status, 200);
+    const reason = `${waitAction}から再開します。`;
+    const reopened = await action('reopen', {
+      requestId: `reopen-${waitAction}`, expectedVersion: 4, reason,
+    }, 'operator-b@example.invalid');
+    assert.equal(reopened.status, 200);
+    assert.equal(reopened.body.eventType, 'reopened');
+    assert.equal(reopened.body.actorEmail, 'operator-b@example.invalid');
+    assert.equal(reopened.body.note, reason);
+    assert.equal(reopened.body.changes.reopenReason, reason);
+    assert.equal(reopened.body.changes.previousResolution, null);
+    assert.deepEqual(reopened.body.changes.clearedPending, clearedPending);
+
+    const detail = await authenticatedGet('/api/cases/case-mvp-1');
+    assert.equal(detail.body.case.status, '対応中');
+    assert.equal(detail.body.case.assignee_email, actor);
+    assert.equal(detail.body.case.next_action, null);
+    assert.equal(detail.body.case.followup_at, null);
+    assert.equal(detail.body.case.wait_target, null);
+    assert.equal(detail.body.case.wait_reason, null);
+    assert.equal(detail.body.case.version, 5);
+
+    const history = await authenticatedGet('/api/cases/case-mvp-1/events');
+    const event = history.body.events.at(-1);
+    assert.equal(event.event_type, 'reopened');
+    assert.equal(event.actor_email, 'operator-b@example.invalid');
+    assert.equal(event.note, reason);
+    assert.deepEqual(event.changes.clearedPending, clearedPending);
+  }
+});
+
+test('wait-state reopen replays once and rejects different content under the same request ID', async () => {
+  await resetDatabase();
+  await prepareInProgressCase();
+  assert.equal((await action('wait-customer', {
+    requestId: 'reopen-wait-replay-wait', expectedVersion: 3,
+    note: '返信を待っています。', nextAction: '返信を確認する', followupAt: '2099-12-31',
+  })).status, 200);
+  const payload = {
+    requestId: 'reopen-wait-replay', expectedVersion: 4, reason: '追加確認のため再開します。',
+  };
+  const first = await action('reopen', payload);
+  const replay = await action('reopen', payload);
+  const conflict = await action('reopen', { ...payload, reason: '別の再開理由です。' });
+  assert.equal(first.status, 200);
+  assert.deepEqual(replay.body, first.body);
+  assert.equal(conflict.status, 409);
+  assert.equal(conflict.body.error, 'idempotency_conflict');
+  const snapshot = await requestJson('/__test/snapshot');
+  assert.equal(snapshot.body.requests.length, 4);
+  assert.equal(snapshot.body.events.length, 4);
+  assert.equal(snapshot.body.cases[0].version, 5);
+});
+
+test('deterministic wait-state reopen race commits once and rolls the loser back', async () => {
+  await resetDatabase();
+  await prepareInProgressCase();
+  assert.equal((await action('wait-internal', {
+    requestId: 'reopen-wait-race-wait', expectedVersion: 3, confirmationTarget: 'CS',
+    note: '確認回答を待っています。', nextAction: '回答を確認する', followupAt: '2099-12-31',
+  })).status, 200);
+  const results = await Promise.all([
+    action('reopen', {
+      requestId: 'reopen-wait-race-a', expectedVersion: 4, reason: '担当者Aが再開します。',
+    }, actor, { 'x-mvp-race-barrier': 'reopen-wait-race' }),
+    action('reopen', {
+      requestId: 'reopen-wait-race-b', expectedVersion: 4, reason: '担当者Bが再開します。',
+    }, 'operator-b@example.invalid', { 'x-mvp-race-barrier': 'reopen-wait-race' }),
+  ]);
+  assert.deepEqual(results.map(result => result.status).sort(), [200, 409]);
+  const snapshot = await requestJson('/__test/snapshot');
+  assert.equal(snapshot.body.cases[0].status, '対応中');
+  assert.equal(snapshot.body.cases[0].version, 5);
+  assert.equal(snapshot.body.requests.length, 4);
+  assert.equal(snapshot.body.events.length, 4);
+});
+
+test('wait-state reopen event failure rolls back the wait fields and receipt', async () => {
+  await resetDatabase();
+  await prepareInProgressCase();
+  assert.equal((await action('hold', {
+    requestId: 'reopen-wait-failure-hold', expectedVersion: 3,
+    reason: '条件を待っています。', resumeCondition: '条件を確認する', followupAt: '2099-12-31',
+  })).status, 200);
+  const failed = await action('reopen', {
+    requestId: 'reopen-wait-failure', expectedVersion: 4, reason: '保存されない再開です。',
+  }, actor, { 'x-mvp-fail-event': '1' });
+  assert.equal(failed.status, 503);
+  const snapshot = await requestJson('/__test/snapshot');
+  assert.equal(snapshot.body.cases[0].status, '保留');
+  assert.equal(snapshot.body.cases[0].next_action, '条件を確認する');
+  assert.equal(snapshot.body.cases[0].followup_at, '2099-12-31');
+  assert.equal(snapshot.body.cases[0].wait_target, null);
+  assert.equal(snapshot.body.cases[0].wait_reason, '条件を待っています。');
+  assert.equal(snapshot.body.cases[0].version, 4);
+  assert.equal(snapshot.body.requests.length, 3);
+  assert.equal(snapshot.body.events.length, 3);
+});
+
 test('resolve, reopen and resolve again retain both resolution events', async () => {
   await resetDatabase();
   await prepareInProgressCase();

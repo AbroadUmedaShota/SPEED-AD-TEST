@@ -6,5 +6,7 @@
     { "email": { "email": "operator-two@example.invalid" } }
   ],
   "exclude": [],
-  "require": []
+  "require": [
+    { "login_method": { "id": "<GOOGLE_IDP_LOGIN_METHOD_ID>" } }
+  ]
 }

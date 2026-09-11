@@ -149,24 +149,37 @@ const ACTIONS = Object.freeze({
     changes: (_actorEmail, payload, current) => ({
       status: '対応中',
       reopenReason: payload.reason,
-      previousResolution: {
+      previousResolution: current.status === '対応済み' ? {
         resolutionCode: current.resolution_code,
         resolvedAt: current.resolved_at,
         resolvedBy: current.resolved_by,
-      },
+      } : null,
+      clearedPending: hasPendingConditions(current) ? {
+        nextAction: current.next_action,
+        followupAt: current.followup_at,
+        waitTarget: current.wait_target,
+        waitReason: current.wait_reason,
+      } : null,
     }),
     note: payload => payload.reason,
-    validateCase: row => row.status === '対応済み'
-      && row.assignee_email !== null
-      && row.resolution_code !== null
-      && row.resolved_at !== null
-      && row.resolved_by !== null,
+    validateCase: row => row.assignee_email !== null && (
+      ['顧客確認待ち', '引継ぎ待ち', '保留'].includes(row.status)
+      || (row.status === '対応済み'
+        && row.resolution_code !== null
+        && row.resolved_at !== null
+        && row.resolved_by !== null)
+    ),
     updateSql: `UPDATE contact_cases
-      SET status = '対応中', resolution_code = NULL, resolved_at = NULL,
-        resolved_by = NULL, version = version + 1, last_request_id = ?, updated_at = ?
-      WHERE case_id = ? AND version = ? AND status = '対応済み'
-        AND assignee_email IS NOT NULL AND resolution_code IS NOT NULL
-        AND resolved_at IS NOT NULL AND resolved_by IS NOT NULL AND archived_at IS NULL`,
+      SET status = '対応中', next_action = NULL, followup_at = NULL,
+        wait_target = NULL, wait_reason = NULL, resolution_code = NULL,
+        resolved_at = NULL, resolved_by = NULL, version = version + 1,
+        last_request_id = ?, updated_at = ?
+      WHERE case_id = ? AND version = ? AND assignee_email IS NOT NULL
+        AND archived_at IS NULL AND (
+          status IN ('顧客確認待ち', '引継ぎ待ち', '保留')
+          OR (status = '対応済み' AND resolution_code IS NOT NULL
+            AND resolved_at IS NOT NULL AND resolved_by IS NOT NULL)
+        )`,
     updateBindings: (_actorEmail, receipt) => [
       receipt.requestId, receipt.createdAt, receipt.caseId, receipt.fromVersion,
     ],
