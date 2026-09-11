@@ -50,6 +50,15 @@ test('validates RS256 Access token and active operator', async () => {
   assert.equal(fetches, 1);
 });
 
+test('calls the JWKS fetch function without an object receiver', async () => {
+  const key = await keyFixture('key-1');
+  const resolver = new AccessPrincipalResolver({ fetchJwks: async function fetchJwks() {
+    assert.equal(this, undefined);
+    return Response.json({ keys: [key.jwk] });
+  } });
+  assert.ok(await resolver.resolve(request(await token(key)), env()));
+});
+
 test('rejects missing token and inactive operator', async () => {
   const key = await keyFixture('key-1');
   let fetches = 0;
@@ -143,7 +152,7 @@ test('throttles failed JWKS refreshes and retries after cooldown', async () => {
   assert.equal(fetches, 2);
 });
 
-test('rejects missing nbf and ignores Authorization bearer fallback', async () => {
+test('accepts Cloudflare Access tokens without nbf and ignores Authorization bearer fallback', async () => {
   const key = await keyFixture('key-1');
   const now = Math.floor(Date.now() / 1000);
   const missingNbf = await new SignJWT({ email: 'operator@example.invalid', type: 'app' })
@@ -151,15 +160,20 @@ test('rejects missing nbf and ignores Authorization bearer fallback', async () =
     .setIssuedAt(now).setExpirationTime(now + 300).sign(key.privateKey);
   let dbReads = 0;
   const checkedEnv = env();
-  checkedEnv.DB.prepare = () => { dbReads += 1; throw new Error('unexpected DB read'); };
+  checkedEnv.DB.prepare = () => ({ bind: email => ({ first: async () => {
+    dbReads += 1;
+    return { email, display_name: '担当者' };
+  } }) });
   const resolver = new AccessPrincipalResolver({ fetchJwks: async () => Response.json({ keys: [key.jwk] }) });
-  assert.equal(await resolver.resolve(request(missingNbf), checkedEnv), null);
-  assert.equal(dbReads, 0);
+  assert.deepEqual(await resolver.resolve(request(missingNbf), checkedEnv), {
+    email: 'operator@example.invalid', displayName: '担当者',
+  });
+  assert.equal(dbReads, 1);
   const bearer = new Request('https://contact-ops.example.invalid/api/session', {
     headers: { authorization: `Bearer ${await token(key)}` },
   });
   assert.equal(await resolver.resolve(bearer, checkedEnv), null);
-  assert.equal(dbReads, 0);
+  assert.equal(dbReads, 1);
 });
 
 test('aborts a stalled JWKS request within the configured timeout', async () => {

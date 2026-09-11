@@ -24,6 +24,7 @@ export class AccessPrincipalResolver {
     this.cacheTtlMs = Math.min(options.cacheTtlMs || DEFAULT_CACHE_TTL_MS, DEFAULT_CACHE_TTL_MS);
     this.refreshCooldownMs = options.refreshCooldownMs || DEFAULT_REFRESH_COOLDOWN_MS;
     this.timeoutMs = Math.min(options.timeoutMs || DEFAULT_TIMEOUT_MS, DEFAULT_TIMEOUT_MS);
+    this.logRejection = options.logRejection || (() => {});
     this.cache = null;
     this.lastRefreshAttempt = -Infinity;
     this.inFlight = null;
@@ -36,7 +37,8 @@ export class AccessPrincipalResolver {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), this.timeoutMs);
       try {
-        const response = await this.fetchJwks(`${issuer}/cdn-cgi/access/certs`, {
+        const fetchJwks = this.fetchJwks;
+        const response = await fetchJwks(`${issuer}/cdn-cgi/access/certs`, {
           headers: { accept: 'application/json' },
           signal: controller.signal,
         });
@@ -86,7 +88,10 @@ export class AccessPrincipalResolver {
 
   async resolve(request, env) {
     const token = bearerToken(request);
-    if (!token) return null;
+    if (!token) {
+      this.logRejection('missing_assertion');
+      return null;
+    }
     try {
       const issuer = trustedIssuer(env.ACCESS_TEAM_DOMAIN);
       const audience = String(env.ACCESS_AUD || '').trim();
@@ -103,17 +108,26 @@ export class AccessPrincipalResolver {
         || typeof payload.email !== 'string'
         || !payload.email.includes('@')
         || typeof payload.exp !== 'number'
-        || typeof payload.iat !== 'number'
-        || typeof payload.nbf !== 'number') return null;
+        || typeof payload.iat !== 'number') {
+        this.logRejection('invalid_claims');
+        return null;
+      }
       const email = payload.email.trim().toLowerCase();
       const operator = await env.DB.prepare(
         'SELECT email, display_name FROM contact_operators WHERE email = ? AND active = 1',
       ).bind(email).first();
-      return operator ? { email: operator.email, displayName: operator.display_name } : null;
-    } catch {
+      if (!operator) {
+        this.logRejection('inactive_operator');
+        return null;
+      }
+      return { email: operator.email, displayName: operator.display_name };
+    } catch (error) {
+      this.logRejection(error?.code || error?.name || 'verification_failed');
       return null;
     }
   }
 }
 
-export const accessPrincipalResolver = new AccessPrincipalResolver();
+export const accessPrincipalResolver = new AccessPrincipalResolver({
+  logRejection: reason => console.warn('access_principal_rejected', reason),
+});
