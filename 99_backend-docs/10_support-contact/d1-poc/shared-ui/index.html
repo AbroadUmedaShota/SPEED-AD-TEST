@@ -16,9 +16,15 @@
   <main class="workspace">
     <aside aria-label="問い合わせ一覧">
       <div class="heading"><h1>問い合わせ</h1><button id="refresh" type="button" title="一覧を更新" aria-label="一覧を更新">↻</button></div>
-      <label>検索<input id="search" type="search" placeholder="件名・投稿者・種別"></label>
+      <label>検索<input id="search" type="search" maxlength="200" placeholder="ID・件名・投稿者・メール・種別"></label>
+      <div class="filters" aria-label="一覧フィルタ">
+        <label>状態<select id="status-filter"><option value="">全件</option><option>未対応</option><option>対応中</option><option>顧客確認待ち</option><option>引継ぎ待ち</option><option>保留</option><option>対応済み</option></select></label>
+        <label>担当<select id="assignee-filter"><option value="">全件</option><option value="unassigned">未割当</option><option value="self">自分</option></select></label>
+        <label>優先度<select id="priority-filter"><option value="">全件</option><option value="high">高</option><option value="mid">中</option><option value="low">低</option></select></label>
+      </div>
       <p id="queue-state">読み込み中です</p>
       <ol id="cases"></ol>
+      <nav class="pagination" aria-label="問い合わせ一覧のページ移動"><button id="previous-page" type="button">前へ</button><output id="page-number">0ページ</output><button id="next-page" type="button">次へ</button></nav>
     </aside>
     <section id="detail" aria-label="問い合わせ詳細">
       <div id="empty"><h2>案件を選択してください</h2></div>

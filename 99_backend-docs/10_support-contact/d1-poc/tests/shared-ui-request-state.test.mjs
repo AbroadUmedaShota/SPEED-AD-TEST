@@ -13,6 +13,14 @@ test('authentication invalidation rejects earlier list, detail and attachment to
   assert.equal(state.isCurrent(attachment), false);
 });
 
+test('a later list request invalidates the earlier list response', () => {
+  const state = createRequestState();
+  const first = state.beginList();
+  const second = state.beginList();
+  assert.equal(state.isCurrent(first), false);
+  assert.equal(state.isCurrent(second), true);
+});
+
 test('a later detail selection invalidates the earlier detail response', () => {
   const state = createRequestState();
   const first = state.beginDetail();

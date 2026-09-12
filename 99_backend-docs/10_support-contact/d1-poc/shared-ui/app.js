@@ -1,8 +1,10 @@
 import { createRequestState } from './requestState.js';
+import { applyCaseListResponse, defaultCasePage, resetCaseListState } from './listState.js';
 
 const requests = createRequestState();
 const state = {
   cases: [], current: null, principal: null, objectUrls: new Set(),
+  page: defaultCasePage(), cursorStack: [null], pageIndex: 0,
 };
 const byId = id => document.getElementById(id);
 
@@ -14,7 +16,7 @@ export function clearSessionState(requestState, sessionState, revokeObjectUrl) {
   requestState.invalidateSession();
   sessionState.objectUrls.forEach(revokeObjectUrl);
   sessionState.objectUrls.clear();
-  sessionState.cases = [];
+  resetCaseListState(sessionState);
   sessionState.current = null;
   sessionState.principal = null;
 }
@@ -56,6 +58,32 @@ async function api(path, options = {}) {
 
 function message(value) { byId('message').textContent = value; }
 function text(tag, value) { const node = document.createElement(tag); node.textContent = value; return node; }
+function selectedFilters() {
+  const assignee = byId('assignee-filter').value;
+  return {
+    q: byId('search').value.trim(),
+    status: byId('status-filter').value,
+    assignee: assignee === 'self' ? state.principal?.email || '' : assignee,
+    priority: byId('priority-filter').value,
+  };
+}
+
+export function casesPath(filters, cursor = null) {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+  if (cursor) params.set('cursor', cursor);
+  const query = params.toString();
+  return query ? `/api/cases?${query}` : '/api/cases';
+}
+
+function renderPagination() {
+  const pageNumber = state.cases.length || state.pageIndex > 0 ? state.pageIndex + 1 : 0;
+  byId('page-number').textContent = pageNumber ? `${pageNumber}ページ` : '0ページ';
+  byId('previous-page').disabled = state.pageIndex === 0;
+  byId('next-page').disabled = !state.page.hasMore;
+}
 function field(label, name, type = 'text', value = '', options = []) {
   const wrapper = text('label', label);
   const input = document.createElement(type === 'textarea' ? 'textarea' : type === 'select' ? 'select' : 'input');
@@ -98,6 +126,7 @@ function blockAccess() {
   byId('cases').replaceChildren();
   byId('detail').replaceChildren(text('div', 'セッションを確認できません。再ログイン後に再読み込みしてください。'));
   byId('principal').textContent = 'アクセスできません';
+  renderPagination();
   message('問い合わせ情報を非表示にしました。未送信の入力は、このタブを閉じるまで保持されます。');
 }
 
@@ -124,27 +153,51 @@ function availableActions(item) {
 }
 
 function renderCases() {
-  const query = byId('search').value.trim().toLowerCase();
-  byId('cases').replaceChildren(...state.cases.filter(item =>
-    [item.subject, item.customer_name, item.category].some(value => String(value).toLowerCase().includes(query)))
-    .map(item => {
-      const li = document.createElement('li');
-      const button = text('button', `${item.status}｜${item.subject}\n${item.customer_name}`);
-      button.type = 'button';
-      button.dataset.caseId = item.case_id;
-      button.setAttribute('aria-current', String(state.current?.case_id === item.case_id));
-      li.append(button);
-      return li;
-    }));
+  const items = state.cases.map(item => {
+    const li = document.createElement('li');
+    const button = text('button', `${item.status}｜${item.subject}\n${item.customer_name}`);
+    button.type = 'button';
+    button.dataset.caseId = item.case_id;
+    button.setAttribute('aria-current', String(state.current?.case_id === item.case_id));
+    li.append(button);
+    return li;
+  });
+  if (!items.length) items.push(text('li', '該当する問い合わせはありません。'));
+  byId('cases').replaceChildren(...items);
   byId('queue-state').textContent = `${state.cases.length}件`;
+  renderPagination();
 }
 
-async function loadCases() {
+async function loadCases(pageIndex = state.pageIndex, cursor = state.cursorStack[pageIndex]) {
   const token = requests.beginList();
-  const result = await api('/api/cases');
-  if (!requests.isCurrent(token)) return;
-  state.cases = result.cases;
+  const result = await api(casesPath(selectedFilters(), cursor));
+  if (!applyCaseListResponse(state, requests, token, result, pageIndex)) return;
   renderCases();
+}
+
+function resetCases() {
+  resetCaseListState(state);
+  renderCases();
+  loadCases(0, null).catch(error => {
+    if (!error.sessionBlocked) message('一覧を取得できませんでした。入力内容を確認してください。');
+  });
+}
+
+function nextPage() {
+  if (!state.page.hasMore || !state.page.nextCursor) return;
+  const nextIndex = state.pageIndex + 1;
+  state.cursorStack[nextIndex] = state.page.nextCursor;
+  loadCases(nextIndex, state.page.nextCursor).catch(error => {
+    if (!error.sessionBlocked) message('次のページを取得できませんでした。');
+  });
+}
+
+function previousPage() {
+  if (state.pageIndex === 0) return;
+  const previousIndex = state.pageIndex - 1;
+  loadCases(previousIndex, state.cursorStack[previousIndex]).catch(error => {
+    if (!error.sessionBlocked) message('前のページを取得できませんでした。');
+  });
 }
 
 async function loadDetail(caseId) {
@@ -319,8 +372,19 @@ async function start() {
 }
 
 if (typeof document !== 'undefined') {
-  byId('refresh').addEventListener('click', loadCases);
-  byId('search').addEventListener('input', renderCases);
+  let searchTimer;
+  byId('refresh').addEventListener('click', () => loadCases().catch(error => {
+    if (!error.sessionBlocked) message('一覧を取得できませんでした。');
+  }));
+  byId('search').addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(resetCases, 250);
+  });
+  ['status-filter', 'assignee-filter', 'priority-filter'].forEach(id => {
+    byId(id).addEventListener('change', resetCases);
+  });
+  byId('previous-page').addEventListener('click', previousPage);
+  byId('next-page').addEventListener('click', nextPage);
   byId('cases').addEventListener('click', event => {
     const button = event.target.closest('button[data-case-id]');
     if (button) loadDetail(button.dataset.caseId);

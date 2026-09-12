@@ -1,16 +1,18 @@
 export function createRequestState() {
   let sessionRevision = 0;
+  let listRevision = 0;
   let detailRevision = 0;
   const drafts = new Map();
   const attempts = new Map();
   const key = (caseId, action) => `${caseId}:${action}`;
   return {
-    beginList: () => ({ sessionRevision }),
+    beginList: () => ({ sessionRevision, listRevision: ++listRevision }),
     beginDetail: () => ({ sessionRevision, detailRevision: ++detailRevision }),
     currentDetail: () => ({ sessionRevision, detailRevision }),
-    invalidateSession() { sessionRevision += 1; detailRevision += 1; },
+    invalidateSession() { sessionRevision += 1; listRevision += 1; detailRevision += 1; },
     isCurrent(token) {
       return token.sessionRevision === sessionRevision
+        && (token.listRevision === undefined || token.listRevision === listRevision)
         && (token.detailRevision === undefined || token.detailRevision === detailRevision);
     },
     setDraft(caseId, action, values) { drafts.set(key(caseId, action), { ...values }); },
