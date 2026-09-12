@@ -1,6 +1,7 @@
 import { createRequestCoordinator } from './requestCoordinator.js';
 
 const requests = createRequestCoordinator();
+let actionRevision = 0;
 
 const state = {
   actor: 'operator-a@example.invalid',
@@ -37,6 +38,7 @@ const statusLabels = {
 };
 
 const eventLabels = {
+  reassigned: '担当者を変更',
   assigned: '担当者を設定',
   started: '対応を開始',
   note_added: 'メモを追加',
@@ -48,6 +50,13 @@ const eventLabels = {
 };
 
 const actionDefinitions = {
+  reassign: {
+    label: '担当を変更する', submit: '変更を保存',
+    fields: [
+      { name: 'assigneeEmail', label: '変更先の担当者', type: 'select', required: true, options: [] },
+      { name: 'reason', label: '変更理由', type: 'textarea', maxLength: 4000, required: true },
+    ],
+  },
   'assign-self': { label: '自分を担当にする', submit: '担当する', fields: [] },
   start: { label: '対応を始める', submit: '対応を開始', fields: [] },
   note: {
@@ -129,18 +138,20 @@ function setGlobalMessage(message, kind = '') {
   elements['global-message'].hidden = !message;
 }
 
-async function api(path, options = {}) {
+async function api(path, options = {}, isCurrent = () => true) {
   const { sessionRevision = requests.currentSession(), ...fetchOptions } = options;
   const headers = new Headers(fetchOptions.headers || {});
   if (state.actor) headers.set('x-mvp-actor', state.actor);
   if (fetchOptions.body) headers.set('content-type', 'application/json');
   const response = await fetch(path, { ...fetchOptions, headers });
+  if (!isCurrent()) return null;
   let body;
   try {
     body = await response.json();
   } catch {
     body = { error: 'invalid_response' };
   }
+  if (!isCurrent()) return null;
   if (response.status === 401 || response.status === 403) {
     if (sessionRevision === requests.currentSession()) showAuthBlocked();
     throw Object.assign(new Error('auth_required'), { status: response.status, body });
@@ -171,6 +182,8 @@ function clearAttachmentPreviews() {
 }
 
 function showAuthBlocked() {
+  saveDraft();
+  actionRevision += 1;
   requests.advanceSession();
   state.cases = [];
   state.currentCase = null;
@@ -304,6 +317,7 @@ function renderAttachments() {
 
 function availableActions(item) {
   const actions = ['note'];
+  if (item.status !== '対応済み' && !item.archived_at) actions.push('reassign');
   if (item.status === '未対応' && !item.assignee_email) actions.unshift('assign-self');
   if (item.status === '未対応' && item.assignee_email) actions.unshift('start');
   if (item.status === '対応中') actions.push('wait-customer', 'wait-internal', 'hold');
@@ -333,7 +347,10 @@ function fieldElement(definition, value = '') {
   else if (definition.type === 'select') {
     input = createElement('select');
     input.append(createElement('option', { text: '選択してください', attributes: { value: '' } }));
-    definition.options.forEach(option => input.append(createElement('option', { text: option, attributes: { value: option } })));
+    definition.options.forEach(option => input.append(createElement('option', {
+      text: typeof option === 'string' ? option : `${option.display_name} (${option.email})`,
+      attributes: { value: typeof option === 'string' ? option : option.email },
+    })));
   } else input = createElement('input', { attributes: { type: definition.type } });
   input.name = definition.name;
   input.value = value;
@@ -352,15 +369,40 @@ function currentFormValues() {
 
 function saveDraft() {
   const key = draftKey();
-  if (key) state.drafts.set(key, currentFormValues());
+  if (key && !elements['action-form'].hidden) state.drafts.set(key, currentFormValues());
 }
 
-function openAction(action) {
+async function openAction(action) {
+  if (!state.currentCase || !availableActions(state.currentCase).includes(action)) return;
   saveDraft();
+  const revision = ++actionRevision;
+  const token = requests.currentDetail();
+  const caseId = state.currentCase.case_id;
+  elements['action-form'].hidden = true;
   state.action = action;
   const definition = actionDefinitions[action];
   const draft = state.drafts.get(draftKey()) || {};
   const fields = [...definition.fields];
+  if (action === 'reassign') {
+    try {
+      const result = await api('/api/operators', { sessionRevision: token.sessionRevision }, () =>
+        requests.isCurrentDetail(token) && revision === actionRevision
+          && state.currentCase?.case_id === caseId && state.action === action);
+      if (!requests.isCurrentDetail(token) || revision !== actionRevision
+        || state.currentCase?.case_id !== caseId || state.action !== action) return;
+      const operators = [...result.operators];
+      if (draft.assigneeEmail && !operators.some(item => item.email === draft.assigneeEmail)) {
+        operators.push({ email: draft.assigneeEmail, display_name: '保存済み入力・現在の候補外' });
+      }
+      fields[0] = { ...fields[0], options: operators };
+    } catch (error) {
+      if (requests.isCurrentDetail(token) && revision === actionRevision
+        && error.message !== 'auth_required') {
+        setGlobalMessage('担当候補を取得できませんでした。担当を変更する操作から再度お試しください。', 'error');
+      }
+      return;
+    }
+  }
   const hasPending = state.currentCase && (
     state.currentCase.next_action || state.currentCase.followup_at
     || state.currentCase.wait_target || state.currentCase.wait_reason
@@ -382,6 +424,7 @@ function openAction(action) {
 }
 
 function closeAction({ discard = false } = {}) {
+  actionRevision += 1;
   if (discard) {
     const key = draftKey();
     if (key) {
@@ -411,6 +454,11 @@ function renderEvents() {
       createElement('span', { text: `操作: ${event.actor_email}` }),
     );
     if (event.note) content.append(createElement('p', { text: event.note }));
+    if (event.event_type === 'reassigned') {
+      content.append(createElement('p', {
+        text: `旧担当: ${event.changes.previousAssigneeEmail || '未割当'} → 新担当: ${event.changes.assigneeEmail}`,
+      }));
+    }
     item.append(time, content);
     return item;
   }));
@@ -458,6 +506,7 @@ async function loadDetail(caseId, { keepDraft = true } = {}) {
   clearAttachmentPreviews();
   if (keepDraft) saveDraft();
   closeAction();
+  elements['action-buttons'].replaceChildren();
   state.queueScrollTop = elements['queue-pane'].scrollTop;
   elements['detail-empty'].hidden = true;
   elements['detail-content'].hidden = false;
@@ -492,7 +541,7 @@ function getAttempt(payloadFields) {
   const fingerprint = JSON.stringify(payloadFields);
   const existing = state.attempts.get(key);
   if (existing && existing.fingerprint === fingerprint
-    && existing.expectedVersion === state.currentCase.version) return existing;
+    && (state.action === 'reassign' || existing.expectedVersion === state.currentCase.version)) return existing;
   const attempt = {
     requestId: crypto.randomUUID(), fingerprint, expectedVersion: state.currentCase.version,
   };
@@ -502,7 +551,7 @@ function getAttempt(payloadFields) {
 
 function formPayload() {
   return Object.fromEntries([...new FormData(elements['action-form']).entries()]
-    .map(([key, value]) => [key, String(value).trim()]));
+    .map(([key, value]) => [key, state.action === 'reassign' ? String(value) : String(value).trim()]));
 }
 
 function showFormMessage(message, kind = '') {
@@ -521,6 +570,11 @@ async function submitAction(event) {
   const values = formPayload();
   state.drafts.set(draftKey(), values);
   const attempt = getAttempt(values);
+  const submittedCaseId = state.currentCase.case_id;
+  const submittedAction = state.action;
+  const submittedKey = draftKey();
+  const submittedRevision = actionRevision;
+  const token = requests.currentDetail();
   const payload = {
     requestId: attempt.requestId,
     expectedVersion: attempt.expectedVersion,
@@ -534,17 +588,56 @@ async function submitAction(event) {
     await api(`/api/cases/${encodeURIComponent(state.currentCase.case_id)}/actions/${state.action}`, {
       method: 'POST', body: JSON.stringify(payload), sessionRevision: requests.currentSession(),
     });
+    if (submittedAction === 'reassign' && (!requests.isCurrentDetail(token)
+      || actionRevision !== submittedRevision || state.currentCase?.case_id !== submittedCaseId)) {
+      state.attempts.delete(submittedKey);
+      if (JSON.stringify(state.drafts.get(submittedKey)) === JSON.stringify(values)) {
+        state.drafts.delete(submittedKey);
+      }
+      return;
+    }
+    if (submittedAction === 'reassign' && JSON.stringify(formPayload()) !== JSON.stringify(values)) {
+      state.attempts.delete(submittedKey);
+      saveDraft();
+      closeAction();
+      const detailRefresh = loadDetail(submittedCaseId);
+      const refreshToken = requests.currentDetail();
+      await Promise.all([loadCases({ preserveMessage: true }), detailRefresh]);
+      if (!requests.isCurrentDetail(refreshToken) || state.currentCase?.case_id !== submittedCaseId) return;
+      setGlobalMessage('担当変更を保存しました。保存中に編集した入力は保持しています。', 'success');
+      return;
+    }
     const completedAction = state.action;
     closeAction({ discard: true });
-    await Promise.all([loadCases({ preserveMessage: true }), loadDetail(state.currentCase.case_id, { keepDraft: false })]);
+    const detailRefresh = loadDetail(state.currentCase.case_id, { keepDraft: false });
+    const refreshToken = requests.currentDetail();
+    await Promise.all([loadCases({ preserveMessage: true }), detailRefresh]);
+    if (submittedAction === 'reassign' && (!requests.isCurrentDetail(refreshToken)
+      || state.currentCase?.case_id !== submittedCaseId)) return;
     setGlobalMessage(`${actionDefinitions[completedAction].label}を保存しました。`, 'success');
   } catch (error) {
     if (error.message === 'auth_required') return;
+    if (submittedAction === 'reassign' && error.status === 409
+      && state.attempts.get(submittedKey)?.requestId === attempt.requestId) {
+      state.attempts.delete(submittedKey);
+    }
+    if (submittedAction === 'reassign' && (!requests.isCurrentDetail(token)
+      || actionRevision !== submittedRevision || state.currentCase?.case_id !== submittedCaseId)) return;
     if (error.status === 409 && error.body?.error === 'version_conflict') {
+      state.attempts.delete(submittedKey);
       const conflictedAction = state.action;
       showFormMessage('別の担当者が先に更新しました。入力は保持しています。最新版を確認し、内容を見直してから保存してください。', 'info');
-      await Promise.all([loadCases({ preserveMessage: true }), loadDetail(state.currentCase.case_id)]);
-      openAction(conflictedAction);
+      const detailRefresh = loadDetail(state.currentCase.case_id);
+      const refreshToken = requests.currentDetail();
+      const refreshRevision = actionRevision;
+      await Promise.all([loadCases({ preserveMessage: true }), detailRefresh]);
+      if (submittedAction === 'reassign' && (!requests.isCurrentDetail(refreshToken)
+        || state.currentCase?.case_id !== submittedCaseId || actionRevision !== refreshRevision)) return;
+      const actionOpen = openAction(conflictedAction);
+      const openedRevision = actionRevision;
+      await actionOpen;
+      if (submittedAction === 'reassign' && (!requests.isCurrentDetail(refreshToken)
+        || actionRevision !== openedRevision || state.action !== submittedAction)) return;
       showFormMessage('別の担当者が先に更新しました。入力は保持しています。最新版を確認し、内容を見直してから保存してください。', 'info');
       return;
     }
@@ -640,6 +733,7 @@ elements['detail-refresh-button'].addEventListener('click', () => {
 elements['retry-auth-button'].addEventListener('click', () => loadCases());
 elements['back-button'].addEventListener('click', () => {
   saveDraft();
+  closeAction();
   elements.workspace.classList.remove('show-detail');
   requestAnimationFrame(() => { elements['queue-pane'].scrollTop = state.queueScrollTop; });
 });

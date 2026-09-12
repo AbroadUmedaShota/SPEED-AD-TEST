@@ -341,6 +341,12 @@ export default {
     if (request.method === 'GET' && url.pathname === '/api/cases') {
       return jsonResponse({ cases: await listCases(env.DB) });
     }
+    if (request.method === 'GET' && url.pathname === '/api/operators') {
+      const operators = await env.DB.prepare(
+        'SELECT email, display_name FROM contact_operators WHERE active = 1 ORDER BY display_name, email',
+      ).all();
+      return jsonResponse({ operators: operators.results });
+    }
     const detailMatch = /^\/api\/cases\/([a-zA-Z0-9_-]{1,80})$/.exec(url.pathname);
     if (request.method === 'GET' && detailMatch) {
       const caseData = await getCase(env.DB, detailMatch[1]);

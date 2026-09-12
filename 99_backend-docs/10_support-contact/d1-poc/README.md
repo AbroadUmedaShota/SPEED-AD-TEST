@@ -4,6 +4,8 @@ This is a local-only consistency and operator-flow experiment, not a deployment 
 It implements the approved fixed case actions and an operator UI over synthetic data.
 The six existing status values are preserved without adding priority, archive, SLA or
 notification rules.
+The reassignment contract and local acceptance commands are in
+[25_support_contact_case_reassignment.md](../../../docs/画面設計/仕様/25_support_contact_case_reassignment.md).
 The Worker listener and D1 binding are local-only test adapters. The configuration
 contains no credential or deployable D1 resource identifier and rejects non-loopback requests.
 

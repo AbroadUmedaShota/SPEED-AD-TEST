@@ -150,7 +150,8 @@ test('response classification blocks trial shutdown but not ordinary attachment 
 test('UI source preserves blocked-session state and distinguishes attachment API failures', async () => {
   const app = await readFile(path.join(root, 'shared-ui', 'app.js'), 'utf8');
   for (const condition of ['response.status === 401 || response.status === 403', 'response.redirected',
-    "!== 'application/json'", "!== 'image/webp'", 'catch {\n    blockAccess();']) {
+    "!== 'application/json'", "!== 'image/webp'",
+    'catch {\n    if (!isCurrent()) return null;\n    blockAccess();']) {
     assert.ok(app.includes(condition), `missing fail-closed UI condition: ${condition}`);
   }
   assert.ok(app.includes("{ sessionBlocked: true }"));

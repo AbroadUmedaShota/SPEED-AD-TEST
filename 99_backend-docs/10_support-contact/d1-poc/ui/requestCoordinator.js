@@ -30,6 +30,9 @@ export function createRequestCoordinator() {
       return token.sessionRevision === sessionRevision
         && token.requestRevision === detailRevision;
     },
+    currentDetail() {
+      return Object.freeze({ sessionRevision, requestRevision: detailRevision });
+    },
     beginAttachment() {
       return Object.freeze({ sessionRevision, requestRevision: ++attachmentRevision });
     },
