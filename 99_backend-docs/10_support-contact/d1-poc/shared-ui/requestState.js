@@ -7,6 +7,7 @@ export function createRequestState() {
   const key = (caseId, action) => `${caseId}:${action}`;
   return {
     beginList: () => ({ sessionRevision, listRevision: ++listRevision }),
+    invalidateList() { listRevision += 1; },
     beginDetail: () => ({ sessionRevision, detailRevision: ++detailRevision }),
     currentDetail: () => ({ sessionRevision, detailRevision }),
     invalidateSession() { sessionRevision += 1; listRevision += 1; detailRevision += 1; },

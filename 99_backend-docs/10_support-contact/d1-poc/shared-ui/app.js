@@ -6,6 +6,8 @@ const state = {
   cases: [], current: null, principal: null, objectUrls: new Set(),
   page: defaultCasePage(), cursorStack: [null], pageIndex: 0,
 };
+let searchTimer;
+let listErrorVisible = false;
 const byId = id => document.getElementById(id);
 
 export function isSessionBlockingResponse(status, body) {
@@ -21,7 +23,7 @@ export function clearSessionState(requestState, sessionState, revokeObjectUrl) {
   sessionState.principal = null;
 }
 
-async function api(path, options = {}) {
+async function api(path, options = {}, isCurrent = () => true) {
   const headers = new Headers(options.headers || {});
   headers.set('x-requested-with', 'XMLHttpRequest');
   if (options.body) headers.set('content-type', 'application/json');
@@ -29,23 +31,23 @@ async function api(path, options = {}) {
   try {
     response = await fetch(path, { ...options, headers });
   } catch {
-    blockAccess();
+    if (isCurrent()) blockAccess();
     throw Object.assign(new Error('request_failed'), { sessionBlocked: true });
   }
   if (response.redirected
     || response.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {
-    blockAccess();
+    if (isCurrent()) blockAccess();
     throw Object.assign(new Error('invalid_response'), { sessionBlocked: true });
   }
   let body;
   try {
     body = await response.json();
   } catch {
-    blockAccess();
+    if (isCurrent()) blockAccess();
     throw Object.assign(new Error('invalid_response'), { sessionBlocked: true });
   }
   if (isSessionBlockingResponse(response.status, body)) {
-    blockAccess();
+    if (isCurrent()) blockAccess();
     throw Object.assign(new Error(body.error || 'request_failed'), {
       status: response.status, body, sessionBlocked: true,
     });
@@ -56,7 +58,13 @@ async function api(path, options = {}) {
   return body;
 }
 
-function message(value) { byId('message').textContent = value; }
+function message(value) { listErrorVisible = false; byId('message').textContent = value; }
+function listError(value) { listErrorVisible = true; byId('message').textContent = value; }
+function clearListError() {
+  if (!listErrorVisible) return;
+  listErrorVisible = false;
+  byId('message').textContent = '';
+}
 function text(tag, value) { const node = document.createElement(tag); node.textContent = value; return node; }
 function selectedFilters() {
   const assignee = byId('assignee-filter').value;
@@ -121,6 +129,7 @@ function saveVisibleDraft() {
 }
 
 function blockAccess() {
+  clearPendingSearch();
   saveVisibleDraft();
   clearSessionState(requests, state, url => URL.revokeObjectURL(url));
   byId('cases').replaceChildren();
@@ -170,16 +179,36 @@ function renderCases() {
 
 async function loadCases(pageIndex = state.pageIndex, cursor = state.cursorStack[pageIndex]) {
   const token = requests.beginList();
-  const result = await api(casesPath(selectedFilters(), cursor));
-  if (!applyCaseListResponse(state, requests, token, result, pageIndex)) return;
+  try {
+    const result = await api(
+      casesPath(selectedFilters(), cursor), {}, () => requests.isCurrent(token),
+    );
+    if (!applyCaseListResponse(state, requests, token, result, pageIndex)) return;
+    clearListError();
+    renderCases();
+  } catch (error) {
+    if (!requests.isCurrent(token)) return;
+    throw error;
+  }
+}
+
+function clearPendingSearch() {
+  if (searchTimer === undefined) return;
+  clearTimeout(searchTimer);
+  searchTimer = undefined;
+}
+
+function clearAndInvalidateCases() {
+  requests.invalidateList();
+  resetCaseListState(state);
   renderCases();
 }
 
 function resetCases() {
-  resetCaseListState(state);
-  renderCases();
+  clearPendingSearch();
+  clearAndInvalidateCases();
   loadCases(0, null).catch(error => {
-    if (!error.sessionBlocked) message('一覧を取得できませんでした。入力内容を確認してください。');
+    if (!error.sessionBlocked) listError('一覧を取得できませんでした。入力内容を確認してください。');
   });
 }
 
@@ -372,13 +401,16 @@ async function start() {
 }
 
 if (typeof document !== 'undefined') {
-  let searchTimer;
-  byId('refresh').addEventListener('click', () => loadCases().catch(error => {
-    if (!error.sessionBlocked) message('一覧を取得できませんでした。');
-  }));
+  byId('refresh').addEventListener('click', resetCases);
   byId('search').addEventListener('input', () => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(resetCases, 250);
+    clearPendingSearch();
+    clearAndInvalidateCases();
+    searchTimer = setTimeout(() => {
+      searchTimer = undefined;
+      loadCases(0, null).catch(error => {
+        if (!error.sessionBlocked) listError('一覧を取得できませんでした。入力内容を確認してください。');
+      });
+    }, 250);
   });
   ['status-filter', 'assignee-filter', 'priority-filter'].forEach(id => {
     byId(id).addEventListener('change', resetCases);

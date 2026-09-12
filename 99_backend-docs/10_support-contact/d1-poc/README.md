@@ -91,6 +91,12 @@ point under `tests/`. It requires a runtime-generated test JWT and injected
 public JWKS, uses only local D1/R2 and must never be deployed. The completed
 browser scenarios and bounded G1 metadata findings are recorded in
 [`SHARED_LOCAL_BROWSER_ACCEPTANCE.md`](SHARED_LOCAL_BROWSER_ACCEPTANCE.md).
+The PowerShell runner allocates a unique loopback port and waits for its TCP
+listener without sending readiness HTTP requests. The authenticated browser's
+first API request performs the one-time synthetic bootstrap. Current coverage
+uses 55 synthetic cases and checks two-page navigation, server search and
+filters, zero/final pages, stale-cursor clearing, desktop/mobile layout, console
+errors, attachment/actions/ACK replay, and authentication-state clearing.
 
 The first approved local vertical slice uses the separate
 [`migrations-mvp`](migrations-mvp/0001_contact_mvp.sql) schema and
