@@ -138,6 +138,12 @@ export function createSharedWorker(options = {}) {
       if (request.method === 'GET' && url.pathname === '/api/cases') {
         return json({ cases: await listCases(env.DB) });
       }
+      if (request.method === 'GET' && url.pathname === '/api/operators') {
+        const operators = await env.DB.prepare(
+          'SELECT email, display_name FROM contact_operators WHERE active = 1 ORDER BY display_name, email',
+        ).all();
+        return json({ operators: operators.results });
+      }
       const detailMatch = new RegExp(`^/api/cases/(${ID_PATTERN})$`).exec(url.pathname);
       if (request.method === 'GET' && detailMatch) {
         const caseData = await getCase(env.DB, detailMatch[1]);
