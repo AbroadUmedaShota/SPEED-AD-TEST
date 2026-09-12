@@ -31,9 +31,11 @@ async function api(path, options = {}, isCurrent = () => true) {
   try {
     response = await fetch(path, { ...options, headers });
   } catch {
-    if (isCurrent()) blockAccess();
+    if (!isCurrent()) return null;
+    blockAccess();
     throw Object.assign(new Error('request_failed'), { sessionBlocked: true });
   }
+  if (!isCurrent()) return null;
   if (response.redirected
     || response.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {
     if (isCurrent()) blockAccess();
@@ -43,9 +45,11 @@ async function api(path, options = {}, isCurrent = () => true) {
   try {
     body = await response.json();
   } catch {
-    if (isCurrent()) blockAccess();
+    if (!isCurrent()) return null;
+    blockAccess();
     throw Object.assign(new Error('invalid_response'), { sessionBlocked: true });
   }
+  if (!isCurrent()) return null;
   if (isSessionBlockingResponse(response.status, body)) {
     if (isCurrent()) blockAccess();
     throw Object.assign(new Error(body.error || 'request_failed'), {
@@ -103,14 +107,15 @@ function field(label, name, type = 'text', value = '', options = []) {
     placeholder.textContent = '選択してください';
     input.append(placeholder, ...options.map(option => {
       const node = document.createElement('option');
-      node.value = option;
-      node.textContent = option;
+      node.value = typeof option === 'string' ? option : option.email;
+      node.textContent = typeof option === 'string' ? option : `${option.display_name} (${option.email})`;
       return node;
     }));
   } else if (type !== 'textarea') {
     input.type = type;
   }
   input.value = value;
+  if (name === 'reason') input.maxLength = 4000;
   wrapper.append(input);
   return wrapper;
 }
@@ -141,6 +146,7 @@ function blockAccess() {
 
 const actions = {
   'assign-self': ['自分を担当にする', []], start: ['対応を始める', []],
+  reassign: ['担当を変更する', [['変更先の担当者', 'assigneeEmail', 'select'], ['変更理由', 'reason', 'textarea']]],
   note: ['メモを残す', [['メモ', 'note', 'textarea']]],
   'wait-customer': ['お客様の返信を待つ', [['待機理由', 'note', 'textarea'], ['次の対応', 'nextAction'], ['確認予定日', 'followupAt', 'date']]],
   'wait-internal': ['社内へ確認する', [['確認先', 'confirmationTarget', 'select', ['CS', '営業', '開発', '管理者', 'その他']], ['依頼内容', 'note', 'textarea'], ['次の対応', 'nextAction'], ['確認予定日', 'followupAt', 'date']]],
@@ -151,6 +157,7 @@ const actions = {
 
 function availableActions(item) {
   const available = ['note'];
+  if (item.status !== '対応済み' && !item.archived_at) available.push('reassign');
   if (item.status === '未対応' && !item.assignee_email) available.unshift('assign-self');
   if (item.status === '未対応' && item.assignee_email) available.unshift('start');
   if (item.status === '対応中') available.push('wait-customer', 'wait-internal', 'hold');
@@ -207,7 +214,7 @@ function clearAndInvalidateCases() {
 function resetCases() {
   clearPendingSearch();
   clearAndInvalidateCases();
-  loadCases(0, null).catch(error => {
+  return loadCases(0, null).catch(error => {
     if (!error.sessionBlocked) listError('一覧を取得できませんでした。入力内容を確認してください。');
   });
 }
@@ -231,7 +238,10 @@ function previousPage() {
 
 async function loadDetail(caseId) {
   saveVisibleDraft();
+  if (byId('message').textContent === '担当候補を読み込み中です。') message('');
   const token = requests.beginDetail();
+  const previousForm = byId('action-form');
+  if (previousForm) previousForm.hidden = true;
   clearObjectUrls();
   const [detail, history] = await Promise.all([
     api(`/api/cases/${encodeURIComponent(caseId)}`),
@@ -243,11 +253,16 @@ async function loadDetail(caseId) {
   fragment.querySelector('#status').textContent = state.current.status;
   fragment.querySelector('#subject').textContent = state.current.subject;
   const customer = fragment.querySelector('#customer');
-  [['投稿者', state.current.customer_name], ['メール', state.current.customer_email], ['種別', state.current.category]]
+  [['投稿者', state.current.customer_name], ['メール', state.current.customer_email], ['種別', state.current.category],
+    ['担当', state.current.assignee_email || '未割当']]
     .forEach(([key, value]) => customer.append(text('dt', key), text('dd', value)));
   fragment.querySelector('#body').textContent = state.current.message;
-  fragment.querySelector('#events').replaceChildren(...history.events.map(event =>
-    text('li', `${event.created_at}｜${event.event_type}｜${event.actor_email}${event.note ? `｜${event.note}` : ''}`)));
+  fragment.querySelector('#events').replaceChildren(...history.events.map(event => {
+    const reassignment = event.event_type === 'reassigned'
+      ? `｜旧担当: ${event.changes.previousAssigneeEmail || '未割当'} → 新担当: ${event.changes.assigneeEmail}`
+      : '';
+    return text('li', `${event.created_at}｜${event.event_type === 'reassigned' ? '担当を変更' : event.event_type}｜操作: ${event.actor_email}${reassignment}${event.note ? `｜${event.note}` : ''}`);
+  }));
   const attachmentList = fragment.querySelector('#attachments ul');
   fragment.querySelector('#attachments').hidden = !detail.attachments.length;
   detail.attachments.forEach(attachment => {
@@ -311,15 +326,39 @@ async function loadDetail(caseId) {
   });
   const form = fragment.querySelector('#action-form');
   const fields = fragment.querySelector('#fields');
+  let actionRevision = 0;
   fragment.querySelector('#actions').replaceChildren(...availableActions(state.current).map(key => {
     const definition = actions[key];
     const button = text('button', definition[0]);
     button.type = 'button';
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
+      if (!requests.isCurrent(token)) return;
       saveVisibleDraft();
-      form.dataset.action = key;
+      const revision = ++actionRevision;
+      form.hidden = true;
+      if (key !== 'reassign' && byId('message').textContent === '担当候補を読み込み中です。') message('');
       const draft = requests.getDraft(state.current.case_id, key);
       const definitions = [...definition[1]];
+      if (key === 'reassign') {
+        message('担当候補を読み込み中です。');
+        try {
+          const result = await api('/api/operators', {}, () =>
+            requests.isCurrent(token) && revision === actionRevision);
+          if (!requests.isCurrent(token) || revision !== actionRevision) return;
+          const operators = [...result.operators];
+          if (draft.assigneeEmail && !operators.some(item => item.email === draft.assigneeEmail)) {
+            operators.push({ email: draft.assigneeEmail, display_name: '保存済み入力・現在の候補外' });
+          }
+          definitions[0] = [...definitions[0], operators];
+          message('');
+        } catch (error) {
+          if (requests.isCurrent(token) && revision === actionRevision && !error.sessionBlocked) {
+            message('担当候補を取得できませんでした。担当を変更する操作から再度お試しください。');
+          }
+          return;
+        }
+      }
+      form.dataset.action = key;
       if (key === 'resolve' && (state.current.next_action || state.current.followup_at
         || state.current.wait_target || state.current.wait_reason)) {
         definitions.push(['未完了条件を閉じる理由', 'pendingClosureNote', 'textarea']);
@@ -328,14 +367,19 @@ async function loadDetail(caseId) {
         item[0], item[1], item[2] || 'text', draft[item[1]] || '', item[3] || [],
       )));
       form.hidden = false;
+      form.querySelector('select, textarea, input')?.focus();
     });
     return button;
   }));
   form.addEventListener('submit', async event => {
     event.preventDefault();
+    if (!requests.isCurrent(token) || form.hidden || !form.reportValidity()) return;
     const values = Object.fromEntries(new FormData(form).entries());
     const action = form.dataset.action;
     const caseId = state.current.case_id;
+    const submittedRevision = actionRevision;
+    const isSubmittedView = () => requests.isCurrent(token)
+      && actionRevision === submittedRevision && state.current?.case_id === caseId;
     requests.setDraft(caseId, action, values);
     const attempt = requests.attempt(caseId, action, values, state.current.version);
     const submit = form.querySelector('button[type="submit"]');
@@ -356,23 +400,42 @@ async function loadDetail(caseId) {
       const completion = requests.completeAttempt(
         caseId, action, attempt.requestId, values, currentValues,
       );
+      // Reassignment can remove a row or the last page under the current filters.
+      // Refresh list membership independently of the submitted detail/form.
+      const listRefresh = action === 'reassign' && state.principal ? resetCases() : null;
+      if (action === 'reassign' && !isSubmittedView()) {
+        await listRefresh;
+        return;
+      }
       if (completion.current && !completion.hasDraft && visibleFormMatches) {
         visibleForm.hidden = true;
       }
       if (!completion.current) return;
       if (state.principal) {
         const currentCaseId = state.current?.case_id;
-        await Promise.all([loadCases(), currentCaseId ? loadDetail(currentCaseId) : Promise.resolve()]);
+        const detailRefresh = currentCaseId ? loadDetail(currentCaseId) : Promise.resolve();
+        const refreshToken = requests.currentDetail();
+        await Promise.all([listRefresh || loadCases(), detailRefresh]);
+        if (action === 'reassign' && !requests.isCurrent(refreshToken)) return;
       }
       message('保存しました。');
     } catch (error) {
       if (error.status === 409) {
         if (!requests.clearAttempt(caseId, action, attempt.requestId)) return;
+        const listRefresh = action === 'reassign' && state.principal ? resetCases() : null;
+        if (action === 'reassign' && !isSubmittedView()) {
+          await listRefresh;
+          return;
+        }
         message('別の担当者による更新を検出しました。入力内容を保持しています。最新版を確認してください。');
         if (state.principal) {
           const currentCaseId = state.current?.case_id;
-          await Promise.all([loadCases(), currentCaseId ? loadDetail(currentCaseId) : Promise.resolve()]);
+          await Promise.all([listRefresh || loadCases(), currentCaseId ? loadDetail(currentCaseId) : Promise.resolve()]);
         }
+      } else if (action === 'reassign' && !isSubmittedView()) {
+        return;
+      } else if (action === 'reassign' && error.status === 400) {
+        message('変更先の担当者と入力内容を確認してください。入力内容は保持しています。');
       } else if (!error.sessionBlocked && error.status !== 401 && error.status !== 403) {
         message('保存結果を確認できませんでした。同じ内容で再送すると同じ操作IDを使用します。');
       }
@@ -381,7 +444,11 @@ async function loadDetail(caseId) {
     }
   });
   form.addEventListener('input', saveVisibleDraft);
-  fragment.querySelector('#cancel').addEventListener('click', () => { form.hidden = true; });
+  fragment.querySelector('#cancel').addEventListener('click', () => {
+    saveVisibleDraft();
+    actionRevision += 1;
+    form.hidden = true;
+  });
   fragment.querySelector('#reload-detail').addEventListener('click', () => loadDetail(caseId));
   byId('detail').replaceChildren(fragment);
   renderCases();

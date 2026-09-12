@@ -4,6 +4,8 @@ This is a local-only consistency and operator-flow experiment, not a deployment 
 It implements the approved fixed case actions and an operator UI over synthetic data.
 The six existing status values are preserved without adding priority, archive, SLA or
 notification rules.
+The reassignment contract and local acceptance commands are in
+[25_support_contact_case_reassignment.md](../../../docs/画面設計/仕様/25_support_contact_case_reassignment.md).
 The Worker listener and D1 binding are local-only test adapters. The configuration
 contains no credential or deployable D1 resource identifier and rejects non-loopback requests.
 
@@ -97,6 +99,26 @@ first API request performs the one-time synthetic bootstrap. Current coverage
 uses 55 synthetic cases and checks two-page navigation, server search and
 filters, zero/final pages, stale-cursor clearing, desktop/mobile layout, console
 errors, attachment/actions/ACK replay, and authentication-state clearing.
+
+The list/reassignment integration check reuses that Worker harness with local
+RS256 JWT verification, real workerd D1/R2, and Playwright Chrome/Edge/Firefox.
+From the repository root, after both existing lockfile installs, run:
+
+```powershell
+$env:TEMP = "$PWD/.local-test"
+$env:TMP = $env:TEMP
+node --test --test-concurrency=1 99_backend-docs/10_support-contact/d1-poc/tests/contact-integration-browser.test.mjs
+```
+
+Create the local output directory first. Reassignment success or confirmed
+conflict refreshes the current filters from the first page, including when a
+different case/action is open; that current form and draft are not replaced.
+The check covers stale list/candidate responses, last-page removal, ACK replay,
+audit history and bounded teardown. Images are retained in
+`.local-test/integration-browser/`. Local signed JWT acceptance is not real
+Access/IdP acceptance and does not authorize remote operations. Short synthetic
+browser profiles remain in `.local-test/p-*` to avoid Windows temporary-profile
+removal stalls; neither profiles nor other local artifacts belong in commits.
 
 The first approved local vertical slice uses the separate
 [`migrations-mvp`](migrations-mvp/0001_contact_mvp.sql) schema and
