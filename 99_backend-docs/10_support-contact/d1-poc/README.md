@@ -64,12 +64,26 @@ required shared-trial command includes the new boundary suite and the directly
 affected shared suites:
 
 ```powershell
-node --test --test-concurrency=1 tests/shared-trial-boundary.test.mjs tests/shared-worker.test.mjs tests/shared-ui-request-state.test.mjs tests/shared-boundary.test.mjs
+npm run test:shared
+node --test tests/shared-trial-boundary.test.mjs
 ```
 
 `npm run test:shared` remains useful for its existing suite but does not include
 `tests/shared-trial-boundary.test.mjs`. These files do not authorize or perform
 resource creation, deployment, real-account registration or data migration.
+
+## Shared case-list API
+
+`GET /api/cases` returns `cases` for existing clients and also returns
+`page: { limit, hasMore, nextCursor }`. It accepts optional `q`, `status`,
+`assignee`, `priority`, `cursor`, and `limit` parameters. `q` searches only
+`case_id`, `subject`, `customer_name`, `customer_email`, and `category`; company
+name and other fields are not implemented search targets. Status uses the six
+stored states, priority accepts `high` / `mid` / `low`, and assignee accepts an
+exact email or `unassigned`. Pagination is ascending `(received_at, case_id)`
+keyset pagination; a cursor is valid only for its original filters. The cursor
+is not an authorization token; access control remains the Worker-side
+authenticated operator check.
 
 The repeatable browser-only harness is
 [`wrangler.shared-browser.jsonc`](wrangler.shared-browser.jsonc) with its entry
@@ -77,6 +91,12 @@ point under `tests/`. It requires a runtime-generated test JWT and injected
 public JWKS, uses only local D1/R2 and must never be deployed. The completed
 browser scenarios and bounded G1 metadata findings are recorded in
 [`SHARED_LOCAL_BROWSER_ACCEPTANCE.md`](SHARED_LOCAL_BROWSER_ACCEPTANCE.md).
+The PowerShell runner allocates a unique loopback port and waits for its TCP
+listener without sending readiness HTTP requests. The authenticated browser's
+first API request performs the one-time synthetic bootstrap. Current coverage
+uses 55 synthetic cases and checks two-page navigation, server search and
+filters, zero/final pages, stale-cursor clearing, desktop/mobile layout, console
+errors, attachment/actions/ACK replay, and authentication-state clearing.
 
 The first approved local vertical slice uses the separate
 [`migrations-mvp`](migrations-mvp/0001_contact_mvp.sql) schema and
