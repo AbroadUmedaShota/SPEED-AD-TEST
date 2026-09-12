@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>問い合わせ対応 | SPEED AD</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand-block">
+      <strong>SPEED AD</strong>
+      <span>問い合わせ対応</span>
+    </div>
+    <div class="session-block">
+      <span class="environment-label">ローカル・合成データ</span>
+      <label for="actor-select">操作担当者</label>
+      <select id="actor-select">
+        <option value="operator-a@example.invalid">担当者A</option>
+        <option value="operator-b@example.invalid">担当者B</option>
+        <option value="">認証なし（検証用）</option>
+      </select>
+    </div>
+  </header>
+
+  <div id="global-message" class="global-message" role="status" aria-live="polite" hidden></div>
+  <main id="workspace" class="workspace">
+    <aside id="queue-pane" class="queue-pane" aria-label="問い合わせ一覧">
+      <div class="queue-heading">
+        <div>
+          <p class="eyebrow">業務キュー</p>
+          <h1>問い合わせ</h1>
+        </div>
+        <button id="refresh-button" class="icon-button" type="button" title="一覧を更新" aria-label="一覧を更新">↻</button>
+      </div>
+      <nav id="queue-tabs" class="queue-tabs" aria-label="表示対象">
+        <button type="button" data-filter="mine" aria-pressed="true">自分の対応 <span data-count="mine">0</span></button>
+        <button type="button" data-filter="unassigned" aria-pressed="false">未割当 <span data-count="unassigned">0</span></button>
+        <button type="button" data-filter="today" aria-pressed="false">本日確認 <span data-count="today">0</span></button>
+        <button type="button" data-filter="all" aria-pressed="false">すべて <span data-count="all">0</span></button>
+      </nav>
+      <label class="search-field" for="case-search">
+        <span>検索</span>
+        <input id="case-search" type="search" placeholder="件名・投稿者・種別" autocomplete="off">
+      </label>
+      <div id="queue-state" class="queue-state" role="status">読み込み中です</div>
+      <ol id="case-list" class="case-list" aria-label="問い合わせ"></ol>
+    </aside>
+
+    <section id="detail-pane" class="detail-pane" aria-label="問い合わせ詳細">
+      <div id="detail-empty" class="empty-detail">
+        <p class="eyebrow">問い合わせ詳細</p>
+        <h2>案件を選択してください</h2>
+        <p>一覧から案件を選ぶと、内容・履歴・操作をここで確認できます。</p>
+      </div>
+      <div id="detail-content" hidden>
+        <div class="detail-toolbar">
+          <button id="back-button" class="back-button" type="button">← 一覧へ</button>
+          <button id="detail-refresh-button" class="secondary-button" type="button">最新版を取得</button>
+        </div>
+        <div id="case-summary"></div>
+        <section class="detail-section" aria-labelledby="message-heading">
+          <h2 id="message-heading">お問い合わせ内容</h2>
+          <dl id="customer-details" class="customer-details"></dl>
+          <p id="case-message" class="case-message"></p>
+        </section>
+        <section id="attachments-section" class="detail-section" aria-labelledby="attachments-heading" hidden>
+          <h2 id="attachments-heading">添付ファイル</h2>
+          <ul id="attachment-list" class="attachment-list"></ul>
+        </section>
+        <section class="detail-section" aria-labelledby="actions-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">次の操作</p>
+              <h2 id="actions-heading">対応を更新</h2>
+            </div>
+            <span id="version-label" class="version-label"></span>
+          </div>
+          <div id="action-buttons" class="action-buttons" role="group" aria-label="対応操作"></div>
+          <form id="action-form" class="action-form" novalidate hidden>
+            <div id="action-form-fields"></div>
+            <div id="form-message" class="form-message" role="alert" aria-live="assertive" hidden></div>
+            <div class="form-actions">
+              <button id="cancel-action" class="secondary-button" type="button">キャンセル</button>
+              <button id="submit-action" class="primary-button" type="submit">保存</button>
+            </div>
+          </form>
+        </section>
+        <section class="detail-section" aria-labelledby="history-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">監査履歴</p>
+              <h2 id="history-heading">対応履歴</h2>
+            </div>
+          </div>
+          <div id="history-state" class="queue-state">読み込み中です</div>
+          <ol id="event-list" class="event-list"></ol>
+        </section>
+      </div>
+      <div id="auth-blocked" class="auth-blocked" hidden>
+        <p class="eyebrow">アクセス確認</p>
+        <h2>担当者を確認できません</h2>
+        <p>問い合わせ情報は非表示にしました。操作担当者を選び直して再読み込みしてください。未保存の入力は、このタブを閉じるまで保持されます。</p>
+        <button id="retry-auth-button" class="primary-button" type="button">再読み込み</button>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

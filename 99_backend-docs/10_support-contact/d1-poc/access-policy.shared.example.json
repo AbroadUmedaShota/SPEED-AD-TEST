@@ -1,0 +1,12 @@
+{
+  "name": "Support contact exact operator allowlist",
+  "decision": "allow",
+  "include": [
+    { "email": { "email": "operator-one@example.invalid" } },
+    { "email": { "email": "operator-two@example.invalid" } }
+  ],
+  "exclude": [],
+  "require": [
+    { "login_method": { "id": "<GOOGLE_IDP_LOGIN_METHOD_ID>" } }
+  ]
+}

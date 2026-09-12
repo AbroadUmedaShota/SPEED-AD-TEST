@@ -1,0 +1,34 @@
+:root { font-family: "Segoe UI", "Yu Gothic UI", sans-serif; color: #17202a; background: #edf1f4; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input, textarea, select { font: inherit; letter-spacing: 0; }
+button { cursor: pointer; }
+.app-header { min-height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 24px; color: #fff; background: #18252c; border-bottom: 3px solid #0b6b53; }
+.app-header div { display: flex; gap: 12px; align-items: center; }
+.app-header span, .app-header output { color: #d7e0e4; }
+#message { min-height: 0; padding: 0 24px; background: #fff4d9; }
+#message:not(:empty) { padding-block: 10px; }
+.workspace { display: grid; grid-template-columns: minmax(320px, 390px) 1fr; width: min(1440px, 100%); min-height: calc(100vh - 67px); margin: auto; background: #fff; }
+aside { padding: 20px; border-right: 1px solid #d5dde2; background: #f5f7f8; }
+.heading, .detail-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+h1, h2, h3 { letter-spacing: 0; }
+aside label { display: grid; gap: 6px; font-size: 13px; font-weight: 700; }
+input, textarea, select { width: 100%; padding: 9px; border: 1px solid #aebac0; border-radius: 4px; background: #fff; }
+#cases, #events, #attachments ul { padding: 0; list-style: none; }
+#cases button { width: 100%; padding: 14px; text-align: left; border: 0; border-bottom: 1px solid #d5dde2; background: #fff; }
+#cases button:hover, #cases button[aria-current="true"] { background: #edf8f4; }
+#detail { min-width: 0; padding: 28px; }
+#empty { margin-top: 20vh; text-align: center; color: #5b6770; }
+article { max-width: 920px; }
+article section { padding-block: 20px; border-top: 1px solid #d5dde2; }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; }
+dd { margin: 0; overflow-wrap: anywhere; }
+#body { padding: 16px; white-space: pre-wrap; overflow-wrap: anywhere; border-left: 4px solid #9bb8ad; background: #f5f8f7; }
+#actions { display: flex; flex-wrap: wrap; gap: 8px; }
+button { min-height: 38px; padding: 8px 12px; border: 1px solid #aebac0; border-radius: 4px; background: #fff; }
+#actions button, form button[type="submit"] { color: #fff; background: #0b6b53; border-color: #07513f; }
+form { margin-top: 16px; padding: 16px; background: #f5f7f8; }
+form label { display: grid; gap: 5px; margin-bottom: 12px; }
+#events li, #attachments li { padding: 10px 0; border-bottom: 1px solid #d5dde2; }
+#attachments img { display: block; max-width: 100%; max-height: 420px; margin-top: 8px; }
+@media (max-width: 760px) { .workspace { display: block; } aside { border-right: 0; } #detail { padding: 20px; } }
