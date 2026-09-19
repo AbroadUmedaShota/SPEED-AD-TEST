@@ -128,7 +128,8 @@ async function stopServer(server) {
 }
 
 test('data export plus blob bundle restores into a separate local D1 and replays a receipt', async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), 'contact-d1-restore-'));
+  // Leave room for workerd's hashed SQLite filenames on Windows.
+  const root = await mkdtemp(path.join(os.tmpdir(), 'r-'));
   let server;
   try {
     const source = await createLocalProject(root, 'restore-source');

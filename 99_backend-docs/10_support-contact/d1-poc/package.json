@@ -7,7 +7,7 @@
     "test:sqlite": "node --test ../../../tests/support-contact-d1-atomicity.test.mjs",
     "test:d1": "node --test tests/d1-binding-contract.test.mjs",
     "test:mvp": "node --test --test-concurrency=1 tests/mvp-vertical-slice.test.mjs tests/ui-request-coordinator.test.mjs tests/local-restore.test.mjs",
-    "test:shared": "node --test tests/access-principal-resolver.test.mjs tests/shared-worker.test.mjs tests/shared-boundary.test.mjs tests/shared-ui-request-state.test.mjs tests/shared-browser-guard.test.mjs"
+    "test:shared": "node --test tests/access-principal-resolver.test.mjs tests/shared-worker.test.mjs tests/shared-case-list.test.mjs tests/shared-case-list-sqlite.test.mjs tests/shared-boundary.test.mjs tests/shared-ui-request-state.test.mjs tests/shared-ui-list.test.mjs tests/shared-ui-events.test.mjs tests/shared-browser-guard.test.mjs"
   },
   "devDependencies": {
     "wrangler": "4.129.0"

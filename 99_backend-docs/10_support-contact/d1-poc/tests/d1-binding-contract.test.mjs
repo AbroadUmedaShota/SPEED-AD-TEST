@@ -146,15 +146,29 @@ test.before(async () => {
 });
 
 test.after(async () => {
-  if (server && server.exitCode === null) {
-    server.kill();
-    await new Promise((resolve) => {
-      server.once('exit', resolve);
-      setTimeout(resolve, 5_000);
+  console.log('d1-binding cleanup: Wrangler close');
+  const exited = server && (server.exitCode !== null || server.signalCode !== null);
+  if (server && !(exited && server.stdout.closed && server.stderr.closed)) {
+    await new Promise((resolve, reject) => {
+      const closed = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+      const timer = setTimeout(() => {
+        server.off('close', closed);
+        reject(new Error('Local Wrangler did not close within 10 seconds'));
+      }, 10_000);
+      // The wrapper's exit can precede its child's inherited stdio closing.
+      server.once('close', closed);
+      if (server.exitCode === null && server.signalCode === null) server.kill();
     });
   }
-  if (persistenceDir) await rm(persistenceDir, { recursive: true, force: true });
-});
+  console.log('d1-binding cleanup: persistence');
+  if (persistenceDir) {
+    await rm(persistenceDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+  }
+  console.log('d1-binding cleanup: complete');
+}, { timeout: 15_000 });
 
 test('CAS mismatch followed by a NOT NULL guard rolls back the whole D1 batch', async () => {
   await resetDatabase();

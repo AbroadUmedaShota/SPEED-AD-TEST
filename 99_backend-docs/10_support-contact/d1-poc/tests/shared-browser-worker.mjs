@@ -17,6 +17,24 @@ function principalResolver(env) {
 async function bootstrapSyntheticData(env) {
   const timestamp = '2026-09-06T00:00:00.000Z';
   const digest = await sha256Hex(syntheticAttachment.bytes);
+  const statuses = ['未対応', '対応中', '顧客確認待ち', '引継ぎ待ち', '保留', '対応済み'];
+  const priorities = ['高', '中', '低'];
+  const listCases = Array.from({ length: 54 }, (_, offset) => {
+    const index = offset + 1;
+    const suffix = String(index).padStart(3, '0');
+    const assignee = index % 3 === 1 ? null
+      : index % 3 === 2 ? 'operator-one@example.invalid' : 'operator-two@example.invalid';
+    return env.DB.prepare(`INSERT INTO contact_cases
+      (case_id, received_at, category, subject, customer_name, customer_email, message,
+       source_url, user_agent, status, priority, assignee_email, version, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`).bind(
+      `case-z-list-${suffix}`, timestamp, index % 2 ? '一覧検証' : 'billing',
+      `一覧検索 ${suffix}`, `合成利用者 ${suffix}`, `synthetic-${suffix}@example.invalid`,
+      `一覧ブラウザ受入用の合成データ ${suffix} です。`, 'https://example.invalid/contact',
+      'Shared-Browser-Acceptance', statuses[offset % statuses.length],
+      priorities[offset % priorities.length], assignee, timestamp, timestamp,
+    );
+  });
   await env.DB.batch([
     env.DB.prepare('DELETE FROM contact_case_events'),
     env.DB.prepare('DELETE FROM contact_api_requests'),
@@ -39,6 +57,7 @@ async function bootstrapSyntheticData(env) {
       '合成利用者', 'customer@example.invalid', 'ブラウザ受入用の合成データです。',
       'https://example.invalid/contact', 'Shared-Browser-Acceptance', timestamp, timestamp,
     ),
+    ...listCases,
     env.DB.prepare(`INSERT INTO contact_attachments
       (attachment_id, case_id, object_key, original_name, mime_type, size_bytes,
        sha256, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).bind(

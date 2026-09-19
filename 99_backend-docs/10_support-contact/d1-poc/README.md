@@ -4,6 +4,8 @@ This is a local-only consistency and operator-flow experiment, not a deployment 
 It implements the approved fixed case actions and an operator UI over synthetic data.
 The six existing status values are preserved without adding priority, archive, SLA or
 notification rules.
+The reassignment contract and local acceptance commands are in
+[25_support_contact_case_reassignment.md](../../../docs/画面設計/仕様/25_support_contact_case_reassignment.md).
 The Worker listener and D1 binding are local-only test adapters. The configuration
 contains no credential or deployable D1 resource identifier and rejects non-loopback requests.
 
@@ -64,12 +66,26 @@ required shared-trial command includes the new boundary suite and the directly
 affected shared suites:
 
 ```powershell
-node --test --test-concurrency=1 tests/shared-trial-boundary.test.mjs tests/shared-worker.test.mjs tests/shared-ui-request-state.test.mjs tests/shared-boundary.test.mjs
+npm run test:shared
+node --test tests/shared-trial-boundary.test.mjs
 ```
 
 `npm run test:shared` remains useful for its existing suite but does not include
 `tests/shared-trial-boundary.test.mjs`. These files do not authorize or perform
 resource creation, deployment, real-account registration or data migration.
+
+## Shared case-list API
+
+`GET /api/cases` returns `cases` for existing clients and also returns
+`page: { limit, hasMore, nextCursor }`. It accepts optional `q`, `status`,
+`assignee`, `priority`, `cursor`, and `limit` parameters. `q` searches only
+`case_id`, `subject`, `customer_name`, `customer_email`, and `category`; company
+name and other fields are not implemented search targets. Status uses the six
+stored states, priority accepts `high` / `mid` / `low`, and assignee accepts an
+exact email or `unassigned`. Pagination is ascending `(received_at, case_id)`
+keyset pagination; a cursor is valid only for its original filters. The cursor
+is not an authorization token; access control remains the Worker-side
+authenticated operator check.
 
 The repeatable browser-only harness is
 [`wrangler.shared-browser.jsonc`](wrangler.shared-browser.jsonc) with its entry
@@ -77,6 +93,32 @@ point under `tests/`. It requires a runtime-generated test JWT and injected
 public JWKS, uses only local D1/R2 and must never be deployed. The completed
 browser scenarios and bounded G1 metadata findings are recorded in
 [`SHARED_LOCAL_BROWSER_ACCEPTANCE.md`](SHARED_LOCAL_BROWSER_ACCEPTANCE.md).
+The PowerShell runner allocates a unique loopback port and waits for its TCP
+listener without sending readiness HTTP requests. The authenticated browser's
+first API request performs the one-time synthetic bootstrap. Current coverage
+uses 55 synthetic cases and checks two-page navigation, server search and
+filters, zero/final pages, stale-cursor clearing, desktop/mobile layout, console
+errors, attachment/actions/ACK replay, and authentication-state clearing.
+
+The list/reassignment integration check reuses that Worker harness with local
+RS256 JWT verification, real workerd D1/R2, and Playwright Chrome/Edge/Firefox.
+From the repository root, after both existing lockfile installs, run:
+
+```powershell
+$env:TEMP = "$PWD/.local-test"
+$env:TMP = $env:TEMP
+node --test --test-concurrency=1 99_backend-docs/10_support-contact/d1-poc/tests/contact-integration-browser.test.mjs
+```
+
+Create the local output directory first. Reassignment success or confirmed
+conflict refreshes the current filters from the first page, including when a
+different case/action is open; that current form and draft are not replaced.
+The check covers stale list/candidate responses, last-page removal, ACK replay,
+audit history and bounded teardown. Images are retained in
+`.local-test/integration-browser/`. Local signed JWT acceptance is not real
+Access/IdP acceptance and does not authorize remote operations. Short synthetic
+browser profiles remain in `.local-test/p-*` to avoid Windows temporary-profile
+removal stalls; neither profiles nor other local artifacts belong in commits.
 
 The first approved local vertical slice uses the separate
 [`migrations-mvp`](migrations-mvp/0001_contact_mvp.sql) schema and

@@ -4,6 +4,12 @@ import { R2AttachmentStore } from './r2AttachmentStore.mjs';
 
 const JSON_HEADERS = { 'cache-control': 'no-store', 'content-type': 'application/json; charset=utf-8' };
 const ID_PATTERN = '[a-zA-Z0-9_-]{1,80}';
+const CASE_STATUSES = ['未対応', '対応中', '顧客確認待ち', '引継ぎ待ち', '保留', '対応済み'];
+const PRIORITIES = { high: '高', mid: '中', low: '低' };
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DEFAULT_CASE_LIMIT = 50;
+const MAX_CASE_LIMIT = 100;
+const MAX_CURSOR_LENGTH = 2_048;
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
@@ -24,12 +30,117 @@ function trustedHost(request, env) {
   return expected && new URL(request.url).hostname.toLowerCase() === expected;
 }
 
-async function listCases(db) {
+function badRequest(message) {
+  return Object.assign(new Error(message), { status: 400 });
+}
+
+function escapeLike(value) {
+  return value.replace(/[\\%_]/g, character => `\\${character}`);
+}
+
+function encodeCursor(value) {
+  const bytes = new TextEncoder().encode(JSON.stringify(value));
+  let binary = '';
+  bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function decodeCursor(value) {
+  if (value.length > MAX_CURSOR_LENGTH || !/^[A-Za-z0-9_-]+$/.test(value)) {
+    throw badRequest('invalid_cursor');
+  }
+  try {
+    const padded = `${value.replace(/-/g, '+').replace(/_/g, '/')}${'='.repeat((4 - value.length % 4) % 4)}`;
+    const binary = atob(padded);
+    const bytes = Uint8Array.from(binary, character => character.charCodeAt(0));
+    return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+  } catch {
+    throw badRequest('invalid_cursor');
+  }
+}
+
+function caseFilters(url) {
+  const q = (url.searchParams.get('q') || '').trim();
+  if (q.length > 200) throw badRequest('invalid_q');
+  const status = url.searchParams.get('status') || '';
+  if (status && !CASE_STATUSES.includes(status)) throw badRequest('invalid_status');
+  const priority = url.searchParams.get('priority') || '';
+  if (priority && !Object.hasOwn(PRIORITIES, priority)) throw badRequest('invalid_priority');
+  const assignee = url.searchParams.get('assignee') || '';
+  if (assignee && assignee !== 'unassigned'
+    && (assignee.length > 254 || !EMAIL_PATTERN.test(assignee))) {
+    throw badRequest('invalid_assignee');
+  }
+  const rawLimit = url.searchParams.get('limit');
+  const limit = rawLimit === null ? DEFAULT_CASE_LIMIT : Number(rawLimit);
+  if (!Number.isInteger(limit) || limit < 1 || limit > MAX_CASE_LIMIT) {
+    throw badRequest('invalid_limit');
+  }
+  return { q, status, priority, assignee, limit };
+}
+
+function caseCursor(url, filters) {
+  const rawCursor = url.searchParams.get('cursor');
+  if (!rawCursor) return null;
+  const cursor = decodeCursor(rawCursor);
+  if (!cursor || cursor.version !== 1 || typeof cursor.receivedAt !== 'string'
+    || cursor.receivedAt.length === 0 || cursor.receivedAt.length > 64
+    || typeof cursor.caseId !== 'string' || !new RegExp(`^${ID_PATTERN}$`).test(cursor.caseId)
+    || JSON.stringify(cursor.filters) !== JSON.stringify(filters)) {
+    throw badRequest('invalid_cursor');
+  }
+  return cursor;
+}
+
+async function listCases(db, filters, cursor) {
+  const conditions = ['archived_at IS NULL'];
+  const bindings = [];
+  if (filters.q) {
+    const query = `%${escapeLike(filters.q)}%`;
+    conditions.push(`(case_id LIKE ? ESCAPE '\\' OR subject LIKE ? ESCAPE '\\'
+      OR customer_name LIKE ? ESCAPE '\\' OR customer_email LIKE ? ESCAPE '\\'
+      OR category LIKE ? ESCAPE '\\')`);
+    bindings.push(query, query, query, query, query);
+  }
+  if (filters.status) {
+    conditions.push('status = ?');
+    bindings.push(filters.status);
+  }
+  if (filters.priority) {
+    conditions.push('priority = ?');
+    bindings.push(PRIORITIES[filters.priority]);
+  }
+  if (filters.assignee === 'unassigned') {
+    conditions.push('assignee_email IS NULL');
+  } else if (filters.assignee) {
+    conditions.push('assignee_email = ?');
+    bindings.push(filters.assignee);
+  }
+  if (cursor) {
+    conditions.push('(received_at > ? OR (received_at = ? AND case_id > ?))');
+    bindings.push(cursor.receivedAt, cursor.receivedAt, cursor.caseId);
+  }
+  bindings.push(filters.limit + 1);
   const result = await db.prepare(`SELECT case_id, received_at, category, subject,
     customer_name, status, priority, assignee_email, followup_at, version, updated_at
-    FROM contact_cases WHERE archived_at IS NULL
-    ORDER BY received_at ASC, case_id ASC LIMIT 50`).all();
-  return result.results;
+    FROM contact_cases WHERE ${conditions.join(' AND ')}
+    ORDER BY received_at ASC, case_id ASC LIMIT ?`).bind(...bindings).all();
+  const hasMore = result.results.length > filters.limit;
+  const cases = hasMore ? result.results.slice(0, filters.limit) : result.results;
+  const last = cases.at(-1);
+  return {
+    cases,
+    page: {
+      limit: filters.limit,
+      hasMore,
+      nextCursor: hasMore ? encodeCursor({
+        version: 1,
+        filters,
+        receivedAt: last.received_at,
+        caseId: last.case_id,
+      }) : null,
+    },
+  };
 }
 
 async function getCase(db, caseId) {
@@ -136,7 +247,19 @@ export function createSharedWorker(options = {}) {
         return json({ principal: { email: principal.email, displayName: principal.displayName } });
       }
       if (request.method === 'GET' && url.pathname === '/api/cases') {
-        return json({ cases: await listCases(env.DB) });
+        try {
+          const filters = caseFilters(url);
+          return json(await listCases(env.DB, filters, caseCursor(url, filters)));
+        } catch (error) {
+          if (error.status === 400) return json({ error: error.message }, 400);
+          throw error;
+        }
+      }
+      if (request.method === 'GET' && url.pathname === '/api/operators') {
+        const operators = await env.DB.prepare(
+          'SELECT email, display_name FROM contact_operators WHERE active = 1 ORDER BY display_name, email',
+        ).all();
+        return json({ operators: operators.results });
       }
       const detailMatch = new RegExp(`^/api/cases/(${ID_PATTERN})$`).exec(url.pathname);
       if (request.method === 'GET' && detailMatch) {
